@@ -10,9 +10,54 @@ from .bagread import read_signals
 from .config import Config
 from .detectors import score_all
 from .detectors.base import detections_from
+from .reasoning import DEFAULT_MODEL, explain
 from .sweep import run as run_sweep
 
 DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config" / "detectors.yaml"
+
+
+def cmd_explain(args) -> int:
+    """The model's job is a cross-signal hypothesis; the harness's job is to check
+    every citation it makes. A downgraded hypothesis is printed with the reason,
+    never hidden -- the failures are part of what the case log reports."""
+    config, signals = _load(args)
+    scores = score_all(signals, config)
+    found = []
+    for name, cfg in config.detectors.items():
+        for series in scores[name]:
+            found += detections_from(series, cfg.threshold_for(series.param, series.key),
+                                     cfg.merge_gap_s, cfg.min_duration_s)
+    found.sort(key=lambda d: d.start_s)
+    if not found:
+        print("no detections, so nothing to explain")
+        return 0
+
+    # The topics the flagged events actually came from. A citation to anything
+    # else is real-but-irrelevant, and the checker now says so.
+    used = {d.key for d in found} | {t for t in (config.topics.tf, config.topics.odom,
+                                                 config.topics.amcl_pose, config.topics.scan)}
+    window = {"detections": [asdict(d) for d in found[:12]], "topics": used}
+    h = explain(window, signals, model=args.model)
+
+    print(f"model            {args.model}")
+    print(f"stated           {h.stated_confidence}")
+    print(f"after checking   {h.verified_confidence}" + ("   <- downgraded" if h.downgraded else ""))
+    if h.error:
+        print(f"error            {h.error}")
+    print(f"\n{h.text}\n")
+    print(f"citations ({sum(c.verified for c in h.citations)}/{len(h.citations)} verified)")
+    for c in h.citations:
+        print(f"  [{'ok' if c.verified else '  '}] {c.topic} @ {c.timestamp:.2f}s — {c.why}")
+        print(f"       {c.claim}")
+    if args.json:
+        Path(args.json).write_text(json.dumps({
+            "model": args.model, "hypothesis": h.text,
+            "stated_confidence": h.stated_confidence,
+            "verified_confidence": h.verified_confidence,
+            "downgraded": h.downgraded, "error": h.error,
+            "citations": [{**asdict(c), "verified": c.verified, "why": c.why} for c in h.citations],
+        }, indent=2) + "\n")
+    return 0
 
 
 def _load(args) -> tuple[Config, object]:
@@ -87,12 +132,19 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("inspect", help="print what a recording actually contains")
     p.add_argument("bag")
     p.add_argument("--max-edges", type=int, default=15)
+
     p.set_defaults(func=cmd_inspect)
 
     p = sub.add_parser("detect", help="run detectors at the thresholds currently in config")
     p.add_argument("bag")
     p.add_argument("--json", help="also write detections to this path")
     p.set_defaults(func=cmd_detect)
+
+    p = sub.add_parser("explain", help="ask a local model for a cited hypothesis, then verify every citation")
+    p.add_argument("bag")
+    p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument("--json", help="write the verified result here")
+    p.set_defaults(func=cmd_explain)
 
     p = sub.add_parser("sweep", help="sweep every threshold and write calibration plots")
     p.add_argument("bag")
