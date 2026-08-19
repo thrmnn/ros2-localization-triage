@@ -42,10 +42,26 @@ detectors:
     edges: ["map->odom", "odom->base_footprint"]
     min_dt_s: 0.005
     min_duration_s: 0.0      # a jump is a single-sample event by definition
-    merge_gap_s: 0.5
+    # A repeating fault publishes one discontinuity per cycle; without a merge
+    # window wider than that cycle, one incident is reported as dozens of
+    # detections and the case log counts the same event many times.
+    merge_gap_s: 3.0
     thresholds:
+      # Fallback for any edge without an override below.
       linear_speed_mps: 2.0
       angular_speed_radps: 3.0
+    # The two edges are physically different quantities, so they get different
+    # numbers. Calibrated 2026-08-19: a Waffle tops out at 0.26 m/s and
+    # 1.82 rad/s, so anything above that on odom->base_footprint is not motion.
+    # map->odom is the localisation correction and should sit near zero -- any
+    # appreciable movement there IS the relocalisation event.
+    per_signal:
+      "map->odom":
+        linear_speed_mps: 0.30
+        angular_speed_radps: 0.50
+      "odom->base_footprint":
+        linear_speed_mps: 0.35
+        angular_speed_radps: 2.00
     sweeps:
       linear_speed_mps: {min: 0.05, max: 200.0, steps: 60, log: true}
       angular_speed_radps: {min: 0.05, max: 200.0, steps: 60, log: true}

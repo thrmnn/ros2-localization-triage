@@ -49,7 +49,7 @@ def cmd_detect(args) -> int:
     found = []
     for name, cfg in config.detectors.items():
         for series in scores[name]:
-            found += detections_from(series, float(cfg.thresholds[series.param]), cfg.merge_gap_s, cfg.min_duration_s)
+            found += detections_from(series, cfg.threshold_for(series.param, series.key), cfg.merge_gap_s, cfg.min_duration_s)
     found.sort(key=lambda d: d.start_s)
     for d in found:
         print(f"{d.start_s:9.3f}s..{d.end_s:9.3f}s  {d.detector:<18} {d.param:<22} {d.key:<26} peak={d.peak:.4g}")

@@ -20,13 +20,12 @@ TOPIC = "/incident_marker"
 # the detector is scored against would make the scoring circular.
 #
 #   scan_dropout  AMCL reconverges within a few updates once scans return.
-#   wheel_slip    pose_divergence is rate-based (window_s 2.0), so the error
-#                 stops registering the moment the dragging stops, even though
-#                 the odometry offset it left behind is permanent.
+#   odom_jump     the discontinuity is instantaneous; nothing persists once
+#                 the displacements stop.
 #   kidnap        the particle filter needs roughly a minute to recover.
 #
 # These are day-3 calibration inputs and worth a second look against the sweep.
-RECOVERY_S = {"scan_dropout": 30.0, "wheel_slip": 0.0, "kidnap": 60.0}
+RECOVERY_S = {"scan_dropout": 30.0, "odom_jump": 0.0, "kidnap": 60.0}
 
 
 def intervals(bag: Path) -> list[dict]:

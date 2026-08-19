@@ -51,6 +51,15 @@ class DetectorConfig:
     sweeps: dict[str, SweepSpec] = field(default_factory=dict)
     min_duration_s: float = 0.0
     merge_gap_s: float = 0.0
+    # Per-signal overrides, keyed by the same signal name a ScoreSeries carries.
+    # Two transforms can share a parameter and still mean different things:
+    # map->odom is a correction that should sit near zero, while
+    # odom->base_footprint is real motion bounded by the platform's top speed.
+    # One number cannot serve both.
+    per_signal: dict[str, dict[str, float]] = field(default_factory=dict)
+
+    def threshold_for(self, param: str, key: str) -> float:
+        return float(self.per_signal.get(key, {}).get(param, self.thresholds[param]))
 
 
 @dataclass(frozen=True)

@@ -18,7 +18,7 @@ and `ros2 bag info` logs for the same run.
 | Incident | Technique | Signals it should disturb |
 |---|---|---|
 | `scan_dropout` | relay stops forwarding `/scan` for 25 s | `scan_gap`, `covariance_spike` |
-| `wheel_slip` | body dragged backwards along its heading while the wheels keep turning | `pose_divergence` |
+| `odom_jump` | body displaced backwards in three declared sizes: 0.10 m, 0.04 m, 0.015 m per step | `tf_jump` on `odom->base_footprint` |
 | `kidnap` | instantaneous 0.9 m displacement | `tf_jump`, `covariance_spike`, `pose_divergence` |
 
 All three go through services and topics that already exist — `/gazebo/set_entity_state`
@@ -26,6 +26,11 @@ and a `/scan` relay. There is no custom fault code inside the robot or the sim.
 
 Ground truth rides in the bag on `/incident_marker` as JSON, stamped by the same
 clock as the signals it describes.
+
+The three `odom_jump` sizes are graded on purpose and their expected outcome is
+declared *before* the run — `detectable`, `marginal`, `below-floor`. A case log
+needs a row the tool got right and a row it could not resolve, and picking those
+out of the output afterwards is how a demo starts reading as dishonest.
 
 ## Two things worth knowing
 

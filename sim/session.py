@@ -23,17 +23,43 @@ DRIVE_LINEAR = 0.12
 DRIVE_ANGULAR = 0.35   # ~0.35 m radius circle: continuous motion, clear of the world's pillars
 
 # (t_seconds, action, payload). Everything between entries is clean driving.
+#
+# Three displacements of decreasing size, on purpose.
+#
+# Sized against the detector that actually sees them. /tf publishes every ~33 ms,
+# so a step of X metres implies X*30 m/s, and the odom->base_footprint threshold
+# is 0.35 m/s -- meaning anything above ~12 mm is caught. An earlier pass graded
+# these at 100/40/15 mm against a different detector's floor and all three fired,
+# which is how a "low-confidence case" quietly stops being one. The case log has to contain a
+# row the tool got right, a row it got partly wrong, and a row it marked
+# low-confidence -- and manufacturing those by cherry-picking after the fact is
+# exactly what makes a demo read as dishonest. Grading the injection produces all
+# three from one session, declared in advance.
 SCHEDULE = [
     (60.0,  "begin", {"id": "inc-01", "kind": "scan_dropout",
                       "note": "laser starved for 25 s; AMCL runs open-loop on odometry"}),
     (85.0,  "end",   {"id": "inc-01"}),
-    (145.0, "begin", {"id": "inc-02", "kind": "wheel_slip",
-                      "note": "body displaced against travel while wheels keep turning"}),
+
+    (145.0, "begin", {"id": "inc-02", "kind": "odom_jump", "magnitude_m": 0.100,
+                      "expect": "detectable",
+                      "note": "body displaced back 0.10 m every 0.5 s; odometry follows the displacement, so dead reckoning steps discontinuously"}),
     (175.0, "end",   {"id": "inc-02"}),
-    (235.0, "begin", {"id": "inc-03", "kind": "kidnap",
+
+    (205.0, "begin", {"id": "inc-03", "kind": "odom_jump", "magnitude_m": 0.012,
+                      "expect": "marginal",
+                      "note": "12 mm step: right at the detector floor, so either outcome is honest"}),
+    (235.0, "end",   {"id": "inc-03"}),
+
+    (265.0, "begin", {"id": "inc-04", "kind": "odom_jump", "magnitude_m": 0.005,
+                      "expect": "below-floor",
+                      "note": "5 mm step: implies 0.15 m/s, well under the 0.35 m/s threshold — declared in advance as expected to go unreported"}),
+    (295.0, "end",   {"id": "inc-04"}),
+
+    (355.0, "begin", {"id": "inc-05", "kind": "kidnap",
                       "note": "instantaneous 0.9 m displacement; particle filter must recover"}),
-    (238.0, "end",   {"id": "inc-03"}),
-    (330.0, "stop",  {}),
+    (358.0, "end",   {"id": "inc-05"}),
+
+    (450.0, "stop",  {}),
 ]
 
 
@@ -116,8 +142,8 @@ class Session(Node):
             self.gate.publish(Bool(data=False))
         elif kind == "kidnap":
             self.teleport_inward(0.9)
-        elif kind == "wheel_slip":
-            self.active["wheel_slip"] = spec
+        elif kind == "odom_jump":
+            self.active["odom_jump"] = spec
         self.tag("begin", spec)
 
     def end(self, spec: dict) -> None:
@@ -134,8 +160,14 @@ class Session(Node):
 
         # Slip is continuous while live: drag the body backwards along its own
         # heading so wheel odometry over-reports distance travelled.
-        if "wheel_slip" in self.active and round(self.t * 10) % 5 == 0:
-            self.displace(-0.02)   # dragged backwards while the wheels claim forward progress
+        slip = self.active.get("odom_jump")
+        if slip and round(self.t * 10) % 5 == 0:
+            # Displace the body backwards. Gazebo's differential-drive odometry
+            # follows the displacement rather than ignoring it, so what this
+            # actually injects is a discontinuity in dead reckoning -- an odometry
+            # jump, not wheel slip. Named for what the data shows, not for what
+            # the injection was originally intended to imitate.
+            self.displace(-slip["magnitude_m"])
 
         while self.next < len(SCHEDULE) and self.t >= SCHEDULE[self.next][0]:
             _, action, payload = SCHEDULE[self.next]
