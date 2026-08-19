@@ -15,6 +15,7 @@ import time
 
 import rclpy
 from gazebo_msgs.srv import GetEntityState, GetModelList, SetEntityState
+from std_srvs.srv import Empty
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
 from std_msgs.msg import Bool, String
@@ -72,6 +73,8 @@ class Session(Node):
         self.get_state = self.create_client(GetEntityState, "/gazebo/get_entity_state")
         self.set_state = self.create_client(SetEntityState, "/gazebo/set_entity_state")
         self.model_list = self.create_client(GetModelList, "/get_model_list")
+        self.pause = self.create_client(Empty, "/pause_physics")
+        self.unpause = self.create_client(Empty, "/unpause_physics")
         self.entity: str | None = None
         self.active: dict[str, dict] = {}
         self.t = 0.0
@@ -79,18 +82,28 @@ class Session(Node):
         self.done = False
 
     # --- helpers -----------------------------------------------------------
-    def call(self, client, req):
+    def call(self, client, req, timeout_sec: float = 10.0):
         future = client.call_async(req)
-        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=timeout_sec)
         return future.result()
 
     def find_entity(self) -> str:
-        self.model_list.wait_for_service(timeout_sec=30.0)
-        res = self.call(self.model_list, GetModelList.Request())
-        for name in res.model_names:
-            if name not in ("ground_plane", "turtlebot3_world", "sun"):
-                return name
-        raise RuntimeError(f"no robot model among {res.model_names}")
+        """Ask Gazebo which model is the robot.
+
+        Retried: the service answers before the world has finished spawning, so a
+        single call can return nothing on a loaded host and take the whole session
+        down with it -- after the bag has already started recording."""
+        if not self.model_list.wait_for_service(timeout_sec=60.0):
+            raise RuntimeError("/get_model_list never appeared; is gzserver up?")
+        for attempt in range(12):
+            res = self.call(self.model_list, GetModelList.Request())
+            names = list(res.model_names) if res is not None else []
+            for name in names:
+                if name not in ("ground_plane", "turtlebot3_world", "sun"):
+                    return name
+            self.get_logger().warn(f"no robot model yet (attempt {attempt + 1}): {names}")
+            time.sleep(2.0)
+        raise RuntimeError("no robot model appeared in Gazebo after 24 s of retries")
 
     def tag(self, phase: str, payload: dict) -> None:
         body = {"phase": phase, "source": "synthetic", "t_rel": round(self.t, 2), **payload}
@@ -99,7 +112,20 @@ class Session(Node):
 
     def displace(self, forward: float, lateral: float = 0.0) -> None:
         """Shift the robot in its OWN frame -- a world-frame nudge would mean
-        something different at every point on a circular route."""
+        something different at every point on a circular route.
+
+        Physics is paused across the read-modify-write. Without that the robot
+        keeps moving between reading its pose and writing the modified one, and
+        the displacement that actually lands is set by the service round-trip
+        rather than by the magnitude asked for -- which silently flattens a
+        graded injection into three identical ones."""
+        self.call(self.pause, Empty.Request(), timeout_sec=2.0)
+        try:
+            self._displace_locked(forward, lateral)
+        finally:
+            self.call(self.unpause, Empty.Request(), timeout_sec=2.0)
+
+    def _displace_locked(self, forward: float, lateral: float) -> None:
         req = GetEntityState.Request()
         req.name = self.entity
         cur = self.call(self.get_state, req)

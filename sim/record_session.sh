@@ -25,16 +25,26 @@ with open("/session/params/localization.yaml", "w") as fh:
 print("params written: scan_topic=%s" % amcl["scan_topic"])
 PY
 
+# Declared before the trap: under `set -u` an EXIT trap that names a variable
+# assigned later dies on the way out and takes the error message with it.
+GATE=""; BAG=""
 ros2 launch /session/bringup.launch.py > "/session/out/${STAMP}.bringup.log" 2>&1 &
 BRINGUP=$!
-trap 'kill $BRINGUP $GATE $BAG 2>/dev/null || true' EXIT
+trap 'kill $BRINGUP ${GATE:-} ${BAG:-} 2>/dev/null || true' EXIT
 
 echo "waiting for /amcl_pose to appear..."
-for i in $(seq 1 90); do
+for i in $(seq 1 240); do   # a loaded host can push AMCL well past 90 s
   if ros2 topic list 2>/dev/null | grep -qx /amcl_pose; then echo "amcl up after ${i}s"; break; fi
   sleep 1
 done
 ros2 topic list | grep -qx /amcl_pose || { echo "FAIL: amcl never came up"; exit 1; }
+
+echo "waiting for the robot to exist in Gazebo..."
+for i in $(seq 1 120); do
+  ros2 topic list 2>/dev/null | grep -qx /odom && { echo "robot up after ${i}s"; break; }
+  sleep 1
+done
+ros2 topic list | grep -qx /odom || { echo "FAIL: robot never spawned"; exit 1; }
 
 python3 /session/scan_gate.py > "/session/out/${STAMP}.gate.log" 2>&1 &
 GATE=$!

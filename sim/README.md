@@ -18,7 +18,7 @@ and `ros2 bag info` logs for the same run.
 | Incident | Technique | Signals it should disturb |
 |---|---|---|
 | `scan_dropout` | relay stops forwarding `/scan` for 25 s | `scan_gap`, `covariance_spike` |
-| `odom_jump` | body displaced backwards in three declared sizes: 0.10 m, 0.04 m, 0.015 m per step | `tf_jump` on `odom->base_footprint` |
+| `odom_jump` | body displaced backwards in three declared sizes: 100 mm, 12 mm, 5 mm per step | `tf_jump` on `odom->base_footprint` |
 | `kidnap` | instantaneous 0.9 m displacement | `tf_jump`, `covariance_spike`, `pose_divergence` |
 
 All three go through services and topics that already exist — `/gazebo/set_entity_state`
@@ -31,6 +31,11 @@ The three `odom_jump` sizes are graded on purpose and their expected outcome is
 declared *before* the run — `detectable`, `marginal`, `below-floor`. A case log
 needs a row the tool got right and a row it could not resolve, and picking those
 out of the output afterwards is how a demo starts reading as dishonest.
+
+The sizes are derived, not guessed. `/tf` publishes about every 33 ms, so a step
+of X metres implies X*30 m/s, and the `odom->base_footprint` threshold is
+0.35 m/s — so the floor sits near 12 mm. Measured outcome: 100 mm fires at
+2.83 m/s, 12 mm at 0.54, and 5 mm produces nothing at all.
 
 ## Two things worth knowing
 
