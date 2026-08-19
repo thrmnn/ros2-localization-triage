@@ -1,0 +1,9 @@
+# Ground-truth incident windows, written down at injection time. Optional: pass
+# with `--labels` and the sweep plots gain a false-positive curve and a
+# "labelled windows hit" curve, which is what turns threshold picking from
+# eyeballing a knee into reading off the widest gap between the two.
+#
+# Times are seconds since the start of the recording.
+incidents:
+  - {start_s: 41.0, end_s: 47.5, label: kidnap}
+  - {start_s: 72.0, end_s: 80.0, label: scan_occlusion}

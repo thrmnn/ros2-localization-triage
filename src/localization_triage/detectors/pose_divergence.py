@@ -1,0 +1,42 @@
+"""Odometry vs AMCL divergence.
+
+The two poses live in different frames, so absolute positions cannot be
+subtracted. What is comparable is how far each source says the robot moved over
+the same trailing window: dead reckoning and the corrected pose should agree on
+displacement magnitude and on heading change. They stop agreeing when the filter
+is being dragged somewhere the wheels never went — a kidnap, or a bad match.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+
+from ..config import PoseDivergenceConfig
+from ..signals import Signals
+from .base import ScoreSeries
+
+
+def _displacement(track, t_end: np.ndarray, window_s: float) -> tuple[np.ndarray, np.ndarray]:
+    t_start = t_end - window_s
+    x1, y1, a1 = (np.interp(t_end, track.t, c) for c in (track.x, track.y, track.yaw))
+    x0, y0, a0 = (np.interp(t_start, track.t, c) for c in (track.x, track.y, track.yaw))
+    return np.hypot(x1 - x0, y1 - y0), np.abs(a1 - a0)
+
+
+def score(signals: Signals, cfg: PoseDivergenceConfig) -> list[ScoreSeries]:
+    if signals.amcl is None or signals.odom is None:
+        return []
+
+    t = signals.amcl.t
+    inside = t >= (t[0] + cfg.window_s)
+    if inside.sum() < 2:
+        return []
+    t = t[inside]
+
+    d_amcl, a_amcl = _displacement(signals.amcl, t, cfg.window_s)
+    d_odom, a_odom = _displacement(signals.odom, t, cfg.window_s)
+
+    return [
+        ScoreSeries("pose_divergence", "displacement_delta_m", "amcl_vs_odom", "m", t, np.abs(d_amcl - d_odom)),
+        ScoreSeries("pose_divergence", "yaw_delta_rad", "amcl_vs_odom", "rad", t, np.abs(a_amcl - a_odom)),
+    ]

@@ -1,0 +1,28 @@
+[project]
+name = "localization-triage"
+version = "0.1.0"
+description = "Localisation-incident detectors and threshold-calibration sweeps for rosbag2 recordings"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "rosbags>=0.9.19",
+    "pyyaml>=6.0",
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+loctriage = "localization_triage.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,79 @@
+# Every threshold the detectors use. Nothing is hard-coded in the Python.
+#
+# The `thresholds:` values below are PROVISIONAL STARTING POINTS chosen from
+# physical plausibility (a Tiago-class base tops out near 1 m/s, a healthy AMCL
+# sits at a few centimetres of position sigma). They are NOT calibrated against
+# any recording. Run `loctriage sweep` on the recording you care about, read the
+# plots, and replace them. Anything left at a starting value should be treated
+# as unset.
+#
+# Each detector declares one threshold per swept parameter and one sweep range
+# per threshold. Adding a key that no detector knows about is a hard error.
+
+typestore: ros2_humble   # fallback message definitions; bags written before Iron embed none
+
+topics:
+  tf: /tf
+  tf_static: /tf_static
+  odom: /odom
+  amcl_pose: /amcl_pose
+  scan: /scan
+
+detectors:
+
+  # AMCL's own stated uncertainty. Spikes when the particle filter loses
+  # confidence: occlusion, kidnap, featureless corridor.
+  covariance_spike:
+    enabled: true
+    min_duration_s: 0.5      # a single noisy sample is not an incident
+    merge_gap_s: 1.0
+    thresholds:
+      position_sigma_m: 0.35
+      yaw_sigma_rad: 0.25
+    sweeps:
+      position_sigma_m: {min: 0.01, max: 5.0, steps: 60, log: true}
+      yaw_sigma_rad: {min: 0.005, max: 2.0, steps: 60, log: true}
+
+  # Transform discontinuity, expressed as the speed the transform implies.
+  # map->odom is the localisation correction and should sit near zero;
+  # odom->base_footprint should never exceed the base's real top speed.
+  tf_jump:
+    enabled: true
+    edges: ["map->odom", "odom->base_footprint"]
+    min_dt_s: 0.005
+    min_duration_s: 0.0      # a jump is a single-sample event by definition
+    merge_gap_s: 0.5
+    thresholds:
+      linear_speed_mps: 2.0
+      angular_speed_radps: 3.0
+    sweeps:
+      linear_speed_mps: {min: 0.05, max: 200.0, steps: 60, log: true}
+      angular_speed_radps: {min: 0.05, max: 200.0, steps: 60, log: true}
+
+  # Dead reckoning vs the corrected pose, compared over a trailing window as
+  # displacement magnitude and heading change (the two sources are in different
+  # frames, so absolute positions are not comparable).
+  pose_divergence:
+    enabled: true
+    window_s: 2.0
+    min_duration_s: 0.0
+    merge_gap_s: 1.0
+    thresholds:
+      displacement_delta_m: 0.5
+      yaw_delta_rad: 0.4
+    sweeps:
+      displacement_delta_m: {min: 0.01, max: 10.0, steps: 60, log: true}
+      yaw_delta_rad: {min: 0.01, max: 3.0, steps: 60, log: true}
+
+  # Sensor dropout, as a multiple of the topic's own median inter-arrival time.
+  scan_gap:
+    enabled: true
+    topics: ["/scan"]
+    min_absolute_gap_s: 0.05   # gaps shorter than this are clamped to ratio 1.0; keep it well under a plausible dropout
+    baseline_min_samples: 20
+    min_duration_s: 0.0
+    merge_gap_s: 0.0
+    thresholds:
+      gap_ratio: 4.0
+    sweeps:
+      gap_ratio: {min: 1.1, max: 200.0, steps: 60, log: true}

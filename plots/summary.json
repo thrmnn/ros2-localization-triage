@@ -1,0 +1,122 @@
+{
+  "bag": "mh_amcl",
+  "duration_s": 113.542,
+  "topics": {
+    "/scan": {
+      "type": "sensor_msgs/msg/LaserScan",
+      "count": 1703
+    },
+    "/tf": {
+      "type": "tf2_msgs/msg/TFMessage",
+      "count": 9222
+    },
+    "/tf_static": {
+      "type": "tf2_msgs/msg/TFMessage",
+      "count": 1
+    }
+  },
+  "labels": null,
+  "detectors": {
+    "covariance_spike": {
+      "enabled": true,
+      "params": {
+        "position_sigma_m": {
+          "threshold": 0.35,
+          "status": "no_input",
+          "reason": "input topics absent from this recording",
+          "plot": "covariance_spike__position_sigma_m.png"
+        },
+        "yaw_sigma_rad": {
+          "threshold": 0.25,
+          "status": "no_input",
+          "reason": "input topics absent from this recording",
+          "plot": "covariance_spike__yaw_sigma_rad.png"
+        }
+      }
+    },
+    "tf_jump": {
+      "enabled": true,
+      "params": {
+        "linear_speed_mps": {
+          "threshold": 2.0,
+          "status": "swept",
+          "unit": "m/s",
+          "series_keys": [
+            "odom->base_footprint"
+          ],
+          "n_samples": 5677,
+          "score_percentiles": {
+            "50": 0.2599359763503642,
+            "90": 0.2657099877941184,
+            "99": 0.27252254850171387,
+            "99.9": 0.2787964098378256,
+            "100": 0.28533049205877775
+          },
+          "detections_at_current_threshold": 0,
+          "plot": "tf_jump__linear_speed_mps.png",
+          "csv": "tf_jump__linear_speed_mps.csv"
+        },
+        "angular_speed_radps": {
+          "threshold": 3.0,
+          "status": "swept",
+          "unit": "rad/s",
+          "series_keys": [
+            "odom->base_footprint"
+          ],
+          "n_samples": 5677,
+          "score_percentiles": {
+            "50": 0.0054929734733233215,
+            "90": 0.47865195720832177,
+            "99": 0.738968746731671,
+            "99.9": 0.7604981083847386,
+            "100": 0.7822613374300083
+          },
+          "detections_at_current_threshold": 0,
+          "plot": "tf_jump__angular_speed_radps.png",
+          "csv": "tf_jump__angular_speed_radps.csv"
+        }
+      }
+    },
+    "pose_divergence": {
+      "enabled": true,
+      "params": {
+        "displacement_delta_m": {
+          "threshold": 0.5,
+          "status": "no_input",
+          "reason": "input topics absent from this recording",
+          "plot": "pose_divergence__displacement_delta_m.png"
+        },
+        "yaw_delta_rad": {
+          "threshold": 0.4,
+          "status": "no_input",
+          "reason": "input topics absent from this recording",
+          "plot": "pose_divergence__yaw_delta_rad.png"
+        }
+      }
+    },
+    "scan_gap": {
+      "enabled": true,
+      "params": {
+        "gap_ratio": {
+          "threshold": 4.0,
+          "status": "swept",
+          "unit": "x median",
+          "series_keys": [
+            "/scan"
+          ],
+          "n_samples": 1702,
+          "score_percentiles": {
+            "50": 1.0,
+            "90": 1.020973311443104,
+            "99": 1.0501399904592366,
+            "99.9": 1.0684660695078552,
+            "100": 1.1221297957782368
+          },
+          "detections_at_current_threshold": 0,
+          "plot": "scan_gap__gap_ratio.png",
+          "csv": "scan_gap__gap_ratio.csv"
+        }
+      }
+    }
+  }
+}

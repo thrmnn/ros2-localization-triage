@@ -1,0 +1,191 @@
+{
+  "bag": "bag",
+  "duration_s": 59.95,
+  "topics": {
+    "/amcl_pose": {
+      "type": "geometry_msgs/msg/PoseWithCovarianceStamped",
+      "count": 600
+    },
+    "/odom": {
+      "type": "nav_msgs/msg/Odometry",
+      "count": 1200
+    },
+    "/scan": {
+      "type": "sensor_msgs/msg/LaserScan",
+      "count": 855
+    },
+    "/tf": {
+      "type": "tf2_msgs/msg/TFMessage",
+      "count": 1200
+    }
+  },
+  "labels": [
+    {
+      "start_s": 25.0,
+      "end_s": 28.0,
+      "label": "kidnap"
+    },
+    {
+      "start_s": 42.0,
+      "end_s": 45.0,
+      "label": "scan_occlusion"
+    }
+  ],
+  "detectors": {
+    "covariance_spike": {
+      "enabled": true,
+      "params": {
+        "position_sigma_m": {
+          "threshold": 0.35,
+          "status": "swept",
+          "unit": "m",
+          "series_keys": [
+            "position"
+          ],
+          "n_samples": 600,
+          "score_percentiles": {
+            "50": 0.05,
+            "90": 0.05,
+            "99": 0.8,
+            "99.9": 0.8,
+            "100": 0.8
+          },
+          "detections_at_current_threshold": 1,
+          "plot": "covariance_spike__position_sigma_m.png",
+          "csv": "covariance_spike__position_sigma_m.csv"
+        },
+        "yaw_sigma_rad": {
+          "threshold": 0.25,
+          "status": "swept",
+          "unit": "rad",
+          "series_keys": [
+            "yaw"
+          ],
+          "n_samples": 600,
+          "score_percentiles": {
+            "50": 0.025,
+            "90": 0.025,
+            "99": 0.4,
+            "99.9": 0.4,
+            "100": 0.4
+          },
+          "detections_at_current_threshold": 1,
+          "plot": "covariance_spike__yaw_sigma_rad.png",
+          "csv": "covariance_spike__yaw_sigma_rad.csv"
+        }
+      }
+    },
+    "tf_jump": {
+      "enabled": true,
+      "params": {
+        "linear_speed_mps": {
+          "threshold": 2.0,
+          "status": "swept",
+          "unit": "m/s",
+          "series_keys": [
+            "map->odom",
+            "odom->base_footprint"
+          ],
+          "n_samples": 2398,
+          "score_percentiles": {
+            "50": 0.25795773904901176,
+            "90": 0.3116436748531583,
+            "99": 0.32888852641890937,
+            "99.9": 0.3399350209866886,
+            "100": 39.9986992647224
+          },
+          "detections_at_current_threshold": 1,
+          "plot": "tf_jump__linear_speed_mps.png",
+          "csv": "tf_jump__linear_speed_mps.csv"
+        },
+        "angular_speed_radps": {
+          "threshold": 3.0,
+          "status": "swept",
+          "unit": "rad/s",
+          "series_keys": [
+            "map->odom",
+            "odom->base_footprint"
+          ],
+          "n_samples": 2398,
+          "score_percentiles": {
+            "50": 0.0,
+            "90": 0.0,
+            "99": 0.0,
+            "99.9": 0.0,
+            "100": 0.0
+          },
+          "detections_at_current_threshold": 0,
+          "plot": "tf_jump__angular_speed_radps.png",
+          "csv": "tf_jump__angular_speed_radps.csv"
+        }
+      }
+    },
+    "pose_divergence": {
+      "enabled": true,
+      "params": {
+        "displacement_delta_m": {
+          "threshold": 0.5,
+          "status": "swept",
+          "unit": "m",
+          "series_keys": [
+            "amcl_vs_odom"
+          ],
+          "n_samples": 580,
+          "score_percentiles": {
+            "50": 0.0018019641235870187,
+            "90": 0.0033455640577514604,
+            "99": 1.9975314744813417,
+            "99.9": 1.9982264892246393,
+            "100": 1.998245612556219
+          },
+          "detections_at_current_threshold": 1,
+          "plot": "pose_divergence__displacement_delta_m.png",
+          "csv": "pose_divergence__displacement_delta_m.csv"
+        },
+        "yaw_delta_rad": {
+          "threshold": 0.4,
+          "status": "swept",
+          "unit": "rad",
+          "series_keys": [
+            "amcl_vs_odom"
+          ],
+          "n_samples": 580,
+          "score_percentiles": {
+            "50": 0.0,
+            "90": 0.0,
+            "99": 0.0,
+            "99.9": 0.0,
+            "100": 0.0
+          },
+          "detections_at_current_threshold": 0,
+          "plot": "pose_divergence__yaw_delta_rad.png",
+          "csv": "pose_divergence__yaw_delta_rad.csv"
+        }
+      }
+    },
+    "scan_gap": {
+      "enabled": true,
+      "params": {
+        "gap_ratio": {
+          "threshold": 4.0,
+          "status": "swept",
+          "unit": "x median",
+          "series_keys": [
+            "/scan"
+          ],
+          "n_samples": 854,
+          "score_percentiles": {
+            "50": 1.0,
+            "90": 1.0,
+            "99": 1.0000000000000533,
+            "99.9": 7.614999966927236,
+            "100": 45.99999977500014
+          },
+          "detections_at_current_threshold": 1,
+          "plot": "scan_gap__gap_ratio.png",
+          "csv": "scan_gap__gap_ratio.csv"
+        }
+      }
+    }
+  }
+}

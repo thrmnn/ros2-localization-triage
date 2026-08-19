@@ -1,0 +1,4 @@
+# Ground truth for the synthetic fixture, known by construction.
+incidents:
+  - {start_s: 25.0, end_s: 28.0, label: kidnap}
+  - {start_s: 42.0, end_s: 45.0, label: scan_occlusion}
