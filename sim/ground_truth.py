@@ -15,6 +15,19 @@ from rosbags.typesys import Stores, get_typestore
 
 TOPIC = "/incident_marker"
 
+# How long a fault's effect may outlast its trigger. Declared per fault kind,
+# not read off the recorded signal -- deriving the truth window from the trace
+# the detector is scored against would make the scoring circular.
+#
+#   scan_dropout  AMCL reconverges within a few updates once scans return.
+#   wheel_slip    pose_divergence is rate-based (window_s 2.0), so the error
+#                 stops registering the moment the dragging stops, even though
+#                 the odometry offset it left behind is permanent.
+#   kidnap        the particle filter needs roughly a minute to recover.
+#
+# These are day-3 calibration inputs and worth a second look against the sweep.
+RECOVERY_S = {"scan_dropout": 30.0, "wheel_slip": 0.0, "kidnap": 60.0}
+
 
 def intervals(bag: Path) -> list[dict]:
     store = get_typestore(Stores.ROS2_HUMBLE)
@@ -40,10 +53,23 @@ def intervals(bag: Path) -> list[dict]:
     return sorted(out, key=lambda r: r["t_begin"])
 
 
+def as_labels(rows: list[dict]) -> dict:
+    """Effect windows in the shape `loctriage sweep --labels` expects."""
+    return {"incidents": [{
+        "start_s": r["t_begin"],
+        "end_s": round(r["t_end"] + RECOVERY_S.get(r["kind"], 0.0), 3),
+        "label": r["kind"],
+    } for r in rows]}
+
+
 def main() -> None:
     bag = Path(sys.argv[1])
     rows = intervals(bag)
-    print(json.dumps(rows, indent=2, sort_keys=True))
+    if "--yaml" in sys.argv:
+        import yaml
+        print(yaml.safe_dump(as_labels(rows), default_flow_style=False, sort_keys=False))
+    else:
+        print(json.dumps(rows, indent=2, sort_keys=True))
     print(f"\n{len(rows)} tagged incidents", file=sys.stderr)
 
 

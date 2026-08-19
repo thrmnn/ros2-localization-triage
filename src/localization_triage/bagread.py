@@ -31,8 +31,25 @@ def _yaw(q) -> float:
     return float(np.arctan2(2.0 * (q.w * q.z + q.x * q.y), 1.0 - 2.0 * (q.y * q.y + q.z * q.z)))
 
 
-def _stamp_s(header, start_ns: int) -> float:
-    return (header.stamp.sec * 1_000_000_000 + header.stamp.nanosec - start_ns) / 1e9
+def _stamp_ns(header) -> int:
+    return header.stamp.sec * 1_000_000_000 + header.stamp.nanosec
+
+
+# A bag recorded under use_sim_time stamps its headers from a clock that starts
+# near zero, while the bag's own message timestamps stay epoch-based. Subtracting
+# one from the other puts every pose and transform about -1.79e9 s -- which is
+# not a small error, it is every incident in the case log carrying a nonsense
+# timestamp, and day-6 citations cite that timestamp. Detect the epoch mismatch
+# and map header stamps onto the bag clock. A real-robot recording shares the
+# epoch, skews by milliseconds of transport latency, and is left untouched.
+_EPOCH_MISMATCH_NS = 3_600_000_000_000  # 1 hour
+
+
+def _clock_offset_ns(skews: list[int]) -> int:
+    if not skews:
+        return 0
+    median = int(np.median(skews))
+    return median if abs(median) > _EPOCH_MISMATCH_NS else 0
 
 
 def _track(rows: list[tuple[float, float, float, float]]) -> PoseTrack:
@@ -50,6 +67,8 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
     odom_rows: list[tuple[float, float, float, float]] = []
     amcl_rows: list[tuple[float, float, float, float, float, float]] = []
 
+    skews: list[int] = []
+
     with AnyReader([path], default_typestore=store) as reader:
         start_ns = reader.start_time
         duration_s = (reader.end_time - reader.start_time) / 1e9
@@ -62,9 +81,10 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
                 msg = reader.deserialize(raw, conn.msgtype)
                 for tr in msg.transforms:
                     key = (tr.header.frame_id.lstrip("/"), tr.child_frame_id.lstrip("/"))
+                    skews.append(ts - _stamp_ns(tr.header))
                     tf_rows[key].append(
                         (
-                            _stamp_s(tr.header, start_ns),
+                            _stamp_ns(tr.header),
                             float(tr.transform.translation.x),
                             float(tr.transform.translation.y),
                             _yaw(tr.transform.rotation),
@@ -73,16 +93,18 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
             elif conn.topic == topics["odom"]:
                 msg = reader.deserialize(raw, conn.msgtype)
                 p = msg.pose.pose
-                odom_rows.append((_stamp_s(msg.header, start_ns), float(p.position.x), float(p.position.y), _yaw(p.orientation)))
+                skews.append(ts - _stamp_ns(msg.header))
+                odom_rows.append((_stamp_ns(msg.header), float(p.position.x), float(p.position.y), _yaw(p.orientation)))
             elif conn.topic == topics["amcl_pose"]:
                 msg = reader.deserialize(raw, conn.msgtype)
                 p = msg.pose.pose
                 c = np.asarray(msg.pose.covariance, dtype=float).reshape(6, 6)
                 a, b, d = c[0, 0], c[0, 1], c[1, 1]
                 lam = 0.5 * (a + d) + np.sqrt(max(0.0, (0.5 * (a - d)) ** 2 + b * b))
+                skews.append(ts - _stamp_ns(msg.header))
                 amcl_rows.append(
                     (
-                        _stamp_s(msg.header, start_ns),
+                        _stamp_ns(msg.header),
                         float(p.position.x),
                         float(p.position.y),
                         _yaw(p.orientation),
@@ -90,6 +112,17 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
                         float(np.sqrt(max(0.0, c[5, 5]))),
                     )
                 )
+
+    # Header stamps were collected absolute; rebase them onto the bag clock now
+    # that the whole recording has been seen.
+    shift = _clock_offset_ns(skews)
+
+    def _to_s(rows: list[tuple]) -> list[tuple]:
+        return [((r[0] + shift - start_ns) / 1e9, *r[1:]) for r in rows]
+
+    tf_rows = {k: _to_s(v) for k, v in tf_rows.items()}
+    odom_rows = _to_s(odom_rows)
+    amcl_rows = _to_s(amcl_rows)
 
     amcl = None
     if amcl_rows:
