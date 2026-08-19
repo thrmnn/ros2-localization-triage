@@ -7,18 +7,21 @@ citation column is mechanical and reproducible by anyone with the recordings.
 Every `expected` value below was declared in the recording script before the run, not
 chosen after reading the result.
 
+Outcomes graded 2026-08-19. Verdicts live in `docs/verdicts.json` so the grading is
+auditable rather than buried in prose.
+
 ## Rows from the controlled recording
 
 Faults injected deliberately, tagged live on `/incident_marker` at the moment they
 happened, so ground truth shares a clock with the signals.
 
-| # | Event | Declared | Detected by | Peak | Window | Outcome | Notes |
+| # | Event | Declared | Detected by | Peak (owning detector) | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|---|
-| S1 | scan_dropout | — | covariance_spike, pose_divergence, scan_gap | 127.25 | 63–88s | _TODO_ | laser starved for 25 s; AMCL runs open-loop on odometry |
-| S2 | odom_jump | detectable | tf_jump | 2.83 | 149–179s | _TODO_ | body displaced back 0.10 m every 0.5 s; odometry follows the displacement, so de |
-| S3 | odom_jump | marginal | covariance_spike, tf_jump | 1.14 | 209–240s | _TODO_ | 12 mm step: right at the detector floor, so either outcome is honest |
-| S4 | odom_jump | below-floor | **nothing** | 0.00 | 270–300s | _TODO_ | 5 mm step: implies 0.15 m/s, well under the 0.35 m/s threshold — declared in adv |
-| S5 | kidnap | — | covariance_spike, tf_jump | 26.40 | 360–363s | _TODO_ | instantaneous 0.9 m displacement; particle filter must recover |
+| S1 | scan_dropout | — | covariance_spike, pose_divergence, scan_gap | 127.25 x | 63–88s | **correct** | Laser starved for 25 s; scan_gap flagged the gap at ratio 127 and covariance rose as AMCL ran open-loop. Matches what was declared before the run. |
+| S2 | odom_jump | detectable | tf_jump | 2.83 m/s | 149–179s | **correct** | 100 mm steps, declared detectable. tf_jump fired on odom->base_footprint at 2.83 m/s, against a predicted 30x step magnitude. |
+| S3 | odom_jump | marginal | covariance_spike, tf_jump | 0.54 m/s | 209–240s | **correct** | 12 mm steps, declared marginal because 12 mm is the computed floor. Fired at 0.54 m/s, just above threshold — the declared ambiguity resolved toward detection. |
+| S4 | odom_jump | below-floor | **nothing** | 0.00 m/s | 270–300s | **correct** | 5 mm steps, declared below-floor before the run and reported by nothing. Rubric rule 1: a declared negative that goes unreported is a correct row, not a miss. |
+| S5 | kidnap | — | covariance_spike, tf_jump | 26.40 m/s | 360–363s | **correct** | 0.9 m instantaneous displacement; tf_jump fired at 26.4 m/s and covariance peaked at 1.15 m / 2.23 rad with a ~60 s recovery arc. |
 
 ## Rows from the public recording
 
@@ -30,8 +33,8 @@ rubric rule 3 no causal claim can be graded better than low-confidence.
 
 | # | Detector | Signal | Peak | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|
-| R1 | covariance_spike | yaw | 0.287 | 7–58s | _TODO_ | 5 detection(s) |
-| R2 | tf_jump | map->odom | 3.317 | 3–109s | _TODO_ | 6 detection(s) |
+| R1 | covariance_spike | yaw | 0.287 | 7–58s | **wrong** | 5 detection(s). Five detections where the signal never left its own baseline. The Tiago's yaw sigma sits at 0.24-0.31 rad for the entire 113 s, flat, with no spike; the threshold is 0.25 because it was calibrated on a TurtleBot3 whose quiet floor is 0.185. The detector reported incidents that did not occur. position_sigma_m never fired at all for the mirror-image reason: its 0.35 threshold sits just above this platform's 0.31 peak. One threshold too low, one too high, both imported from the same calibration. |
+| R2 | tf_jump | map->odom | 3.317 | 3–109s | **low-confidence** | 6 detection(s). The map->odom corrections are real and the peaks (1.22-3.32 m/s) are measured, but map->odom IS the localisation correction, so movement there is AMCL revising itself. The named ambiguity, per rubric rule 4: this recording has no ground truth, and there is no independent signal to cross-check against — a genuine relocalisation and ordinary filter behaviour on a featureless stretch would look the same here. |
 
 ## What did not fire, and why that matters
 

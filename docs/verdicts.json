@@ -1,0 +1,21 @@
+{
+  "_readme": "Outcome verdicts, graded against docs/case-log-rubric.md which was committed before any of this output existed. Synthetic rows are graded against the expectation declared in the recording script before each run; rule 1 makes a declared negative that goes unreported a correct row, not a miss. The two real-recording classes were ruled by the author on 2026-08-19.",
+  "gradedOn": "2026-08-19",
+  "synthetic": {
+    "scan_dropout":  {"outcome": "correct", "why": "Laser starved for 25 s; scan_gap flagged the gap at ratio 127 and covariance rose as AMCL ran open-loop. Matches what was declared before the run."},
+    "odom_jump_100": {"outcome": "correct", "why": "100 mm steps, declared detectable. tf_jump fired on odom->base_footprint at 2.83 m/s, against a predicted 30x step magnitude."},
+    "odom_jump_12":  {"outcome": "correct", "why": "12 mm steps, declared marginal because 12 mm is the computed floor. Fired at 0.54 m/s, just above threshold — the declared ambiguity resolved toward detection."},
+    "odom_jump_5":   {"outcome": "correct", "why": "5 mm steps, declared below-floor before the run and reported by nothing. Rubric rule 1: a declared negative that goes unreported is a correct row, not a miss."},
+    "kidnap":        {"outcome": "correct", "why": "0.9 m instantaneous displacement; tf_jump fired at 26.4 m/s and covariance peaked at 1.15 m / 2.23 rad with a ~60 s recovery arc."}
+  },
+  "real": {
+    "covariance_spike": {
+      "outcome": "wrong",
+      "why": "Five detections where the signal never left its own baseline. The Tiago's yaw sigma sits at 0.24-0.31 rad for the entire 113 s, flat, with no spike; the threshold is 0.25 because it was calibrated on a TurtleBot3 whose quiet floor is 0.185. The detector reported incidents that did not occur. position_sigma_m never fired at all for the mirror-image reason: its 0.35 threshold sits just above this platform's 0.31 peak. One threshold too low, one too high, both imported from the same calibration."
+    },
+    "tf_jump": {
+      "outcome": "low-confidence",
+      "why": "The map->odom corrections are real and the peaks (1.22-3.32 m/s) are measured, but map->odom IS the localisation correction, so movement there is AMCL revising itself. The named ambiguity, per rubric rule 4: this recording has no ground truth, and there is no independent signal to cross-check against — a genuine relocalisation and ordinary filter behaviour on a featureless stretch would look the same here."
+    }
+  }
+}

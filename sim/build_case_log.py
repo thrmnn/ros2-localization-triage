@@ -35,8 +35,21 @@ def window(dets: list[dict], a: float, b: float, pad: float = 2.0) -> list[dict]
     return [d for d in dets if a - pad <= d["start_s"] <= b + pad]
 
 
+def verdicts() -> dict:
+    return json.loads((HERE.parent / "docs" / "verdicts.json").read_text())
+
+
+def syn_key(g: dict) -> str:
+    """Key off the magnitude recorded in the tag, not the prose around it — the
+    note is written for a human and will be reworded."""
+    if g["kind"] != "odom_jump" or "magnitude_m" not in g:
+        return g["kind"]
+    return f"odom_jump_{round(g['magnitude_m'] * 1000)}"
+
+
 def main() -> None:
     syn, real = Path(sys.argv[1]), Path(sys.argv[2])
+    v = verdicts()
     cfg_syn = HERE / "out" / "detectors.sim.yaml"
     cfg_real = HERE.parent / "config" / "detectors.yaml"
 
@@ -50,18 +63,27 @@ def main() -> None:
     print("Every `expected` value below was declared in the recording script before the run, not")
     print("chosen after reading the result.\n")
 
+    print(f"Outcomes graded {v['gradedOn']}. Verdicts live in `docs/verdicts.json` so the grading is")
+    print("auditable rather than buried in prose.\n")
     print("## Rows from the controlled recording\n")
     print("Faults injected deliberately, tagged live on `/incident_marker` at the moment they")
     print("happened, so ground truth shares a clock with the signals.\n")
-    print("| # | Event | Declared | Detected by | Peak | Window | Outcome | Notes |")
+    print("| # | Event | Declared | Detected by | Peak (owning detector) | Window | Outcome | Notes |")
     print("|---|---|---|---|---|---|---|---|")
     for i, g in enumerate(gt, 1):
         ins = window(sd, g["t_begin"], g["t_end"])
         names = ", ".join(sorted({d["detector"] for d in ins})) or "**nothing**"
-        peak = max((d["peak"] for d in ins), default=0.0)
+        # Peaks carry different units per detector, so a max across them is a
+        # meaningless number. Report the one the fault is meant to move.
+        owner = {"odom_jump": "tf_jump", "scan_dropout": "scan_gap", "kidnap": "tf_jump"}.get(g["kind"])
+        pool = [d for d in ins if d["detector"] == owner] if owner else ins
+        peak = max((d["peak"] for d in pool), default=0.0)
+        unit = {"tf_jump": "m/s", "scan_gap": "x", "covariance_spike": ""}.get(owner or "", "")
         exp = g.get("expect", "—")
-        print(f"| S{i} | {g['kind']} | {exp} | {names} | {peak:.2f} | "
-              f"{g['t_begin']:.0f}–{g['t_end']:.0f}s | _TODO_ | {g.get('note','')[:80]} |")
+        key = syn_key(g)
+        ver = v["synthetic"].get(key, {})
+        print(f"| S{i} | {g['kind']} | {exp} | {names} | {peak:.2f} {unit} | "
+              f"{g['t_begin']:.0f}–{g['t_end']:.0f}s | **{ver.get('outcome','—')}** | {ver.get('why','')} |")
 
     print("\n## Rows from the public recording\n")
     print("Real Tiago sensor data. **Provenance: `/scan` and `/tf` are recorded from the robot;**")
@@ -77,7 +99,9 @@ def main() -> None:
     for i, ((det, key), ds) in enumerate(sorted(merged.items()), 1):
         pk = max(d["peak"] for d in ds)
         span = f"{min(d['start_s'] for d in ds):.0f}–{max(d['end_s'] for d in ds):.0f}s"
-        print(f"| R{i} | {det} | {key} | {pk:.3f} | {span} | _TODO_ | {len(ds)} detection(s) |")
+        ver = v["real"].get(det, {})
+        print(f"| R{i} | {det} | {key} | {pk:.3f} | {span} | **{ver.get('outcome','—')}** | "
+              f"{len(ds)} detection(s). {ver.get('why','')} |")
 
     print("\n## What did not fire, and why that matters\n")
     print("| Detector | On the controlled recording | On the public recording |")
