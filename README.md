@@ -7,6 +7,16 @@ Four detectors, every threshold in `config/detectors.yaml`, nothing hard-coded i
 the Python. Point the harness at a rosbag2 directory and it writes one plot per
 threshold showing what that threshold would flag across its whole plausible range.
 
+> **Who graded this.** I recorded the faults, ran the tool, and graded the results —
+> there is no independent evaluator. Two claims are kept apart because they are not
+> equally strong: *citations verified* is mechanical and reproducible by anyone with
+> the recordings, while *outcome* is **author-assessed**. The scoring rubric was
+> committed before the detectors were run against real data, and thresholds were left
+> frozen rather than tuned until the numbers improved. The tool's worst result is the
+> headline finding. Full detail: [docs/how-this-was-graded.md](docs/how-this-was-graded.md)
+> · case log: [docs/case-log.md](docs/case-log.md) · rubric:
+> [docs/case-log-rubric.md](docs/case-log-rubric.md)
+
 ---
 
 ## Install
