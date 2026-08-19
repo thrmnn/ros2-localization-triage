@@ -128,3 +128,20 @@ error, because a silent fallback to a code default would put a live threshold
 outside version control), detection merging and duration filtering, two detector
 unit tests, and an end-to-end run over the synthetic fixture asserting each
 detector fires at its injected time.
+
+---
+
+## Before publishing
+
+```sh
+scripts/prepublish_check.sh
+```
+
+Exits non-zero if anything that must be true before this repo is public is not:
+no identifying strings in content, filenames, commit messages, authorship or bag
+binaries; a real author on the LICENSE; the self-grading disclosure present; and
+a case log carrying at least three rows including one the tool got wrong and one
+it could not resolve.
+
+It is a gate rather than a checklist on purpose. A checklist under deadline
+pressure is a list of things someone decides to skip.
