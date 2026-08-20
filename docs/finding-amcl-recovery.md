@@ -34,18 +34,35 @@ zero, that mechanism is off. The filter has no way to conclude it is lost.
 
 ## The consequence, measured
 
-In a controlled recording, the robot was displaced 0.9 m instantaneously while
-driving, with localisation otherwise untouched.
+One controlled recording, 458 s, with four faults injected on a fixed schedule: a
+100 mm odometry jump at 145 s, a 12 mm one at 205 s, a 5 mm one at 265 s, and a 0.9 m
+instantaneous displacement at 355 s. Heading uncertainty is AMCL's own reported 1 sigma
+on yaw, read from `/amcl_pose`.
 
-| | heading uncertainty (1 sigma) |
+| window | heading uncertainty (1 sigma) |
 |---|---|
-| before the displacement | **0.167 rad** |
-| after, median over the following 72 s | **1.723 rad** |
-| final sample, 96 s later | **2.540 rad** |
+| quiet baseline, first 60 s | median **0.153**, max 0.177 rad |
+| after the 100 mm jump, 175 to 205 s | median **0.340** rad, and it does return to baseline |
+| after the 12 mm jump, 235 to 265 s | median **1.294** rad, and it does not |
+| immediately before the 0.9 m displacement | median **2.207**, max 2.511 rad |
+| 72 s after the displacement | median **1.738**, max 3.178 rad |
+| final sample, at 455 s | **2.540** rad |
 
-A factor of ten, sustained to the end of the recording. It never came back,
-because with those parameters at zero it cannot. The only route back is a human
-publishing a fresh pose estimate.
+**Read the fourth and fifth rows before drawing a conclusion about the displacement.**
+The filter was already at 2.2 rad when the robot was displaced, so the 72 s afterwards are
+not lower because it recovered, they are lower because the state before was already worse.
+This recording cannot support a clean before-and-after claim about kidnap recovery, and a
+single-fault recording that could has not been made yet.
+
+What the recording does support is narrower and, I think, more interesting. **The filter
+recovered from the first fault and never recovered again.** The last moment it returned to
+its quiet baseline was 184 s. Over the remaining 271 seconds and three further faults it
+never came back, ending at 2.540 rad, sixteen times its quiet median. Nothing was retuned
+between those faults; the only thing that changed was that they kept happening.
+
+That is what a filter with no recovery mechanism looks like under repeated small
+disturbances: not a single dramatic failure, but a floor that ratchets upward and never
+resets. The only route back is a human publishing a fresh pose estimate.
 
 ## Why this is worth stating plainly
 

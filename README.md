@@ -39,7 +39,8 @@ confirmed catch on real data. [results/labelled/](results/labelled/)
 
 **Stock Nav2 ships AMCL with kidnap recovery switched off.** Both `recovery_alpha` terms
 default to 0.0, so a displaced robot has no mechanism to conclude it is lost. Measured on
-a displaced robot: heading uncertainty went from 0.167 rad to 2.540 and never came back.
+a robot given four small disturbances in one recording: after the second, heading
+uncertainty never returned to its quiet baseline again, ending sixteen times higher.
 One `curl` checks this without trusting me.
 [docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md)
 
