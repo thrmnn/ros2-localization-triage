@@ -52,7 +52,7 @@
     {
       "start_s": 149.035,
       "end_s": 179.241,
-      "label": "wheel_slip"
+      "label": "odom_jump"
     },
     {
       "start_s": 239.566,
