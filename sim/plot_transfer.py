@@ -55,15 +55,16 @@ def main() -> None:
     # line at the bottom, which hides the entire point: that its ordinary noise
     # straddles the line. Clipped peaks are annotated rather than silently cropped.
     YMAX = 0.45
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 6.2), sharey=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9.6, 6.6), sharey=True)
     fig.subplots_adjust(hspace=0.42, top=0.80)
 
     for w in truth(sim):
         ax1.axvspan(w["t_begin"], w["t_end"], color="#c8102e", alpha=0.10, lw=0)
     ax1.plot(st, sv, lw=1.1, color="#1a1a1a")
     ax1.axhline(THRESHOLD, color="#c8102e", lw=1.4, ls="--")
-    ax1.set_title("Calibrated here — simulated TurtleBot3, faults injected (shaded)", loc="left", fontsize=11)
-    ax1.set_ylabel("AMCL yaw σ  (rad)")
+    ax1.set_title("Where the threshold was set — simulated TurtleBot3, faults injected (shaded)",
+                  loc="left", fontsize=11)
+    ax1.set_ylabel("How unsure the robot is about\nwhich way it is facing — yaw σ (rad)")
     ax1.set_ylim(0, YMAX)
     ax1.text(st[-1], THRESHOLD, f"  threshold {THRESHOLD}", va="center", fontsize=9, color="#c8102e")
     over = sv > YMAX
@@ -76,9 +77,9 @@ def main() -> None:
     ax2.plot(rt, rv, lw=1.1, color="#1a1a1a")
     ax2.axhline(THRESHOLD, color="#c8102e", lw=1.4, ls="--")
     ax2.fill_between(rt, THRESHOLD, rv, where=(rv > THRESHOLD), color="#c8102e", alpha=0.22, lw=0)
-    ax2.set_title("Run there — real Tiago sensor data, replayed through the same localiser, no faults",
+    ax2.set_title("Where it was used — real Tiago data, same localiser, no faults",
                   loc="left", fontsize=11)
-    ax2.set_ylabel("AMCL yaw σ  (rad)")
+    ax2.set_ylabel("How unsure the robot is about\nwhich way it is facing — yaw σ (rad)")
     ax2.set_xlabel("seconds into the recording")
     ax2.set_ylim(0, YMAX)
     ax2.text(rt[-1], THRESHOLD, f"  same threshold", va="center", fontsize=9, color="#c8102e")
@@ -90,8 +91,9 @@ def main() -> None:
 
     fig.suptitle("The same threshold, on two robots", x=0.125, y=0.985, ha="left", fontsize=13, weight="bold")
     fig.text(0.125, 0.895,
-             "Same AMCL, same parameters — only the robot, its sensors, the map and the motion differ.\n"
-             "Both panels clipped to 0.45 rad, where the threshold sits; simulated faults run far off the top.",
+             "Higher means the robot is less certain. Same localiser (AMCL) and identical settings in both "
+             "panels —\nonly the robot, its sensors, the map and the motion differ. Clipped to 0.45; simulated "
+             "faults run far off the top.",
              ha="left", fontsize=9.5, color="#555")
     for ax in (ax1, ax2):
         ax.spines[["top", "right"]].set_visible(False)
