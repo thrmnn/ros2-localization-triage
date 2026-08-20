@@ -1,0 +1,128 @@
+[
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 7.901548936,
+    "end_s": 47.701336219,
+    "peak": 20.647515687735165,
+    "n_samples": 43
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 11.302190377,
+    "end_s": 25.501419856,
+    "peak": 0.7537717037341888,
+    "n_samples": 34
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 29.834726884,
+    "end_s": 29.834726884,
+    "peak": 0.3709268591128371,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 33.501426294,
+    "end_s": 42.701422288,
+    "peak": 1.6741798162437296,
+    "n_samples": 21
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 38.834899976,
+    "end_s": 46.301518276,
+    "peak": 1.2742955165011622,
+    "n_samples": 6
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 59.767690732,
+    "end_s": 103.901242568,
+    "peak": 13.620778554208368,
+    "n_samples": 50
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 60.300903394,
+    "end_s": 60.300903394,
+    "peak": 0.8816421085634462,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 60.967840268,
+    "end_s": 70.501030757,
+    "peak": 0.6438103727651237,
+    "n_samples": 25
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 75.900997474,
+    "end_s": 83.900977924,
+    "peak": 0.46190911940359086,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 86.901632859,
+    "end_s": 98.300894573,
+    "peak": 0.5422789727222732,
+    "n_samples": 23
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 103.901242568,
+    "end_s": 103.901242568,
+    "peak": 0.5928137192241667,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 116.100792243,
+    "end_s": 142.634426906,
+    "peak": 9.533800189980578,
+    "n_samples": 37
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 116.100792243,
+    "end_s": 119.501072957,
+    "peak": 1.013161787473731,
+    "n_samples": 5
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 118.572738006,
+    "end_s": 135.701001241,
+    "peak": 0.5831777077863394,
+    "n_samples": 43
+  }
+]
