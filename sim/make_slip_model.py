@@ -34,6 +34,20 @@ def build(dst: Path, compliance: float) -> None:
     if model is None:
         raise SystemExit("make_slip_model: no <model> in the stock SDF")
 
+    # Without this the whole rig measures nothing. The stock model leaves
+    # <odometry_source> unset on the diff drive plugin, and the default reads odometry
+    # from the simulator's true pose. Wheel slip then cannot reach /odom by construction:
+    # the wheels spin, the body lags, and odometry reports the body anyway. The first
+    # sweep produced a perfectly flat curve for exactly this reason, and a flat curve
+    # reads as "slip does not matter" rather than as "the instrument was disconnected".
+    # ENCODER integrates the wheel joints instead, which is what a real robot does.
+    drive = model.find(".//plugin[@name='turtlebot3_diff_drive']")
+    if drive is None:
+        raise SystemExit("make_slip_model: diff drive plugin not found; cannot set odometry source")
+    for existing in drive.findall("odometry_source"):
+        drive.remove(existing)
+    ET.SubElement(drive, "odometry_source").text = "1"  # 1 = ENCODER, 0 = WORLD
+
     plugin = ET.SubElement(model, "plugin", {
         "name": "wheel_slip", "filename": "libgazebo_ros_wheel_slip.so"})
     ros = ET.SubElement(plugin, "ros")
