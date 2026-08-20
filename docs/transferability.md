@@ -10,6 +10,8 @@ for any platform below.
 | Cartographer backpack b0, real | 344 s | 1 | **10** | **0 of 1 labelled** | 1 true positive |
 | Cartographer backpack b2, real | 787 s | 2 | **9** | **0 of 1 labelled** | 1 real event seen on 2 lasers |
 | Cartographer backpack, 2 further annotated bags | 3223 s | 32 | **36** | **0 of 16 labelled** | every annotated gap found, see below |
+| Tiago, ERL benchmark, 3 control runs | 578 s | 48 | **299** | not computable | all tf_jump; scan_gap silent |
+| Tiago, ERL benchmark, 2 runs engineered to fail | 435 s | 51 | **422** | not computable | see results/erl/ |
 | Tiago, real sensor data replayed | 113 s | 11 | **350** | **not computable** | 5 confirmed false, 6 unadjudicated |
 | MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
 

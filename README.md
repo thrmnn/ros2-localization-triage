@@ -37,6 +37,14 @@ them, on 53.7 minutes of real data from a platform they were never calibrated on
 one detector on the easiest of the four failure modes; the other three still have no
 confirmed catch on real data. [results/labelled/](results/labelled/)
 
+**A pre-registered prediction that the detectors would find nothing, which held.** On a
+benchmark whose authors engineered two runs to fail by locking the robot's route, the
+prediction that these detectors would not separate the failures from the matched controls
+was written and committed before the run. It held: the gap detector fired zero times on
+all 1013 seconds, and the transform detector's 1.40x elevation is well inside the bound
+the prediction named. A tool that finds something in every dataset it is pointed at is a
+mirror, not a detector. [results/erl/](results/erl/)
+
 **Stock Nav2 ships AMCL with kidnap recovery switched off.** Both `recovery_alpha` terms
 default to 0.0, so a displaced robot has no mechanism to conclude it is lost. Measured on
 a robot given four small disturbances in one recording: after the second, heading
