@@ -13,6 +13,20 @@ Verified in `nav2_bringup/params/nav2_params.yaml` on Humble, and in the Tiago
 parameter file published alongside the public recording used elsewhere in this
 work. Two independent sources, same value.
 
+**Check it yourself in one minute, without taking my word for anything:**
+
+```sh
+curl -s https://raw.githubusercontent.com/ros-navigation/navigation2/humble/nav2_bringup/params/nav2_params.yaml \
+  | grep recovery_alpha
+```
+
+Or on a robot you already have:
+
+```sh
+ros2 param get /amcl recovery_alpha_slow
+ros2 param get /amcl recovery_alpha_fast
+```
+
 Those two terms enable augmented Monte Carlo localisation, which is the mechanism
 by which a particle filter notices its estimate has become inconsistent with what
 the sensors report and injects fresh random particles to recover. With both at

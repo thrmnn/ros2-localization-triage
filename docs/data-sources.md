@@ -13,7 +13,9 @@ message counts before downloading gigabytes.
 
 ## Already used here
 
-**Cartographer Public Data** (Google, Apache-2.0, anonymous download). Five
+**Cartographer Public Data** ([index](https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/docs/source/data.rst),
+[licence](https://github.com/cartographer-project/cartographer_ros/blob/master/LICENSE);
+Google, Apache-2.0, anonymous download). Five
 platforms: 2D and 3D backpacks, a PR2, a MiR100 AGV, a Magazino warehouse robot.
 13.1 hours in the 2D set alone.
 
@@ -22,7 +24,7 @@ bags with laser dropouts, written by its authors years before this tool existed.
 That is independently labelled ground truth for a gap detector, and it produced
 the only non-circular true positive in this work. See `transferability.md`.
 
-**fmrico/mh_amcl test bag** (Apache-2.0). A real Tiago with `/scan` and `/tf`,
+**fmrico/mh_amcl test bag** ([repo](https://github.com/fmrico/mh_amcl), Apache-2.0). A real Tiago with `/scan` and `/tf`,
 published alongside the map it was recorded in, specifically so it can be replayed
 through a localiser. Used for the localisation figures.
 

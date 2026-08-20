@@ -16,7 +16,9 @@ for any platform below.
 ## Recall, measured for the first time
 
 Two annotated recordings that had never been run carry sixteen laser gaps between them,
-counted in the dataset's own Known Issues column years before this tool existed. Run with
+counted in the dataset's own
+[Known Issues column](https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/docs/source/data.rst)
+years before this tool existed. Run with
 the thresholds frozen, the detector found **16 of 16, and nothing else.** Peak ratios ran
 from 39.3 to 107.8 against a threshold of 4.0, so each event sits one to two orders of
 magnitude clear of the line rather than grazing it.

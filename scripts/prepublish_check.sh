@@ -64,6 +64,10 @@ echo "== every number resolves to a committed artifact =="
 python3 "$(dirname "$0")/check_numbers.py"
 check $? "numbers recheck against their artifacts"
 
+echo "== every link resolves for a logged-out stranger =="
+python3 "$(dirname "$0")/check_links.py"
+check $? "links resolve anonymously"
+
 echo
 if [ "$FAIL" -eq 0 ]; then echo "PRE-PUBLISH: ok"; else echo "PRE-PUBLISH: BLOCKED"; fi
 exit $FAIL

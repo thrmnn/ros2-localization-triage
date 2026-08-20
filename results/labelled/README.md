@@ -4,7 +4,12 @@ Two recordings from Google's Cartographer public data, run with the thresholds f
 calibration. Neither had been used before. Their Known Issues column, written by the
 dataset's authors years before this tool existed, states the number of laser gaps in each.
 
-Source of the labels: `cartographer_ros/docs/source/data.rst`, Apache-2.0.
+Source of the labels:
+[`cartographer_ros/docs/source/data.rst`](https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/docs/source/data.rst),
+Apache-2.0. The two recordings, both anonymous downloads:
+[b2-2015-05-12-12-29-05.bag](https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-12-12-29-05.bag)
+and
+[b2-2015-05-12-12-46-34.bag](https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-12-12-46-34.bag).
 
 | Bag | Duration | Label | Events found | Recall | Extra events |
 |---|---|---|---|---|---|
