@@ -1,9 +1,10 @@
-"""The sensitivity floor was derived, not discovered.
+"""One idea, one line: which jumps are too small for the alarm to notice.
 
-/tf publishes about every 33 ms, so a displacement of X metres implies X*30 m/s.
-Against a 0.35 m/s threshold that puts the detection floor near 12 mm -- and the
-three injected step sizes were chosen around it, with each one's expected outcome
-written down before the recording existed.
+An earlier version plotted jump size against the speed it implies, on two log
+axes. The speed is how the cut-off is *derived*; it is not the thing to look at.
+Showing it forced the reader to hold a unit conversion in their head before the
+point arrived. This version drops the second axis entirely and puts the
+arithmetic in the subtitle, where it belongs.
 
 Usage: plot_ladder.py <out.png>
 """
@@ -14,60 +15,59 @@ import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-import numpy as np  # noqa: E402
 
-TF_PERIOD_S = 0.0332
-THRESHOLD = 0.35
-STEPS_MM = np.array([5.0, 12.0, 100.0])
-DECLARED = ["too small to catch", "borderline", "should be caught"]
-OBSERVED = [None, 0.54, 2.83]   # peak implied speed where the detector fired
-FLOOR_MM = THRESHOLD * TF_PERIOD_S * 1000
+CUTOFF_MM = 11.6
+CASES = [
+    # size, what we said before the run, what happened, was it flagged
+    (5.0, "expected: too small", "not flagged", False),
+    (12.0, "expected: borderline", "flagged", True),
+    (100.0, "expected: flagged", "flagged", True),
+]
 
 
 def main() -> None:
     out = sys.argv[1]
-    fig, ax = plt.subplots(figsize=(9, 5.6))
+    fig, ax = plt.subplots(figsize=(10, 4.2))
 
-    x = np.geomspace(2, 200, 200)
-    ax.plot(x, x / 1000 / TF_PERIOD_S, color="#888", lw=1.2, ls=":",
-            label=f"predicted speed = jump size × {1/TF_PERIOD_S:.0f} per second")
-    ax.axhline(THRESHOLD, color="#c8102e", lw=1.4, ls="--")
-    ax.axvline(FLOOR_MM, color="#1a6fb5", lw=1.2)
-    ax.axvspan(2, FLOOR_MM, color="#1a6fb5", alpha=0.07, lw=0)
+    ax.axvspan(3, CUTOFF_MM, color="#cfe0ee", alpha=0.55, lw=0)
+    ax.axvline(CUTOFF_MM, color="#1a6fb5", lw=1.6)
+    ax.text(3.25, 0.90, "too small to notice",
+            ha="left", va="top", fontsize=10.5, color="#1a6fb5")
 
-    for mm, decl, obs in zip(STEPS_MM, DECLARED, OBSERVED):
-        if obs is None:
-            ax.scatter([mm], [THRESHOLD * 0.42], marker="x", s=90, color="#444", zorder=5)
-            ax.annotate(f"{mm:.0f} mm\nsaid in advance: {decl}\nnothing reported",
-                        xy=(mm, THRESHOLD * 0.42), xytext=(0, 16), textcoords="offset points",
-                        ha="center", fontsize=9, color="#444")
-        else:
-            ax.scatter([mm], [obs], s=70, color="#1a1a1a", zorder=5)
-            ax.annotate(f"{mm:.0f} mm\nsaid in advance: {decl}\nflagged at {obs:.2f} m/s",
-                        xy=(mm, obs), xytext=(0, 14), textcoords="offset points",
-                        ha="center", fontsize=9)
+    for mm, said, happened, flagged in CASES:
+        ax.scatter([mm], [0], s=190 if flagged else 150,
+                   marker="o" if flagged else "X",
+                   color="#111" if flagged else "#777", zorder=5)
+        ax.annotate(f"{mm:.0f} mm", xy=(mm, 0), xytext=(0, 26), textcoords="offset points",
+                    ha="center", fontsize=13, weight="bold")
+        ax.annotate(f"{said}\n{happened}", xy=(mm, 0), xytext=(0, -44), textcoords="offset points",
+                    ha="center", fontsize=10, linespacing=1.5,
+                    color="#111" if flagged else "#777")
 
-    ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlim(2, 200); ax.set_ylim(0.04, 12)
-    ax.set_xlabel("size of the injected position jump  (mm)")
-    ax.set_ylabel("speed that jump implies  (m/s)")
-    ax.text(FLOOR_MM * 0.92, 0.055, f"jumps under {FLOOR_MM:.0f} mm can never fire",
-            color="#1a6fb5", fontsize=9.5, ha="right")
-    ax.text(190, THRESHOLD, "threshold 0.35 m/s ", color="#c8102e", fontsize=9, ha="right", va="bottom")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, loc="lower right", fontsize=9)
+    ax.set_xscale("log")
+    ax.set_xlim(3, 200)
+    ax.set_ylim(-0.95, 0.95)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    # A log axis keeps its minor ticks even when the major ones are cleared.
+    ax.tick_params(axis="x", which="both", length=0)
+    ax.set_xlabel("how far we moved the robot each time", fontsize=10.5, labelpad=16)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
 
-    fig.suptitle("The smallest position jump the detector can possibly catch",
-                 x=0.09, y=1.16, ha="left", fontsize=13, weight="bold")
-    fig.text(0.09, 1.045,
-             "The detector flags a jump only if it implies a speed above 0.35 m/s. Position updates arrive "
-             "about 30 times a second,\nso a 1 mm jump implies 0.03 m/s and a 12 mm jump implies 0.35 — "
-             "exactly the cut-off. All three jump sizes and their\nexpected outcomes were written into the "
-             "recording script before the run.",
-             ha="left", fontsize=9.5, color="#555")
-    fig.subplots_adjust(top=0.86)
-    fig.savefig(out, dpi=160, bbox_inches="tight")
-    print(f"wrote {out}  (floor {FLOOR_MM:.1f} mm)")
+    # Anchored from the top, not the baseline: multi-line text then grows downward
+    # predictably, instead of the title and the first subtitle line colliding.
+    fig.text(0.06, 0.965, "We wrote down which jumps were too small to catch, before running it",
+             ha="left", va="top", fontsize=13.5, weight="bold")
+    fig.text(0.06, 0.885,
+             "The alarm watches how fast the robot's position changes. Updates arrive about 30 times a "
+             "second, so a jump of\n12 mm looks like 0.35 m/s, which is exactly where the alarm is set. "
+             "Anything smaller cannot reach it, no matter what\ncaused it. We picked three sizes around "
+             "that limit and recorded what we expected before the run.",
+             ha="left", va="top", fontsize=9.8, color="#555", linespacing=1.55)
+    fig.subplots_adjust(top=0.62, bottom=0.20)
+    fig.savefig(out, dpi=160)
+    print(f"wrote {out}")
 
 
 if __name__ == "__main__":
