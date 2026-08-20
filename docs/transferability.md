@@ -9,8 +9,22 @@ for any platform below.
 | TurtleBot3, simulated | 458 s | 131 | not comparable | 0 of 5 injected | faults were injected here on purpose |
 | Cartographer backpack b0, real | 344 s | 1 | **10** | **0 of 1 labelled** | 1 true positive |
 | Cartographer backpack b2, real | 787 s | 2 | **9** | **0 of 1 labelled** | 1 real event seen on 2 lasers |
+| Cartographer backpack, 2 further annotated bags | 3223 s | 32 | **18** | **0 of 16 labelled** | every annotated gap found, see below |
 | Tiago, real sensor data replayed | 113 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
 | MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
+
+## Recall, measured for the first time
+
+Two annotated recordings that had never been run carry sixteen laser gaps between them,
+counted in the dataset's own Known Issues column years before this tool existed. Run with
+the thresholds frozen, the detector found **16 of 16, and nothing else.** Peak ratios ran
+from 39.3 to 107.8 against a threshold of 4.0, so each event sits one to two orders of
+magnitude clear of the line rather than grazing it.
+
+That is a recall figure for one detector, on one failure mode, on 53.7 minutes of real
+data from a platform it was never calibrated on. It says nothing about the other three
+detectors, and a laser dropout is the easiest of the four failure modes to see. Working
+and raw detections are in `results/labelled/`.
 
 **A rate of false alarms without a rate of misses is half a number.** Two rows
 above can state both, because somebody labelled those recordings. The other two
