@@ -48,7 +48,12 @@ def build(dst: Path, compliance: float) -> None:
         ET.SubElement(w, "wheel_radius").text = str(WHEEL_RADIUS)
 
     dst.parent.mkdir(parents=True, exist_ok=True)
-    tree.write(dst, encoding="utf-8", xml_declaration=True)
+    # spawn_entity.py reads this file as TEXT and hands it to lxml, which refuses a
+    # declaration carrying an encoding: "Unicode strings with encoding declaration are not
+    # supported". The stock model declares `<?xml version="1.0" ?>` with no encoding, so
+    # match it exactly rather than letting ElementTree write its own.
+    body = ET.tostring(tree.getroot(), encoding="unicode")
+    dst.write_text('<?xml version="1.0" ?>\n' + body + "\n")
 
 
 def main() -> None:

@@ -32,7 +32,13 @@ for slip in $LEVELS; do
       ok=1
       break
     fi
-    echo "   EMPTY LOCALISER ($n amcl_pose messages). Discarding and retrying."
+    # Retrying without saying WHY turns a systematic bug into apparent flakiness. The
+    # first version of this sweep retried a broken SDF three times per arm and reported
+    # "empty localiser" each time, while the real error sat in the bringup log.
+    echo "   EMPTY LOCALISER ($n amcl_pose messages). Cause, from the bringup log:"
+    grep -iE "error|ValueError|died|exit code" "sim/out/${stamp}.bringup.log" 2>/dev/null \
+      | grep -viE "ALSA|snd_|pcm|lifecycle node launched" | head -3 | sed 's/^/     /'
+    echo "   Discarding and retrying."
     rm -rf "sim/out/slip-${stamp}"
   done
   [ "$ok" -eq 1 ] || echo "   FAILED after $ATTEMPTS attempts at slip=$slip"
