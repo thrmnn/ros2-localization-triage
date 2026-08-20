@@ -19,11 +19,35 @@ threshold showing what that threshold would flag across its whole plausible rang
 
 ---
 
+## What this found
+
+Three results, in the order a sceptical reader should care about. Each links to the
+working, and each says what it does not establish.
+
+**The same frozen thresholds do not transfer between robots.** Calibrated once on a
+simulated TurtleBot3 and never retuned, they produce 9 to 10 false alarms per robot-hour
+on one real platform and 1880 on another. Roughly 200 to 1, from one set of numbers. A
+threshold is a property of the machine it was measured on, not of the failure.
+[docs/transferability.md](docs/transferability.md)
+
+**Against labels somebody else wrote, the gap detector found 16 of 16.** Two Cartographer
+recordings carry 2 and 14 laser gaps in the dataset's own Known Issues column, written
+years before this tool existed. Frozen thresholds found every one and nothing beyond
+them, on 53.7 minutes of real data from a platform they were never calibrated on. That is
+one detector on the easiest of the four failure modes; the other three still have no
+confirmed catch on real data. [results/labelled/](results/labelled/)
+
+**Stock Nav2 ships AMCL with kidnap recovery switched off.** Both `recovery_alpha` terms
+default to 0.0, so a displaced robot has no mechanism to conclude it is lost. Measured on
+a displaced robot: heading uncertainty went from 0.167 rad to 2.540 and never came back.
+One `curl` checks this without trusting me.
+[docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md)
+
 ## Install
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -e .
+.venv/bin/pip install -e ".[dev]"
 ```
 
 ## Calibrating a new recording — the whole loop
