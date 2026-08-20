@@ -14,18 +14,30 @@ cd "$(dirname "$0")/.."
 
 LEVELS="${*:-0.0 0.05 0.15 0.4 1.0}"
 ATTEMPTS=3
+# Unique per invocation, and a start time to compare against. Without these a re-run
+# reuses the previous stamp, `ros2 bag record` refuses the existing folder, nothing is
+# recorded, and the check below happily scores the PREVIOUS run's bag. Presence is not
+# freshness: a guard that checks output must also check the output is new.
+RUN=$(date -u +%H%M%S)
+START=$(date +%s)
 
 for slip in $LEVELS; do
   tag="slip$(echo "$slip" | tr -d '.')"
   ok=0
   for attempt in $(seq 1 $ATTEMPTS); do
-    stamp="${tag}-a${attempt}"
+    stamp="${tag}-r${RUN}a${attempt}"
     echo "== slip=$slip attempt $attempt =="
     timeout 900 docker run --rm --hostname loctriage -v "$PWD/sim":/session \
       loctriage-sim:humble bash -lc "/session/record_slip.sh $stamp $slip" \
       > "sim/out/${stamp}.run.log" 2>&1
     n=$(grep -oE "/amcl_pose \| Type: [^|]+ \| Count: [0-9]+" "sim/out/${stamp}.baginfo.txt" 2>/dev/null | grep -oE "[0-9]+$")
     n=${n:-0}
+    bagdir="sim/out/slip-${stamp}"
+    if [ ! -d "$bagdir" ] || [ "$(stat -c %Y "$bagdir" 2>/dev/null || echo 0)" -lt "$START" ]; then
+      echo "   STALE OR MISSING BAG at $bagdir. Refusing to score it."
+      grep -iE "already exists|error" "sim/out/${stamp}.bag.log" 2>/dev/null | head -2 | sed 's/^/     /'
+      continue
+    fi
     if [ "$n" -gt 100 ]; then
       echo "   ok: $n amcl_pose messages -> sim/out/slip-${stamp}"
       echo "$slip sim/out/slip-${stamp} $n" >> sim/out/slip_sweep.index
