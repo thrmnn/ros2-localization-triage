@@ -4,13 +4,19 @@ Every number here comes from the thresholds calibrated once on a simulated
 TurtleBot3 and then frozen, as the scoring rubric requires. Nothing was retuned
 for any platform below.
 
-| Platform | Duration | Flags | Flags per robot-hour | What the flags were |
-|---|---|---|---|---|
-| TurtleBot3, simulated | 458 s | 131 | not comparable | faults were injected here on purpose |
-| Cartographer backpack b0, real | 344 s | 1 | **10** | 1 true positive |
-| Cartographer backpack b2, real | 787 s | 2 | **9** | 1 real event seen on 2 lasers |
-| Tiago, real sensor data replayed | 113 s | 11 | **349** | 5 confirmed false, 6 unadjudicated |
-| MiR100 AGV, real | 360 s | 188 | **1880** | threshold grazing, see below |
+| Platform | Duration | Flags | Flags per robot-hour | Misses | What the flags were |
+|---|---|---|---|---|---|
+| TurtleBot3, simulated | 458 s | 131 | not comparable | 0 of 5 injected | faults were injected here on purpose |
+| Cartographer backpack b0, real | 344 s | 1 | **10** | **0 of 1 labelled** | 1 true positive |
+| Cartographer backpack b2, real | 787 s | 2 | **9** | **0 of 1 labelled** | 1 real event seen on 2 lasers |
+| Tiago, real sensor data replayed | 113 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
+| MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
+
+**A rate of false alarms without a rate of misses is half a number.** Two rows
+above can state both, because somebody labelled those recordings. The other two
+cannot, because nobody has, and no amount of analysis on our side creates a label.
+Where a miss rate is not computable it is written as such rather than left out,
+because an absent column reads as zero.
 
 **A spread of roughly 200 to 1 in false alarm rate, from one set of thresholds.**
 That is the finding. A threshold is not a property of a failure. It is a property
