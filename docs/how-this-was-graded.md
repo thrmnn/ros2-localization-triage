@@ -8,13 +8,13 @@ Two different claims are made about every row in the case log, and they are not
 equally strong. Presenting them as one number would be the easiest way to
 mislead you, so they are kept apart.
 
-## Claim 1 — "citations verified" · mechanical
+## Claim 1: "citations verified", mechanical
 
 Every timestamp, topic and frame named in a finding exists in the recording at
 the stated time. A script checks this. You can re-run it against the same
 recordings and get the same answer. Nothing about it depends on trusting me.
 
-## Claim 2 — "outcome" · assessed by the author
+## Claim 2: "outcome", assessed by the author
 
 Whether a finding was *right* is my judgement.
 
@@ -39,7 +39,7 @@ about that recording is graded better than low-confidence.
   row the tool got wrong or only partly right, and at least one it could not
   resolve. Those rows are not optional and were not chosen for being flattering.
 - **The tool's worst result is the headline finding.** Thresholds calibrated on
-  a simulated TurtleBot3 produce continuous false positives on a real Tiago —
+  a simulated TurtleBot3 produce continuous false positives on a real Tiago,
   five reported incidents where the signal never left its own baseline. That is
   reported as `wrong`, not smoothed over, and the thresholds were left frozen
   rather than adjusted until the number improved.
@@ -51,7 +51,7 @@ about that recording is graded better than low-confidence.
 It is not a benchmark. A single simulated session and one public recording
 cannot support statistical claims, which is why the public-facing word is *case
 log* and why there is no headline accuracy figure. The failures here are also
-isolated — each injected one at a time — while real fleet incidents compound.
+isolated, each injected one at a time, while real fleet incidents compound.
 That limitation is stated rather than solved.
 
-External technical readthrough: **PLACEHOLDER — pending / name to be filled**.
+External technical readthrough: **PLACEHOLDER, not yet arranged**.

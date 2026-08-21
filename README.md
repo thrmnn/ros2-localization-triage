@@ -1,5 +1,11 @@
 # localization-triage
 
+**I read robot navigation logs.** I froze four fault detectors before I looked at any
+results, ran them unchanged on 97 minutes of recordings from five platforms, and
+published what they caught, what they missed, and the raw counts behind both.
+
+Théo Alessandro Hermann, independent practitioner. [PLACEHOLDER: contact line]
+
 Detectors for localisation incidents in ROS 2 recordings, and a sweep harness that
 picks their thresholds for you off generated plots instead of off intuition.
 
@@ -15,6 +21,19 @@ somebody else, eleven years before it existed.** The thresholds came off a simul
 TurtleBot3 and were frozen at calibration. The recording is a real Cartographer
 backpack. The label is the dataset's own Known Issues column. Nothing was retuned,
 and nothing beyond the labelled gaps was flagged.
+
+### What running it looks like
+
+![A real terminal session: loctriage inspect shows the recording calls its lasers
+horizontal_laser_2d and vertical_laser_2d rather than /scan, and that it carries no
+amcl_pose or odom at all. Pointed at the right topics, the detector reports four
+detections that resolve to the two gaps the dataset itself
+annotates.](docs/figures/running-it.gif)
+
+Both frames of that session are the whole method. `inspect` first, because these
+recordings do not call their lasers `/scan`, and a detector pointed at a topic that
+does not exist returns zero and looks exactly like a clean bill of health. Then
+`detect`, with the topic names corrected and no threshold touched.
 
 Reproduce that exact result in three commands:
 
@@ -67,8 +86,8 @@ uncertainty never returned to its quiet baseline again, ending sixteen times hig
 One `curl` checks this without trusting me.
 [docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md)
 
-> **Who graded this.** I recorded the faults, ran the tool, and graded the results —
-> there is no independent evaluator. Two claims are kept apart because they are not
+> **Who graded this.** I recorded the faults, ran the tool, and graded the results.
+> There is no independent evaluator. Two claims are kept apart because they are not
 > equally strong: *citations verified* is mechanical and reproducible by anyone with
 > the recordings, while *outcome* is **author-assessed**. The scoring rubric was
 > committed before the detectors were run against real data, and thresholds were left
@@ -153,7 +172,7 @@ Each `<detector>__<threshold>.png` has three panels:
    right of the cliff.*
 3. **The sweep.** Detections vs threshold, per signal, with false positives (red)
    and labelled windows hit (green) if you passed `--labels`. *Pick the flattest
-   stretch where detections are still non-zero* — a threshold sitting on a steep
+   stretch where detections are still non-zero*. A threshold sitting on a steep
    part of this curve is one that will behave differently on the next recording.
 
 ## Detectors
@@ -180,18 +199,18 @@ threshold you have not personally read off a plot as unset.
 Two reference sweeps are committed so you can see real harness output before
 running it yourself:
 
-- **`plots/`** — a public 113.5 s rosbag2 recording of a real PAL Robotics Tiago
+- **`plots/`**: a public 113.5 s rosbag2 recording of a real PAL Robotics Tiago
   (`fmrico/mh_amcl`, Apache-2.0). It contains `/scan`, `/tf`, `/tf_static` and
   nothing else, so only `tf_jump` and `scan_gap` have input; the other two plots
   are the "no input" placeholders. `/amcl_pose` does not exist in any archived
-  bag — it is AMCL's live output, produced by replaying a recording through AMCL,
+  bag. It is AMCL's live output, produced by replaying a recording through AMCL,
   not something anyone records ahead of time.
   What the sweep shows: `odom->base_footprint` implied speed never exceeds
   0.286 m/s across all 5,677 samples (median 0.260, and 155 samples at exactly
   zero while the base is stationary), and `/scan` inter-arrival never exceeds
   1.13× its median across 1,702 samples. That is the real noise floor of a healthy
   recording, and it is very tight.
-- **`plots/synthetic-fixture/`** — output from `tests/synthetic_bag.py`, which
+- **`plots/synthetic-fixture/`**: output from `tests/synthetic_bag.py`, which
   writes a bag containing `/amcl_pose` and `/odom` with two faults injected at
   known times. **Every number in that directory is fabricated by construction.**
   It exists so the covariance and divergence detectors are exercised end to end

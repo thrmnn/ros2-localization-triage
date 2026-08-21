@@ -40,7 +40,11 @@ from localization_triage.config import Config  # noqa: E402
 from localization_triage.detectors import scan_gap  # noqa: E402
 from localization_triage.detectors.base import detections_from  # noqa: E402
 
-FRAMES = 240
+# 160 frames at 12 fps is about 13 seconds. At 240 the quiet opening ran nine
+# seconds before the first event, which is longer than anyone watches a loop.
+# Time stays linear: compressing the quiet part non-uniformly would misrepresent
+# how much of the recording is silent, and that silence is the false-alarm result.
+FRAMES = 160
 FPS = 12
 INK = "#1a1a1a"
 FIRE = "#d62728"
@@ -124,8 +128,8 @@ def _frame(path: Path, drawn: dict, now: float, duration: float, threshold: floa
 
     hits = [e for e in events if e <= now]
     if hits:
-        ax.scatter(hits, [threshold] * len(hits), s=95, facecolors="none",
-                   edgecolors=FIRE, lw=1.8, zorder=5)
+        ax.scatter(hits, [threshold] * len(hits), s=150, facecolors="none",
+                   edgecolors=FIRE, lw=2.4, zorder=5)
     if hits and now - hits[-1] < duration / FRAMES * 8:
         ax.annotate("caught", xy=(hits[-1], threshold), xytext=(hits[-1], threshold * 22),
                     color=FIRE, fontsize=11, ha="center", zorder=7,
@@ -155,11 +159,12 @@ def _frame(path: Path, drawn: dict, now: float, duration: float, threshold: floa
 
     found = len(hits)
     colour = FIRE if found else MUTED
-    fig.text(0.975, 0.945, f"{found} of {label_count} labelled gaps found",
-             fontsize=14, fontweight="bold", color=colour, ha="right")
-    fig.text(0.975, 0.893,
-             f"{now:.0f} s of {duration:.0f} s  ·  {duration / 60:.0f} min of recording "
-             f"in {FRAMES / FPS:.0f} s",
+    fig.text(0.975, 0.950, f"{found} of {label_count}",
+             fontsize=27, fontweight="bold", color=colour, ha="right")
+    fig.text(0.975, 0.912, "labelled gaps found",
+             fontsize=11, color=colour, ha="right")
+    fig.text(0.975, 0.882,
+             f"{now:.0f} s of {duration:.0f} s  ·  {duration / 60:.0f} min in {FRAMES / FPS:.0f} s",
              fontsize=8.5, color=MUTED, ha="right")
 
     tail = hits[-4:]
