@@ -58,9 +58,10 @@ def verdict_rows() -> int:
 # catches, so the unmanaged-claims report below is as important as the checks.
 def transfer_rates() -> list[str]:
     """Recompute every flags-per-robot-hour from the duration and flag count the table
-    itself states. This is the only part of the headline claim the repo can still check:
-    the recordings are not on disk and no committed artifact carries the raw counts, so
-    the arithmetic is checkable and the inputs are not."""
+    itself states. The recordings are too large to commit, so the arithmetic is checked
+    here and the inputs are made checkable instead: the two rows carrying the headline
+    both name their bag with a download link and ship the config that produced them, so
+    a reader can re-derive the flag count rather than take it on trust."""
     text = (ROOT / "docs/transferability.md").read_text()
     bad = []
     for row in re.findall(r"^\|([^|]+)\|\s*(\d+)\s*s\s*\|\s*(\d+)\s*\|\s*\*\*(\d+)\*\*", text, re.M):
@@ -70,6 +71,32 @@ def transfer_rates() -> list[str]:
         # true value carries a fraction. More than that is a real disagreement.
         if abs(calc - claimed) > 1.0:
             bad.append(f"{name}: {flags}/{dur}s = {calc:.1f}/h but the table says {claimed}")
+    return bad
+
+
+
+def frozen_configs() -> list[str]:
+    """The published configs must be the calibrated one with topic names changed.
+
+    "Thresholds frozen, never retuned" is the claim the whole recall result rests on.
+    Nothing enforced it: a single edited threshold in cartographer-backpack.yaml would
+    turn 16 of 16 into a tuned number, and every document would go on saying frozen.
+    Compare the non-comment body line for line and allow exactly the topic list to
+    differ."""
+    import difflib
+
+    stock = [l for l in (ROOT / "config/detectors.yaml").read_text().splitlines()
+             if l.strip() and not l.lstrip().startswith("#")]
+    bad = []
+    for name in ("cartographer-backpack.yaml", "mir100.yaml"):
+        other = [l for l in (ROOT / "config" / name).read_text().splitlines()
+                 if l.strip() and not l.lstrip().startswith("#")]
+        changed = [l for l in difflib.unified_diff(stock, other, lineterm="", n=0)
+                   if l.startswith(("+", "-")) and not l.startswith(("+++", "---"))]
+        offenders = [l for l in changed if "topics:" not in l]
+        if offenders:
+            bad.append(f"{name} differs from the calibrated config beyond its topic "
+                       f"list: {'; '.join(o.strip() for o in offenders)}")
     return bad
 
 
@@ -83,6 +110,10 @@ MANIFEST = [
      "pattern": r"exactly (one|1) event",
      "expect": 1,
      "note": "one event, which is what the Cartographer label says"},
+    {"name": "published configs are the frozen one plus topic names",
+     "compute": frozen_configs,
+     "expect": [],
+     "note": "a retuned threshold here would silently turn a frozen result into a fitted one"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,

@@ -3,31 +3,42 @@
 Detectors for localisation incidents in ROS 2 recordings, and a sweep harness that
 picks their thresholds for you off generated plots instead of off intuition.
 
-Four detectors, every threshold in `config/detectors.yaml`, nothing hard-coded in
-the Python. Point the harness at a rosbag2 directory and it writes one plot per
-threshold showing what that threshold would flag across its whole plausible range.
+Reads rosbag2 directories and ROS 1 `.bag` files. Four detectors, every threshold in
+a YAML file, nothing hard-coded in the Python.
 
-> **Who graded this.** I recorded the faults, ran the tool, and graded the results —
-> there is no independent evaluator. Two claims are kept apart because they are not
-> equally strong: *citations verified* is mechanical and reproducible by anyone with
-> the recordings, while *outcome* is **author-assessed**. The scoring rubric was
-> committed before the detectors were run against real data, and thresholds were left
-> frozen rather than tuned until the numbers improved. The tool's worst result is the
-> headline finding. Full detail: [docs/how-this-was-graded.md](docs/how-this-was-graded.md)
-> · case log: [docs/case-log.md](docs/case-log.md) · rubric:
-> [docs/case-log-rubric.md](docs/case-log-rubric.md)
+![Thresholds calibrated on a simulated TurtleBot3 and frozen, then run against a real
+Cartographer backpack recording. All 14 laser gaps that the dataset's own authors
+annotated in 2015 are found, and nothing else is flagged.](docs/figures/catching-a-dropout.gif)
+
+**That is the tool finding fourteen faults it was never tuned for, labelled by
+somebody else, eleven years before it existed.** The thresholds came off a simulated
+TurtleBot3 and were frozen at calibration. The recording is a real Cartographer
+backpack. The label is the dataset's own Known Issues column. Nothing was retuned,
+and nothing beyond the labelled gaps was flagged.
+
+Reproduce that exact result in three commands:
+
+```bash
+git clone https://github.com/thrmnn/ros2-localization-triage && cd ros2-localization-triage && python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+curl -O https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-12-12-46-34.bag
+.venv/bin/loctriage --config config/cartographer-backpack.yaml detect b2-2015-05-12-12-46-34.bag
+```
+
+Working, raw detections and the label source: [results/labelled/](results/labelled/).
 
 ---
 
 ## What this found
 
-Three results, in the order a sceptical reader should care about. Each links to the
+Four results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
 
-**The same frozen thresholds do not transfer between robots.** Calibrated once on a
-simulated TurtleBot3 and never retuned, they produce 9 to 36 false alarms per robot-hour
-across four recordings of one real platform, and 1880 on another. Roughly 200 to 1, from one set of numbers. A
-threshold is a property of the machine it was measured on, not of the failure.
+**The same frozen thresholds mean opposite things on different robots.** Calibrated
+once on a simulated TurtleBot3 and never retuned, the gap detector flags 9 to 36
+times per robot-hour across four Cartographer backpack recordings, where **every
+single flag is a real dropout**, and 1880 times per robot-hour on a MiR100 warehouse
+AGV, where **none of them look real**. Same numbers, untouched. A threshold is not a
+property of a failure. It is a property of the machine it was measured on.
 [docs/transferability.md](docs/transferability.md)
 
 ![The same threshold on two robots: on the simulated robot it sits above the noise and
@@ -56,36 +67,77 @@ uncertainty never returned to its quiet baseline again, ending sixteen times hig
 One `curl` checks this without trusting me.
 [docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md)
 
-## Install
+> **Who graded this.** I recorded the faults, ran the tool, and graded the results —
+> there is no independent evaluator. Two claims are kept apart because they are not
+> equally strong: *citations verified* is mechanical and reproducible by anyone with
+> the recordings, while *outcome* is **author-assessed**. The scoring rubric was
+> committed before the detectors were run against real data, and thresholds were left
+> frozen rather than tuned until the numbers improved. The tool's worst result is the
+> headline finding. Full detail: [docs/how-this-was-graded.md](docs/how-this-was-graded.md)
+> · case log: [docs/case-log.md](docs/case-log.md) · rubric:
+> [docs/case-log-rubric.md](docs/case-log-rubric.md)
+
+---
+
+## Run it on your own bag
+
+Nothing here assumes a TurtleBot3, a particular ROS distribution, or your topics being
+named the way mine are. The four steps below are the whole loop.
+
+**1. See what the recording actually contains.** Topic names, message counts, TF edges,
+and whether the topics a detector needs are present at all.
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install -e ".[dev]"
+.venv/bin/loctriage inspect /path/to/your/bag
 ```
 
-## Calibrating a new recording — the whole loop
+Do this first, always. Three datasets in the survey behind this work declare `/tf` or
+`/imu` and publish **zero messages** on them. A topic list is not evidence that a topic
+has data, and a detector that silently scores an empty topic looks exactly like a
+detector that found nothing wrong.
+
+**2. Point the config at your topic names.** Copy the stock config and edit it:
 
 ```bash
-# 1. see what the recording actually contains
-.venv/bin/loctriage inspect /path/to/rosbag2_dir
-
-# 2. sweep every threshold, write plots
-.venv/bin/loctriage sweep /path/to/rosbag2_dir --out plots/<recording-name>
-
-# 3. read the plots, edit config/detectors.yaml, re-run to confirm
-.venv/bin/loctriage detect /path/to/rosbag2_dir
+cp config/detectors.yaml config/mine.yaml
 ```
 
-If you wrote down when you injected each fault, pass the windows and the plots
-gain a false-positive curve — which is what turns "pick the knee" into "pick the
-widest gap between detections-of-real-incidents and everything else":
+[`config/cartographer-backpack.yaml`](config/cartographer-backpack.yaml) is the worked
+example: it is byte-for-byte the stock config with one line changed, because that
+recording calls its lasers `horizontal_laser_2d` and `vertical_laser_2d` rather than
+`/scan`. That single line is the difference between the 16-of-16 result above and a
+silent zero.
+
+**3. Sweep, and read the plots.** This is the part that replaces guessing:
 
 ```bash
-.venv/bin/loctriage sweep /path/to/bag --labels my-labels.yaml --out plots/<name>
+.venv/bin/loctriage --config config/mine.yaml sweep /path/to/your/bag --out plots/mine
 ```
 
-`config/labels.example.yaml` is the format. Times are seconds since the start of
-the recording; a couple of seconds of slack is applied on each side.
+You get one plot per threshold showing what that threshold would flag across its whole
+plausible range, plus a `.csv` of the same numbers and a `summary.json` of score
+percentiles. Read them, write the thresholds you chose into `config/mine.yaml`.
+
+If you wrote down when each fault happened, pass the windows and the plots gain a
+false-positive curve, which turns "pick the knee" into "pick the widest gap between
+detections-of-real-incidents and everything else":
+
+```bash
+.venv/bin/loctriage --config config/mine.yaml sweep /path/to/your/bag --labels mine-labels.yaml --out plots/mine
+```
+
+`config/labels.example.yaml` is the format. Times are seconds since the start of the
+recording, and a couple of seconds of slack is applied on each side.
+
+**4. Run the detectors at the thresholds you just set.**
+
+```bash
+.venv/bin/loctriage --config config/mine.yaml detect /path/to/your/bag --json found.json
+```
+
+A detector whose input topics are absent produces a placeholder plot saying so, and
+`summary.json` marks it `"status": "no_input"`. That is reported, never silently
+treated as "no incidents found".
 
 ## Reading a sweep plot
 
@@ -104,10 +156,6 @@ Each `<detector>__<threshold>.png` has three panels:
    stretch where detections are still non-zero* — a threshold sitting on a steep
    part of this curve is one that will behave differently on the next recording.
 
-The `.csv` next to each plot has the same numbers if you want to be precise
-rather than visual. `summary.json` records the score percentiles per detector,
-which is usually enough to sanity-check a threshold without opening a plot.
-
 ## Detectors
 
 | Detector | Signal | Thresholds | Needs |
@@ -122,10 +170,6 @@ Each detector's scoring is one small module under
 why the score is defined the way it is. Scores are computed once per recording
 and the whole threshold grid is evaluated against the cached scores, so a 60-point
 sweep costs one pass over the bag.
-
-A detector whose input topics are absent produces a placeholder plot saying so,
-and `summary.json` marks it `"status": "no_input"`. That is reported, never
-silently treated as "no incidents found".
 
 ## What is calibrated and what is not
 
@@ -160,11 +204,23 @@ running it yourself:
 .venv/bin/python -m pytest
 ```
 
-Twelve tests: config strictness (a misspelled or omitted threshold is a hard
+Twenty-two tests: config strictness (a misspelled or omitted threshold is a hard
 error, because a silent fallback to a code default would put a live threshold
 outside version control), detection merging and duration filtering, two detector
 unit tests, and an end-to-end run over the synthetic fixture asserting each
 detector fires at its injected time.
+
+## Regenerating the animation
+
+```bash
+.venv/bin/python scripts/make_demo_gif.py b2-2015-05-12-12-46-34.bag
+```
+
+The GIF at the top is generated by committed code from a public recording, so it
+can be checked rather than believed. The script's docstring states the two ways
+the drawing departs from the raw data: the flat baseline is subsampled for file
+size, and 38 minutes of recording play in 20 seconds. Nothing above the threshold
+is ever dropped, and the count in the corner comes from the detector.
 
 ---
 
@@ -176,9 +232,10 @@ scripts/prepublish_check.sh
 
 Exits non-zero if anything that must be true before this repo is public is not:
 no identifying strings in content, filenames, commit messages, authorship or bag
-binaries; a real author on the LICENSE; the self-grading disclosure present; and
-a case log carrying at least three rows including one the tool got wrong and one
-it could not resolve.
+binaries; a real author on the LICENSE; the self-grading disclosure present; a
+case log carrying at least three rows including one the tool got wrong and one it
+could not resolve; every load-bearing number recomputing from a committed
+artifact; and every external link resolving for a logged-out stranger.
 
 It is a gate rather than a checklist on purpose. A checklist under deadline
 pressure is a list of things someone decides to skip.

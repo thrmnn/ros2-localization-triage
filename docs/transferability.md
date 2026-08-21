@@ -15,6 +15,14 @@ for any platform below.
 | Tiago, real sensor data replayed | 113 s | 11 | **350** | **not computable** | 5 confirmed false, 6 unadjudicated |
 | MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
 
+Every row above is a public recording that downloads anonymously. The MiR100 row is
+[`mir/landmarks_demo_uncalibrated.bag`](https://storage.googleapis.com/cartographer-public-data/bags/mir/landmarks_demo_uncalibrated.bag)
+from the same Cartographer public dataset, run with
+[`config/mir100.yaml`](../config/mir100.yaml), which is the stock config with the two
+laser topic names changed and no threshold touched. The dataset's own index states
+that bag as 180 s; it is **359.938 s**, measured with `loctriage inspect`, and the
+rate here uses the measured duration.
+
 ## Recall, measured for the first time
 
 Two annotated recordings that had never been run carry sixteen laser gaps between them,
@@ -67,7 +75,11 @@ rubric. It is the first evidence here that is not circular.
 ## The failure, on a commercial AGV
 
 On the MiR100, the same gap detector fired **188 times in six minutes**. None of
-them look like real dropouts:
+them look like real dropouts. Reproduce the whole row in one command:
+
+    loctriage --config config/mir100.yaml detect landmarks_demo_uncalibrated.bag
+
+
 
 - The threshold is a gap ratio of 4.0.
 - The 188 flags have a **median ratio of 4.57**, a minimum of exactly 4.00, and a
