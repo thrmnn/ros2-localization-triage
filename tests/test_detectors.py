@@ -49,3 +49,41 @@ def test_scan_gap_clamps_gaps_below_the_absolute_guard():
     v = scan_gap(_signals(arrivals={"/scan": arrivals}), cfg)[0].v
     assert v[3] == 1.0  # 0.04 s gap: large ratio, but far too short to be a dropout
     assert v[4] > 10.0
+
+
+def test_pose_divergence_ignores_the_window_before_odom_starts():
+    """np.interp clamps instead of extrapolating, so a trailing window reaching before
+    odom's first sample compares against wherever odom was first seen. Odom starting
+    after AMCL is the ordinary case, and at the shipped 0.5 m threshold this produced
+    0.600 m of pure artifact at 0.3 m/s. The score must be exactly zero when both
+    sources agree on the motion."""
+    import numpy as np
+    from types import SimpleNamespace
+    from localization_triage.config import PoseDivergenceConfig
+    from localization_triage.detectors.pose_divergence import score
+
+    def track(t0, t1, n, v, offset=0.0):
+        t = np.linspace(t0, t1, n)
+        return SimpleNamespace(t=t, x=offset + v * t, y=np.zeros(n), yaw=np.zeros(n))
+
+    cfg = PoseDivergenceConfig(
+        window_s=2.0, min_duration_s=0.0, merge_gap_s=1.0,
+        thresholds={"displacement_delta_m": 0.5, "yaw_delta_rad": 0.4}, sweeps={})
+
+    # Identical motion, constant frame offset, odom publishing 5 s late.
+    signals = SimpleNamespace(amcl=track(0.0, 30.0, 601, 1.2),
+                              odom=track(5.0, 30.0, 501, 1.2, offset=100.0))
+    series = score(signals, cfg)
+    assert series, "the detector should still score the part it can trust"
+    for s in series:
+        assert s.t[0] >= 7.0, "scoring must not start before odom's range plus the window"
+        # Tolerance, not zero: the coordinates are around 100 m, so float64 leaves
+        # noise near 1e-14. The bug this guards produced 2.4 m.
+        assert float(np.max(s.v)) < 1e-9, f"{s.param} invented {np.max(s.v)} of divergence"
+
+    # Mirrored: odom ends early, so the top of the range clamps instead.
+    signals = SimpleNamespace(amcl=track(0.0, 30.0, 601, 1.2),
+                              odom=track(0.0, 25.0, 501, 1.2, offset=100.0))
+    for s in score(signals, cfg):
+        assert s.t[-1] <= 25.0
+        assert float(np.max(s.v)) < 1e-9

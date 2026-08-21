@@ -48,6 +48,14 @@ on yaw, read from `/amcl_pose`.
 | 72 s after the displacement | median **1.738**, max 3.178 rad |
 | final sample, at 455 s | **2.540** rad |
 
+**Nothing rechecks these six numbers.** They were computed from the `/amcl_pose` yaw
+covariance of one controlled recording that is not committed, because it is too large
+and the repository keeps no recordings. `scripts/check_numbers.py` recomputes every
+other load-bearing figure in this repository from an artifact you can read; these are
+the exception, and they are stated as such rather than left to look equally checked.
+The mechanism claim above them does not depend on this table: both `recovery_alpha`
+defaults are 0.0 in stock Nav2 and one `curl` confirms it.
+
 **Read the fourth and fifth rows before drawing a conclusion about the displacement.**
 The filter was already at 2.2 rad when the robot was displaced, so the 72 s afterwards are
 not lower because it recovered, they are lower because the state before was already worse.

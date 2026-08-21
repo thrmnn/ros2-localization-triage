@@ -149,9 +149,15 @@ def explain(window: dict, signals: Signals, model: str = DEFAULT_MODEL,
         with urllib.request.urlopen(req, timeout=timeout_s) as r:
             raw = json.loads(r.read())["response"]
         parsed = json.loads(raw)
+        # `format` nudges a compliant model but is not a contract every backend
+        # honours at the top level. A bare list or string is valid JSON and would
+        # reach .get() as an AttributeError traceback, which is the one thing this
+        # function promises not to do.
+        if not isinstance(parsed, dict):
+            raise ValueError(f"response is {type(parsed).__name__}, not an object")
     except (urllib.error.URLError, TimeoutError, OSError) as e:
         return Hypothesis("", "unresolved", error=f"model unreachable: {e}")
-    except (json.JSONDecodeError, KeyError) as e:
+    except (json.JSONDecodeError, KeyError, ValueError) as e:
         return Hypothesis("", "unresolved", error=f"unparseable response: {e}")
 
     return Hypothesis(

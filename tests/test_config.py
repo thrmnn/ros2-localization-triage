@@ -6,7 +6,7 @@ import pytest
 
 from localization_triage.config import Config, ConfigError, SweepSpec
 
-SHIPPED = Path("config/detectors.yaml")
+SHIPPED = Path(__file__).resolve().parent.parent / "config/detectors.yaml"
 
 
 def _write(tmp_path, text):

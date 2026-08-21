@@ -100,10 +100,31 @@ def frozen_configs() -> list[str]:
     return bad
 
 
+
+def labelled_recall() -> list[int]:
+    """Recompute the 16-of-16 from the committed raw detections, not from the prose.
+
+    The headline recall claim depends on a clustering step the tool does not perform:
+    each physical dropout fires on both lasers about a second apart, and detections
+    within two seconds are one event. That rule lived only in a sentence, so an edit to
+    either JSON would have kept every document saying 16 of 16 while the artifact said
+    something else. Returns events per bag, ordered by filename."""
+    out = []
+    for f in sorted((ROOT / "results/labelled").glob("*.json")):
+        dets = sorted(json.loads(f.read_text()), key=lambda d: d["start_s"])
+        events: list[float] = []
+        for d in dets:
+            if not events or d["start_s"] - events[-1] > 2.0:
+                events.append(d["start_s"])
+        out.append(len(events))
+    return out
+
+
 MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
      "expect": [],
+     "covers": [10, 9, 36, 299, 422, 350, 1880],
      "note": "each flags-per-hour recomputed from the flags and seconds in the same row"},
     {"name": "scan-gap detections on the graded sweep",
      "compute": scan_gap_detections,
@@ -114,6 +135,11 @@ MANIFEST = [
      "compute": frozen_configs,
      "expect": [],
      "note": "a retuned threshold here would silently turn a frozen result into a fitted one"},
+    {"name": "labelled recall recomputes from the raw detections",
+     "compute": labelled_recall,
+     "expect": [2, 14],
+     "covers": [2, 14, 16, 32, 28],
+     "note": "the 16 of 16, re-derived by clustering the committed JSON within 2 s"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,
@@ -147,7 +173,11 @@ def main() -> None:
 
     # Numbers appearing in public prose with no manifest entry. Reported, not fatal:
     # most are prose, and a gate that cries wolf on every '3 rows' gets switched off.
-    managed = " ".join(str(m["expect"]) for m in MANIFEST)
+    # Built from the numbers each check actually guards. Using each check's pass/fail
+    # expectation instead reported genuinely-checked figures as unmanaged, which
+    # diluted the one signal that matters into false positives a reviewer skims past.
+    managed = " ".join(
+        str(v) for m in MANIFEST for v in (m.get("covers") or [m["expect"]]))
     loose: set[str] = set()
     for rel in DOCS:
         f = ROOT / rel
