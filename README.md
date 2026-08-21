@@ -25,10 +25,14 @@ Three results, in the order a sceptical reader should care about. Each links to 
 working, and each says what it does not establish.
 
 **The same frozen thresholds do not transfer between robots.** Calibrated once on a
-simulated TurtleBot3 and never retuned, they produce 9 to 10 false alarms per robot-hour
-on one real platform and 1880 on another. Roughly 200 to 1, from one set of numbers. A
+simulated TurtleBot3 and never retuned, they produce 9 to 36 false alarms per robot-hour
+across four recordings of one real platform, and 1880 on another. Roughly 200 to 1, from one set of numbers. A
 threshold is a property of the machine it was measured on, not of the failure.
 [docs/transferability.md](docs/transferability.md)
+
+![The same threshold on two robots: on the simulated robot it sits above the noise and
+the injected faults run off the top of the axis; on real Tiago data with no faults at
+all, 38 percent of samples are above the same line.](docs/figures/threshold-transfer.png)
 
 **Against labels somebody else wrote, the gap detector found 16 of 16.** Two Cartographer
 recordings carry 2 and 14 laser gaps in the dataset's own Known Issues column, written
