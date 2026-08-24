@@ -1,0 +1,92 @@
+[
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 2.209152478,
+    "end_s": 8.608972567,
+    "peak": 2.5357307725495724,
+    "n_samples": 12
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 2.209152478,
+    "end_s": 6.342193859,
+    "peak": 0.8699974804194434,
+    "n_samples": 8
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 3.742806452,
+    "end_s": 62.809027689,
+    "peak": 4.5636331118147035,
+    "n_samples": 86
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 20.875675219,
+    "end_s": 34.74231984,
+    "peak": 2.0353786469516835,
+    "n_samples": 19
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 23.342126149,
+    "end_s": 34.942797917,
+    "peak": 0.43264570925599594,
+    "n_samples": 20
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 25.676865834,
+    "end_s": 25.876809376,
+    "peak": 0.38398854179374514,
+    "n_samples": 2
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 31.942308205,
+    "end_s": 36.675583857,
+    "peak": 0.39436564270854274,
+    "n_samples": 9
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 47.142727392,
+    "end_s": 51.009279984,
+    "peak": 0.2857729261744691,
+    "n_samples": 6
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 51.009279984,
+    "end_s": 60.075673598,
+    "peak": 0.4457975803489695,
+    "n_samples": 16
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 54.609103459,
+    "end_s": 57.609171408,
+    "peak": 0.6033634793392514,
+    "n_samples": 5
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 5.786216209,
+    "end_s": 48.386426876,
+    "peak": 3.0497103301608908,
+    "n_samples": 50
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 31.586347768,
+    "end_s": 43.25301523,
+    "peak": 0.732156398678193,
+    "n_samples": 21
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 32.586410234,
+    "end_s": 34.586313198,
+    "peak": 0.6785070108560467,
+    "n_samples": 3
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 42.053193519,
+    "end_s": 43.25301523,
+    "peak": 0.5962626598692082,
+    "n_samples": 3
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 51.386470745,
+    "end_s": 51.386470745,
+    "peak": 0.3438430653940815,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 53.186502407,
+    "end_s": 53.186502407,
+    "peak": 0.3560331244236737,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 55.78666992,
+    "end_s": 65.186486671,
+    "peak": 0.8971205853980193,
+    "n_samples": 9
+  }
+]

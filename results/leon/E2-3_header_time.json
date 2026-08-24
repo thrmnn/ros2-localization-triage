@@ -1,0 +1,74 @@
+[
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 6.474156953,
+    "end_s": 11.606534577,
+    "peak": 0.4203889474181137,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom",
+    "start_s": 8.007156468,
+    "end_s": 62.672889806,
+    "peak": 19.042241542692786,
+    "n_samples": 70
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 23.206948615,
+    "end_s": 23.346325971,
+    "peak": 0.3709684955224516,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 34.606397248,
+    "end_s": 34.606397248,
+    "peak": 0.5158198957413493,
+    "n_samples": 1
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 46.80643592,
+    "end_s": 61.672889806,
+    "peak": 0.8900262692509211,
+    "n_samples": 26
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 50.739971257,
+    "end_s": 52.207053042,
+    "peak": 0.8571126360007264,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom",
+    "start_s": 56.139779426,
+    "end_s": 58.473336793,
+    "peak": 2.8279881910011317,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 57.473336793,
+    "end_s": 58.672945596,
+    "peak": 1.4002119581908015,
+    "n_samples": 3
+  }
+]

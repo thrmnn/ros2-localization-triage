@@ -50,6 +50,19 @@ The same fix is why the Stata Center replay in
 [finding-confidently-wrong.md](finding-confidently-wrong.md) reports no spurious
 scan gaps across 408 seconds.
 
+## The second experiment: an attack these detectors rightly cannot see
+
+The same dataset's Experiment 2 replaces the robot's camera feed while it drives
+(one clean run, two spoofed runs). The full bags carry a real `/amcl_pose`, rare
+in public data, so all four detectors ran on all three runs
+(`results/leon/E2-*_header_time.json`): 10, 7 and 8 detections, clean run
+included, in overlapping windows around the same relocalisation episode each
+route contains. **No separation, and none should exist**: a camera-feed
+replacement never touches the laser, odometry or particle filter these detectors
+watch. Unlike the ERL null this was not pre-registered, so it is reported as an
+observation, not a held prediction. It marks the boundary honestly: these are
+localisation-layer detectors, not an intrusion detection system.
+
 ## What this pair does not establish
 
 `tf_jump` fired twice on the clean run and twice on the attack run, at 0.4 to
