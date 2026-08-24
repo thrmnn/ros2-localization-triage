@@ -1,7 +1,7 @@
-# A lost localiser that reports six centimetres of confidence
+# A lost localiser that reports eight centimetres of confidence
 
-The first non-circular true positives for `pose_divergence` and `covariance_spike`,
-and the structural miss the same experiment demonstrates. Every number here
+The first non-circular true positives for `pose_divergence`, `covariance_spike`
+and `tf_jump`, and the structural miss the same experiment demonstrates. Every number here
 recomputes from committed files via `scripts/stata_grade.py`; none requires the
 7.1 GB recording.
 
@@ -36,7 +36,7 @@ within 50 ms:
 | Window | Median position error | Max | Median yaw error | AMCL's own reported sigma |
 |---|---|---|---|---|
 | Floor 2, before the elevator | 0.278 m | 0.351 m | 0.4° | 0.044 m |
-| Floor 2, after returning | **19.628 m** | **40.029 m** | **98.1°** | **0.063 m** |
+| Floor 2, after returning | **19.428 m** | **39.802 m** | **26.4°** | **0.081 m** |
 
 ![Floor plan traced from ground truth, with the robot's true path in green, AMCL's
 healthy tracking in blue on top of it, and AMCL's post-excursion path in red,
@@ -53,23 +53,34 @@ truth lives in.
 
 **The second row is the finding.** After the robot spends four minutes on a floor
 the map does not contain and comes back, AMCL relocalises to the wrong corridor and
-stays there: twenty to forty metres from the truth, heading off by a quarter turn,
-**while reporting a position sigma of six centimetres**. A fleet dashboard built on
+stays there: twenty to forty metres from the truth, heading tens of degrees off,
+**while reporting a position sigma of eight centimetres**. A fleet dashboard built on
 the localiser's self-reported confidence shows a healthy robot.
 
 ## What the detectors caught, graded against that ground truth
 
-41 detections total (`results/stata/detections.json`), and the grading writes
-itself into three zones:
+80 detections total (`results/stata/detections.json`), and the grading writes
+itself into the zones:
 
-- **Healthy window: zero detections.** Nothing fired while AMCL was right.
-- **The excursion (no ground truth): 28.** The robot is on a floor the map does not
-  have; AMCL wrestling with an impossible match is exactly what fires here. No GT
-  exists to grade these, so they are reported, not claimed.
-- **The verified-lost window: 13.** `pose_divergence` 9, `covariance_spike` 4.
-  `pose_divergence` peaks of 14 to 23 m against a GT-measured median error of
-  19.6 m. These are true positives against ground truth someone else's hardware
-  produced, the first for both detectors.
+- **Healthy window: 2, both `tf_jump`.** Small map-frame corrections published
+  close together read as 2.5 to 3.2 m/s implied speed while the ground truth
+  bounds the real pose error under 0.35 m the whole window. At these frozen
+  thresholds that is this edge's false-alarm floor, stated rather than hidden.
+  Nothing else fired while AMCL was right.
+- **The excursion (no ground truth): 47.** The robot is on a floor the map does
+  not have; AMCL wrestling with an impossible match is exactly what fires here.
+  No GT exists to grade these, so they are reported, not claimed.
+- **The verified-lost window: 30.** `pose_divergence` 11 with peaks of 14 to 23 m
+  against a GT-measured median error of 19.4 m; `covariance_spike` 6 during the
+  relocalisation churn; and `tf_jump` 13 on the `map->odom_combined` corrections,
+  peaking at an implied 2288 m/s, which is AMCL teleporting its own frame to a
+  wrong corridor while the ground truth shows the robot moving normally. First
+  non-circular true positives for all three.
+
+Two independent replays of this stochastic experiment were run, and the second
+reproduced the first: identical healthy-window median (0.278 m both times), lost
+medians of 19.63 and 19.43 m. The committed artifacts are the second run, the one
+whose `/tf` was recorded so `tf_jump` could be graded at all.
 
 ## The miss this experiment also proves
 

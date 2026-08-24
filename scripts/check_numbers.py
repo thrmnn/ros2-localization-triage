@@ -132,7 +132,7 @@ def stata_grading() -> list[float]:
     lost = d["detections_by_zone"]["part3_lost"]
     return [w1["position_error_median_m"], w3["position_error_median_m"],
             w3["position_error_max_m"], w3["amcl_reported_sigma_median_m"],
-            lost["pose_divergence"] + lost["covariance_spike"]]
+            lost["pose_divergence"] + lost["covariance_spike"] + lost["tf_jump"]]
 
 
 def leon_scan_gap_counts() -> list[float]:
@@ -169,8 +169,8 @@ MANIFEST = [
      "note": "the 16 of 16, re-derived by clustering the committed JSON within 2 s"},
     {"name": "stata grading recomputes from committed CSVs",
      "compute": stata_grading,
-     "expect": [0.278, 19.628, 40.029, 0.063, 13],
-     "covers": [0.278, 19.628, 40.029, 0.063, 13, 19.6, 40, 646, 383],
+     "expect": [0.278, 19.428, 39.802, 0.081, 30],
+     "covers": [0.278, 19.428, 39.802, 0.081, 30, 19.4, 646, 383, 2288],
      "note": "healthy median, lost median and max, the confident sigma, and the 13 true positives"},
     {"name": "leon receive-vs-header counts recompute from committed JSONs",
      "compute": leon_scan_gap_counts,

@@ -1,5 +1,32 @@
 [
   {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 96.404830905,
+    "end_s": 96.404830905,
+    "peak": 2.532345519709635,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 109.815780905,
+    "end_s": 113.875738905,
+    "peak": 3.195919944537053,
+    "n_samples": 3
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 119.390722905,
+    "end_s": 119.390722905,
+    "peak": 2.0001056882075146,
+    "n_samples": 1
+  },
+  {
     "detector": "covariance_spike",
     "param": "yaw_sigma_rad",
     "key": "yaw",
@@ -7,6 +34,42 @@
     "end_s": 139.644632905,
     "peak": 0.4679926820343875,
     "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 139.392632905,
+    "end_s": 149.569590905,
+    "peak": 32.55249060690771,
+    "n_samples": 12
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 170.899478905,
+    "end_s": 171.550466905,
+    "peak": 2.691438186996095,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 174.558455905,
+    "end_s": 177.616443905,
+    "peak": 4.301471607603194,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 182.729416905,
+    "end_s": 186.238405905,
+    "peak": 468.1491432595473,
+    "n_samples": 7
   },
   {
     "detector": "covariance_spike",
@@ -45,6 +108,15 @@
     "n_samples": 4
   },
   {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 186.238405905,
+    "end_s": 186.238405905,
+    "peak": 38.76670500734185,
+    "n_samples": 1
+  },
+  {
     "detector": "pose_divergence",
     "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
@@ -63,6 +135,24 @@
     "n_samples": 4
   },
   {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 189.245382905,
+    "end_s": 189.245382905,
+    "peak": 898.7356183697564,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 189.245382905,
+    "end_s": 189.245382905,
+    "peak": 42.06346921980085,
+    "n_samples": 1
+  },
+  {
     "detector": "pose_divergence",
     "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
@@ -78,6 +168,33 @@
     "start_s": 193.257367905,
     "end_s": 194.761362905,
     "peak": 2.387109547257138,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 193.757367905,
+    "end_s": 193.757367905,
+    "peak": 906.9064964522319,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 193.757367905,
+    "end_s": 193.757367905,
+    "peak": 47.79366786613706,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 197.266353905,
+    "end_s": 202.128323905,
+    "peak": 167.4479471981157,
     "n_samples": 4
   },
   {
@@ -99,273 +216,507 @@
     "n_samples": 4
   },
   {
-    "detector": "covariance_spike",
-    "param": "position_sigma_m",
-    "key": "position",
-    "start_s": 250.402088905,
-    "end_s": 254.011077905,
-    "peak": 15.197942088722998,
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 202.128323905,
+    "end_s": 202.128323905,
+    "peak": 4.199158546841083,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 205.637305905,
+    "end_s": 209.296290905,
+    "peak": 13.767411808948829,
     "n_samples": 8
   },
   {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 250.853094905,
-    "end_s": 254.011077905,
-    "peak": 1.2803927052165023,
-    "n_samples": 7
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 251.855075905,
-    "end_s": 253.359070905,
-    "peak": 6.102275297941586,
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 214.409266905,
+    "end_s": 217.417261905,
+    "peak": 13.002524375886201,
     "n_samples": 4
   },
   {
-    "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
-    "key": "amcl_vs_odom",
-    "start_s": 251.855075905,
-    "end_s": 253.359070905,
-    "peak": 1.5708620044810402,
-    "n_samples": 4
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 220.625242905,
+    "end_s": 231.202194905,
+    "peak": 80.9727518376016,
+    "n_samples": 16
   },
   {
-    "detector": "covariance_spike",
-    "param": "position_sigma_m",
-    "key": "position",
-    "start_s": 256.617057905,
-    "end_s": 261.630028905,
-    "peak": 9.997496063071265,
-    "n_samples": 13
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 256.617057905,
-    "end_s": 261.630028905,
-    "peak": 1.1763080501126393,
-    "n_samples": 13
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 257.820046905,
-    "end_s": 259.625043905,
-    "peak": 2.286246113459981,
-    "n_samples": 5
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
-    "key": "amcl_vs_odom",
-    "start_s": 257.820046905,
-    "end_s": 258.723050905,
-    "peak": 0.6279175366102936,
-    "n_samples": 3
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "position_sigma_m",
-    "key": "position",
-    "start_s": 274.336969905,
-    "end_s": 279.901950905,
-    "peak": 1.6225833330438135,
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 234.359163905,
+    "end_s": 244.836125905,
+    "peak": 32.11866166244817,
     "n_samples": 12
   },
   {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 274.336969905,
-    "end_s": 279.901950905,
-    "peak": 1.4793164107892596,
-    "n_samples": 12
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 276.893968905,
-    "end_s": 277.394956905,
-    "peak": 0.6961944236271617,
-    "n_samples": 2
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
-    "key": "amcl_vs_odom",
-    "start_s": 277.895945905,
-    "end_s": 279.399943905,
-    "peak": 1.424095649531979,
-    "n_samples": 4
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 278.898948905,
-    "end_s": 279.399943905,
-    "peak": 0.5202852827936566,
-    "n_samples": 2
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 248.345103905,
+    "end_s": 253.007076905,
+    "peak": 738.1393674459724,
+    "n_samples": 10
   },
   {
     "detector": "covariance_spike",
     "param": "position_sigma_m",
     "key": "position",
-    "start_s": 297.094851905,
-    "end_s": 300.252834905,
-    "peak": 1.4049563850512876,
-    "n_samples": 7
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 297.094851905,
-    "end_s": 299.751843905,
-    "peak": 1.2303237384757135,
-    "n_samples": 6
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 297.746850905,
-    "end_s": 299.250848905,
-    "peak": 1.096080705852929,
-    "n_samples": 4
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
-    "key": "amcl_vs_odom",
-    "start_s": 297.746850905,
-    "end_s": 298.748836905,
-    "peak": 0.6816468646591765,
-    "n_samples": 3
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "position_sigma_m",
-    "key": "position",
-    "start_s": 308.473808905,
-    "end_s": 315.466766905,
-    "peak": 15.045903026483147,
-    "n_samples": 15
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 308.975805905,
-    "end_s": 311.456792905,
-    "peak": 2.0586154735901316,
-    "n_samples": 6
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "displacement_delta_m",
-    "key": "amcl_vs_odom",
-    "start_s": 309.476804905,
-    "end_s": 310.955797905,
-    "peak": 14.58081981303088,
-    "n_samples": 4
-  },
-  {
-    "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
-    "key": "amcl_vs_odom",
-    "start_s": 309.476804905,
-    "end_s": 310.955797905,
-    "peak": 1.3146864057444196,
-    "n_samples": 4
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "position_sigma_m",
-    "key": "position",
-    "start_s": 356.722580905,
-    "end_s": 368.777498905,
-    "peak": 10.83037369893996,
-    "n_samples": 25
-  },
-  {
-    "detector": "covariance_spike",
-    "param": "yaw_sigma_rad",
-    "key": "yaw",
-    "start_s": 357.223571905,
-    "end_s": 362.236551905,
-    "peak": 1.9062759161833578,
+    "start_s": 249.349092905,
+    "end_s": 254.261067905,
+    "peak": 16.306224605368854,
     "n_samples": 11
   },
   {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 251.504080905,
+    "end_s": 254.261067905,
+    "peak": 2.126008653638936,
+    "n_samples": 6
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 252.506084905,
+    "end_s": 252.506084905,
+    "peak": 3.2739363906619046,
+    "n_samples": 1
+  },
+  {
     "detector": "pose_divergence",
     "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
-    "start_s": 357.724565905,
-    "end_s": 360.231560905,
-    "peak": 22.823487622527907,
+    "start_s": 252.507076905,
+    "end_s": 254.261067905,
+    "peak": 32.839562584291826,
+    "n_samples": 4
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 256.768065905,
+    "end_s": 263.936035905,
+    "peak": 8.554938332964653,
+    "n_samples": 17
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 256.768065905,
+    "end_s": 263.936035905,
+    "peak": 1.2658418799685602,
+    "n_samples": 17
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 257.971055905,
+    "end_s": 258.923043905,
+    "peak": 0.8539032636544799,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 258.271043905,
+    "end_s": 259.875031905,
+    "peak": 0.9031307951417709,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 258.471055905,
+    "end_s": 264.436035905,
+    "peak": 1088.8780511155067,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 258.471055905,
+    "end_s": 258.471055905,
+    "peak": 40.8464610338933,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 268.722006905,
+    "end_s": 268.722006905,
+    "peak": 3.0419908784491567,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 272.781983905,
+    "end_s": 280.150948905,
+    "peak": 847.9528613726268,
+    "n_samples": 12
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 272.781983905,
+    "end_s": 277.643952905,
+    "peak": 29.628576940659606,
+    "n_samples": 5
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 274.637973905,
+    "end_s": 279.650948905,
+    "peak": 5.661810932408986,
+    "n_samples": 11
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 274.637973905,
+    "end_s": 278.647941905,
+    "peak": 1.4508655796525678,
+    "n_samples": 9
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 276.141970905,
+    "end_s": 278.647941905,
+    "peak": 1.7382667172348012,
     "n_samples": 6
   },
   {
     "detector": "pose_divergence",
-    "param": "yaw_delta_rad",
+    "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
-    "start_s": 357.724565905,
-    "end_s": 358.727570905,
-    "peak": 2.54112441613808,
-    "n_samples": 3
+    "start_s": 277.143952905,
+    "end_s": 278.647941905,
+    "peak": 4.972751841635824,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 297.945856905,
+    "end_s": 298.497853905,
+    "peak": 5.020769245244169,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 301.504831905,
+    "end_s": 315.214768905,
+    "peak": 800.3404081869214,
+    "n_samples": 26
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 313.712782905,
+    "end_s": 318.875760905,
+    "peak": 17.028643776206387,
+    "n_samples": 11
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 314.213775905,
+    "end_s": 317.271767905,
+    "peak": 0.9141662611253667,
+    "n_samples": 7
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 314.714768905,
+    "end_s": 316.218765905,
+    "peak": 35.41672888893036,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 315.214768905,
+    "end_s": 315.214768905,
+    "peak": 7.006995017858288,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 318.773760905,
+    "end_s": 328.398713905,
+    "peak": 5.802120261013195,
+    "n_samples": 11
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 332.409685905,
+    "end_s": 352.461597905,
+    "peak": 21.005656887778088,
+    "n_samples": 41
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 332.409685905,
+    "end_s": 351.458595905,
+    "peak": 2.1153208101364425,
+    "n_samples": 39
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 333.412684905,
+    "end_s": 334.916681905,
+    "peak": 50.15501137510588,
+    "n_samples": 4
   },
   {
     "detector": "pose_divergence",
     "param": "yaw_delta_rad",
     "key": "amcl_vs_odom",
-    "start_s": 359.729553905,
-    "end_s": 360.231560905,
-    "peak": 2.1317701115898324,
+    "start_s": 333.412684905,
+    "end_s": 334.916681905,
+    "peak": 2.078467011598821,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 333.912684905,
+    "end_s": 333.912684905,
+    "peak": 2287.817381156059,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 333.912684905,
+    "end_s": 333.912684905,
+    "peak": 41.495511867134184,
+    "n_samples": 1
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 339.427656905,
+    "end_s": 340.931647905,
+    "peak": 45.22087682289789,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 339.427656905,
+    "end_s": 340.931647905,
+    "peak": 1.0428723732246277,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 339.927656905,
+    "end_s": 344.439644905,
+    "peak": 1541.1971139249447,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 339.927656905,
+    "end_s": 339.927656905,
+    "peak": 20.77268300427368,
+    "n_samples": 1
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 342.435651905,
+    "end_s": 345.443631905,
+    "peak": 18.599925152483582,
+    "n_samples": 7
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 342.435651905,
+    "end_s": 345.443631905,
+    "peak": 2.747730590498693,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 342.935651905,
+    "end_s": 344.439644905,
+    "peak": 41.57025035638518,
     "n_samples": 2
   },
   {
     "detector": "pose_divergence",
     "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
-    "start_s": 361.233542905,
-    "end_s": 362.236551905,
-    "peak": 4.2831931700919466,
-    "n_samples": 3
+    "start_s": 350.957597905,
+    "end_s": 352.461597905,
+    "peak": 19.649276454212785,
+    "n_samples": 4
   },
   {
     "detector": "pose_divergence",
     "param": "yaw_delta_rad",
     "key": "amcl_vs_odom",
-    "start_s": 361.233542905,
-    "end_s": 362.236551905,
-    "peak": 1.521575391621278,
-    "n_samples": 3
+    "start_s": 350.957597905,
+    "end_s": 352.461597905,
+    "peak": 2.0987696522005024,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 351.457597905,
+    "end_s": 351.457597905,
+    "peak": 1237.1758209456557,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 351.457597905,
+    "end_s": 351.457597905,
+    "peak": 41.89144352365522,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 363.989541905,
+    "end_s": 365.994530905,
+    "peak": 3.535136183996141,
+    "n_samples": 2
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 368.026519905,
+    "end_s": 373.389489905,
+    "peak": 15.247094265126792,
+    "n_samples": 14
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 368.026519905,
+    "end_s": 372.788500905,
+    "peak": 2.064120390364035,
+    "n_samples": 12
   },
   {
     "detector": "pose_divergence",
     "param": "displacement_delta_m",
     "key": "amcl_vs_odom",
-    "start_s": 363.740545905,
-    "end_s": 365.243525905,
-    "peak": 14.41556561611561,
-    "n_samples": 4
+    "start_s": 369.028506905,
+    "end_s": 371.434509905,
+    "peak": 22.869917317499414,
+    "n_samples": 7
   },
   {
     "detector": "pose_divergence",
-    "param": "displacement_delta_m",
+    "param": "yaw_delta_rad",
     "key": "amcl_vs_odom",
-    "start_s": 366.246525905,
-    "end_s": 367.775517905,
-    "peak": 12.528931588405483,
-    "n_samples": 4
+    "start_s": 369.028506905,
+    "end_s": 371.434509905,
+    "peak": 3.353874818793768,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 369.528506905,
+    "end_s": 370.330513905,
+    "peak": 1201.6401515458306,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->odom_combined",
+    "start_s": 369.528506905,
+    "end_s": 370.330513905,
+    "peak": 46.986478940212955,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 381.860447905,
+    "end_s": 390.031411905,
+    "peak": 12.03103177347181,
+    "n_samples": 18
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->odom_combined",
+    "start_s": 394.066381905,
+    "end_s": 396.122381905,
+    "peak": 4.370117988898622,
+    "n_samples": 5
   }
 ]

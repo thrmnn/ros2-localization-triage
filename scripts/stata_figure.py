@@ -41,7 +41,7 @@ ax.plot(amcl[excursion, 1], amcl[excursion, 2], color="#999999", lw=1.0, ls="--"
 # 20 m teleport with a line would draw walls the robot never crossed.
 li = np.where(lost)[0]
 seg_start = 0
-lbl = "AMCL after returning: 19.6 m wrong at 6 cm reported sigma"
+lbl = "AMCL after returning: 19.4 m wrong at 8 cm reported sigma"
 for k in range(1, len(li) + 1):
     jump = k == len(li) or np.hypot(amcl[li[k], 1] - amcl[li[k - 1], 1],
                                     amcl[li[k], 2] - amcl[li[k - 1], 2]) > 2.0
@@ -54,7 +54,7 @@ ax.scatter(amcl[li, 1], amcl[li, 2], s=6, c="#c93030", linewidths=0)
 
 # One annotation carries the finding for a reader who skips the caption.
 end = amcl[li[-1], 1:3]
-ax.annotate("AMCL ends here,\nreporting 6 cm of confidence",
+ax.annotate("AMCL ends here,\nreporting 8 cm of confidence",
             xy=(end[0], end[1]), xytext=(14, 168),
             fontsize=10, ha="left",
             arrowprops=dict(arrowstyle="->", color="#c93030", lw=1.2))
@@ -67,7 +67,7 @@ ax.annotate("the robot actually ends here",
 ax.set_aspect("equal")
 ax.set_xlabel("x (m)")
 ax.set_ylabel("y (m)")
-ax.set_title("A lost localiser that reports six centimetres of confidence\n"
+ax.set_title("A lost localiser that reports eight centimetres of confidence\n"
              "MIT Stata Center floor 2, PR2 replayed through AMCL")
 ax.legend(loc="upper right", fontsize=8.5, framealpha=0.95)
 fig.tight_layout()

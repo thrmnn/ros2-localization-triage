@@ -17,7 +17,7 @@ rosrun amcl amcl scan:=/base_scan \
   > amcl.log 2>&1 &
 AM=$!
 sleep 2
-rosbag record -O amcl_out.bag /amcl_pose __name:=rec > record.log 2>&1 &
+rosbag record -O amcl_out.bag /amcl_pose /tf __name:=rec > record.log 2>&1 &
 sleep 2
 rosbag play --clock --topics /base_scan /tf /base_odometry/odom -- "$BAG" > play.log 2>&1
 sleep 3

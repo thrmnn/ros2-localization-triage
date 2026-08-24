@@ -54,9 +54,10 @@ AprilTag system entirely separate from AMCL. Setup and full grading in
 
 | # | Detector | Signal | Peak | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|
-| G1 | pose_divergence | displacement | 22.82 m | 308 to 368s | **ungraded** | 9 detections inside the window where ground truth puts AMCL 19.6 m off median, 40.0 m max. Peaks match the measured error. Zero detections during the 113 s the ground truth shows AMCL healthy. |
-| G2 | covariance_spike | position sigma | 15.05 | 308 to 368s | **ungraded** | 4 detections in the same verified-lost window, sigma peaking at 15 m during relocalisation churn. The caveat is structural: between churn events AMCL reports 0.063 m sigma while 19.6 m wrong, and nothing fires. |
-| G3 | all four | n/a | n/a | 113 to 302s | **ungraded** | 28 detections while the robot was on a floor the map does not contain. No ground truth exists there, so these are reported, not graded. |
+| G1 | pose_divergence | displacement | 22.8 m | 303 to 390s | **ungraded** | 11 detections inside the window where ground truth puts AMCL 19.4 m off median, 39.8 m max. Peaks match the measured error. |
+| G2 | covariance_spike | position sigma | 15 m | 303 to 390s | **ungraded** | 6 detections in the same verified-lost window, sigma peaking during relocalisation churn. The caveat is structural: between churn events AMCL reports 0.081 m sigma while 19.4 m wrong, and nothing fires. |
+| G4 | tf_jump | map correction speed | 2288 m/s | 303 to 390s | **ungraded** | 13 detections on the map->odom_combined edge in the verified-lost window: AMCL teleporting its own frame while ground truth shows the robot moving normally. Two further detections in the healthy window at 2.5 to 3.2 m/s where ground truth bounds real error under 0.35 m: this edge's false-alarm floor at frozen thresholds, counted against it. |
+| G3 | all four | n/a | n/a | 113 to 302s | **ungraded** | 47 detections while the robot was on a floor the map does not contain. No ground truth exists there, so these are reported, not graded. |
 
 ## Rows from the León attack pair, 2026-08-24
 

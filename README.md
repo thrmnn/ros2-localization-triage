@@ -68,17 +68,17 @@ all, 38 percent of samples are above the same line.](docs/figures/threshold-tran
 recordings carry 2 and 14 laser gaps in the dataset's own Known Issues column, written
 years before this tool existed. Frozen thresholds found every one and nothing beyond
 them, on 53.7 minutes of real data from a platform they were never calibrated on. That was
-one detector on the easiest of the four failure modes; two of the other three have since
-caught real failures against independent ground truth, below. `tf_jump` still has no
-confirmed catch. [results/labelled/](results/labelled/)
+one detector on the easiest of the four failure modes; the other three have since caught
+real failures against independent ground truth, below. [results/labelled/](results/labelled/)
 
-**A localiser twenty metres wrong, reporting six centimetres of confidence, and the
+**A localiser twenty metres wrong, reporting eight centimetres of confidence, and the
 detectors caught the transition.** A PR2 replayed through AMCL against a map built only
 from the MIT Stata Center dataset's AprilTag ground truth: healthy for the first two
-minutes (centimetre tracking, zero detections), then lost after visiting a floor the map
-does not contain. In the window where the ground truth proves AMCL was 19.6 m off median,
-`pose_divergence` and `covariance_spike` fired 13 times with peaks matching the real
-error, their first non-circular true positives. The same experiment proves the limit:
+minutes (centimetre tracking), then lost after visiting a floor the map does not
+contain. In the window where the ground truth proves AMCL was 19.4 m off median,
+`pose_divergence`, `covariance_spike` and `tf_jump` fired 30 times with peaks matching
+the real error, the first non-circular true positives for all three. The same
+experiment proves the limit:
 once the wrong pose settles, both go silent, and no monitor built on the robot's own
 estimates can see it. [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)
 

@@ -1,7 +1,7 @@
 {
   "gt_source": "ceiling AprilTag system, independent of AMCL (MIT Stata Center dataset)",
-  "amcl_poses_total": 646,
-  "amcl_poses_matched_to_gt": 383,
+  "amcl_poses_total": 647,
+  "amcl_poses_matched_to_gt": 382,
   "windows": [
     {
       "window": "part1_healthy",
@@ -14,23 +14,31 @@
     },
     {
       "window": "part3_after_floor_change",
-      "n_matched": 187,
-      "position_error_median_m": 19.628,
-      "position_error_max_m": 40.029,
-      "forward_error_median_m": 3.205,
-      "yaw_error_median_deg": 98.1,
-      "amcl_reported_sigma_median_m": 0.063
+      "n_matched": 186,
+      "position_error_median_m": 19.428,
+      "position_error_max_m": 39.802,
+      "forward_error_median_m": 6.772,
+      "yaw_error_median_deg": 26.4,
+      "amcl_reported_sigma_median_m": 0.081
     }
   ],
   "detections_by_zone": {
+    "part1_healthy": {
+      "tf_jump": 2
+    },
     "excursion_no_gt": {
-      "covariance_spike": 12,
-      "pose_divergence": 16
+      "tf_jump": 25,
+      "covariance_spike": 10,
+      "pose_divergence": 12
     },
     "part3_lost": {
-      "covariance_spike": 4,
-      "pose_divergence": 9
+      "covariance_spike": 6,
+      "pose_divergence": 11,
+      "tf_jump": 13
+    },
+    "after_gt": {
+      "tf_jump": 1
     }
   },
-  "detections_total": 41
+  "detections_total": 80
 }

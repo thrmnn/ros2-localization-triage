@@ -45,8 +45,10 @@ about that recording is graded better than low-confidence.
   rather than adjusted until the number improved.
 - `pose_divergence` had no demonstrated true positive on the original public
   recording, and was listed as such for the first week. It has one now, on the
-  Stata Center replay, against AprilTag ground truth independent of the localiser
-  (docs/finding-confidently-wrong.md). `tf_jump` still has none anywhere.
+  Stata Center replay, against AprilTag ground truth independent of the
+  localiser, and the same replay gave `covariance_spike` and `tf_jump` theirs
+  (docs/finding-confidently-wrong.md). All four detectors now have at least one
+  catch on real data that is not self-graded against their own output.
 
 ## What this is not
 

@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results/stata"
 
 BAG_T0_US = 1_327_678_621_414_689  # first message in the bag, from its own index
-GT_GAP_S = (112.6, 302.5)  # between part1's last pose and part3's first, vs BAG_T0
+GT_ZONES_S = (112.6, 302.5, 390.3)  # part1 end, part3 start, part3 end, vs BAG_T0
 
 
 def load_gt() -> np.ndarray:
@@ -76,11 +76,13 @@ def main() -> None:
     dets = json.loads((RES / "detections.json").read_text())
 
     def zone(t):
-        if t < GT_GAP_S[0]:
+        if t < GT_ZONES_S[0]:
             return "part1_healthy"
-        if t < GT_GAP_S[1]:
+        if t < GT_ZONES_S[1]:
             return "excursion_no_gt"
-        return "part3_lost"
+        if t < GT_ZONES_S[2]:
+            return "part3_lost"
+        return "after_gt"
 
     counts: dict[str, dict[str, int]] = {}
     for d in dets:
@@ -93,8 +95,8 @@ def main() -> None:
         "amcl_poses_total": int(len(amcl)),
         "amcl_poses_matched_to_gt": int(len(e)),
         "windows": [
-            window(e[:, 0] < GT_GAP_S[0], "part1_healthy"),
-            window(e[:, 0] > GT_GAP_S[1], "part3_after_floor_change"),
+            window(e[:, 0] < GT_ZONES_S[0], "part1_healthy"),
+            window(e[:, 0] > GT_ZONES_S[1], "part3_after_floor_change"),
         ],
         "detections_by_zone": counts,
         "detections_total": len(dets),
