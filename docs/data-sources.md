@@ -36,10 +36,34 @@ Warthog is a large outdoor platform, far from a TurtleBot3. Best volume-to-effor
 ratio available.
 
 **LILocBench** (University of Bonn). Purpose-built for long-term localisation
-failure and **it ships an AMCL baseline**. Licence is NC-SA, so usable for
-analysis but check before redistributing anything derived from it. This is the
-most directly relevant dataset found for the covariance detector, which currently
-has no confirmed true positive.
+failure. Checked 2026-08-24: it does **not** ship an AMCL baseline as earlier
+notes claimed; it ships raw ROS bags (Dingo robot, 2x SICK TIM781S, ceiling
+AprilTag ground truth) that would need the same self-replay this repo already
+does for Tiago. Licence is **CC BY-NC-SA, which forbids commercial use**. This
+practice is commercial, so findings built on this data cannot honestly support
+a paid service. Not pursued for that reason, not a technical one.
+
+**MIT Stata Center Dataset** (PR2, CC BY 3.0, commercially clean). Checked
+2026-08-24 and the most promising real lead for the two detectors with no
+confirmed catch. `/base_scan`, `/base_odometry/odom` and `/tf` at 557 Hz are
+real recorded topics, verified against a bag's own `.info` output, not
+inferred from the project page. 17 of its sequences carry independent ground
+truth: (x, y, yaw) at roughly 20 Hz from a ceiling AprilTag system, entirely
+separate from AMCL, so replaying a bag through AMCL and comparing its output
+against this ground truth would be a genuine, non-circular test for
+`covariance_spike` and `pose_divergence`, both of which need `/amcl_pose`.
+
+Verified for the smallest candidate, `2012-01-27-07-37-01.bag` (6:48, floors
+2 then 3 then 2): 200 seconds of real ground truth downloaded and inspected,
+CSV of `timestamp_us,x,y,yaw`, same epoch as the bag. ROS1 Noetic's own `amcl`
+and `map_server` packages are installed locally, so this needs no bridging.
+
+**Blocked, not abandoned.** The file itself and a second, larger candidate
+both returned Google Drive's "quota exceeded" page within minutes of each
+other, a shared, traffic-dependent limit stated to clear within 24 hours,
+confirmed by Drive's own error text rather than inferred. Retry either bag
+once the quota clears; the ground truth for the first is already on disk. No
+new dataset or tooling has to be found, only time.
 
 **Hard Point Cloud Localization.** Contains literal `indoor_kidnap` and
 `outdoor_kidnap` sequences with ground truth. A kidnap is exactly what the
@@ -47,11 +71,6 @@ transform-jump detector claims to catch, and here it is labelled by someone else
 
 **León attack bags.** Paired clean and attacked runs of the same route. Paired
 data is the ideal evaluation structure, because the clean run is the control.
-
-**MIT Stata Center** (PR2, 38 hours, CC BY 3.0). Scans, wheel odometry and
-transforms already present, 2 cm ground truth on 17 sequences. Note the download
-page is `downloads.html`, not `downloads.php`, which is a dead link still cited in
-places.
 
 **CARMEN logs** mirrored at Bonn and Freiburg (CC BY). Thirteen different legacy
 robots, 2D laser and wheel odometry, under 200 MB in total. The cheapest platform
