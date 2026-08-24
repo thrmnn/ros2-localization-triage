@@ -44,3 +44,27 @@ rubric rule 3 no causal claim can be graded better than low-confidence.
 | tf_jump | fired | fired |
 | pose_divergence | fired | **never fired** |
 | scan_gap | fired | **never fired** |
+
+## Rows from the Stata Center replay, 2026-08-24
+
+The first rows with real, independent ground truth: (x, y, yaw) at 20 Hz from a ceiling
+AprilTag system entirely separate from AMCL. Setup and full grading in
+`finding-confidently-wrong.md`; numbers recompute from `results/stata/` via
+`scripts/stata_grade.py`. The replay itself is self-run, disclosed as everywhere else.
+
+| # | Detector | Signal | Peak | Window | Outcome | Notes |
+|---|---|---|---|---|---|---|
+| G1 | pose_divergence | displacement | 22.82 m | 308 to 368s | **ungraded** | 9 detections inside the window where ground truth puts AMCL 19.6 m off median, 40.0 m max. Peaks match the measured error. Zero detections during the 113 s the ground truth shows AMCL healthy. |
+| G2 | covariance_spike | position sigma | 15.05 | 308 to 368s | **ungraded** | 4 detections in the same verified-lost window, sigma peaking at 15 m during relocalisation churn. The caveat is structural: between churn events AMCL reports 0.063 m sigma while 19.6 m wrong, and nothing fires. |
+| G3 | all four | n/a | n/a | 113 to 302s | **ungraded** | 28 detections while the robot was on a floor the map does not contain. No ground truth exists there, so these are reported, not graded. |
+
+## Rows from the León attack pair, 2026-08-24
+
+Paired clean and attacked runs of the same route, attack label written by the dataset's
+authors. Full writeup in `finding-recorder-artifacts.md`; numbers recompute from
+`results/leon/`.
+
+| # | Detector | Signal | Peak | Window | Outcome | Notes |
+|---|---|---|---|---|---|---|
+| L1 | scan_gap | gap_ratio | 339.7 | attack run | **ungraded** | A genuine 22.7 s hole in the sensor stream during the cmd_vel flood, absent from the clean control. Found only after the receive-time defect was fixed; before the fix the same detector produced 37 false detections on the healthy control. |
+| L2 | tf_jump | odom->base speed | 0.52 m/s | both runs | **ungraded** | Fires identically on clean and attack at 0.4 to 0.5 m/s against a 0.35 threshold calibrated to a different platform's top speed. Separates nothing; transferability, not detection. |

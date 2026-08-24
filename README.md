@@ -49,7 +49,7 @@ Working, raw detections and the label source: [results/labelled/](results/labell
 
 ## What this found
 
-Four results, in the order a sceptical reader should care about. Each links to the
+Six results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
 
 **The same frozen thresholds mean opposite things on different robots.** Calibrated
@@ -67,9 +67,27 @@ all, 38 percent of samples are above the same line.](docs/figures/threshold-tran
 **Against labels somebody else wrote, the gap detector found 16 of 16.** Two Cartographer
 recordings carry 2 and 14 laser gaps in the dataset's own Known Issues column, written
 years before this tool existed. Frozen thresholds found every one and nothing beyond
-them, on 53.7 minutes of real data from a platform they were never calibrated on. That is
-one detector on the easiest of the four failure modes; the other three still have no
-confirmed catch on real data. [results/labelled/](results/labelled/)
+them, on 53.7 minutes of real data from a platform they were never calibrated on. That was
+one detector on the easiest of the four failure modes; two of the other three have since
+caught real failures against independent ground truth, below. `tf_jump` still has no
+confirmed catch. [results/labelled/](results/labelled/)
+
+**A localiser twenty metres wrong, reporting six centimetres of confidence, and the
+detectors caught the transition.** A PR2 replayed through AMCL against a map built only
+from the MIT Stata Center dataset's AprilTag ground truth: healthy for the first two
+minutes (centimetre tracking, zero detections), then lost after visiting a floor the map
+does not contain. In the window where the ground truth proves AMCL was 19.6 m off median,
+`pose_divergence` and `covariance_spike` fired 13 times with peaks matching the real
+error, their first non-circular true positives. The same experiment proves the limit:
+once the wrong pose settles, both go silent, and no monitor built on the robot's own
+estimates can see it. [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)
+
+**The gap detector spent its first weeks measuring the recorder, not the sensor.** On a
+public paired clean-and-attack dataset, receive-time gaps produced 37 detections on a
+perfectly healthy laser, because the bag writer stalled for 27 seconds while the sensor
+never missed a beat. Measured on the sensor's own stamps instead: zero on the clean run,
+and the attack run's genuine 22.7-second data hole surfaces at 340 times the median
+interval. [docs/finding-recorder-artifacts.md](docs/finding-recorder-artifacts.md)
 
 **A pre-registered prediction that the detectors would find nothing, which held.** On a
 benchmark whose authors engineered two runs to fail by locking the robot's route, the

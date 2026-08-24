@@ -43,34 +43,35 @@ does for Tiago. Licence is **CC BY-NC-SA, which forbids commercial use**. This
 practice is commercial, so findings built on this data cannot honestly support
 a paid service. Not pursued for that reason, not a technical one.
 
-**MIT Stata Center Dataset** (PR2, CC BY 3.0, commercially clean). Checked
-2026-08-24 and the most promising real lead for the two detectors with no
-confirmed catch. `/base_scan`, `/base_odometry/odom` and `/tf` at 557 Hz are
-real recorded topics, verified against a bag's own `.info` output, not
-inferred from the project page. 17 of its sequences carry independent ground
-truth: (x, y, yaw) at roughly 20 Hz from a ceiling AprilTag system, entirely
-separate from AMCL, so replaying a bag through AMCL and comparing its output
-against this ground truth would be a genuine, non-circular test for
-`covariance_spike` and `pose_divergence`, both of which need `/amcl_pose`.
+**MIT Stata Center Dataset** (PR2, CC BY 3.0, commercially clean). **Used, 2026-08-24,
+and it delivered.** The smallest floor-2 candidate, `2012-01-27-07-37-01.bag` (7.1 GB,
+6:48), downloaded after the Drive quota cleared, replayed through ROS 1 AMCL against a
+map rasterised from the dataset's own AprilTag ground truth, and graded against that
+same independent ground truth. Result: the first non-circular true positives for
+`pose_divergence` and `covariance_spike`, and a demonstrated structural miss. Full
+writeup in `finding-confidently-wrong.md`; every number recomputes from
+`results/stata/` without the bag. 16 more ground-truthed sequences remain if more
+windows are ever needed.
 
-Verified for the smallest candidate, `2012-01-27-07-37-01.bag` (6:48, floors
-2 then 3 then 2): 200 seconds of real ground truth downloaded and inspected,
-CSV of `timestamp_us,x,y,yaw`, same epoch as the bag. ROS1 Noetic's own `amcl`
-and `map_server` packages are installed locally, so this needs no bridging.
+**Universidad de León attack bags, the current generation.** The old paired
+clean-vs-attack lead resolved to something better: [Simulated attacks Rosbags against
+mobile robot in ROS 2](https://zenodo.org/records/17649537) (published 2025-11,
+**CC BY 4.0, commercially clean, anonymous download**). ROS 2 bags from a Tiago-family
+robot: paired clean and cmd_vel-flood runs of the same route, `/scan`, `/tf`,
+`/mobile_base_controller/odom`, and a live `map->odom` edge, so a localiser was
+running during the attacks. Used 2026-08-24: exposed a real defect in `scan_gap`
+(receive time vs header stamps) and then gave the fixed detector a labelled catch.
+See `finding-recorder-artifacts.md` and `results/leon/`. Experiment 2 (3.1 GB, more
+runs) is downloaded and unexamined.
 
-**Blocked, not abandoned.** The file itself and a second, larger candidate
-both returned Google Drive's "quota exceeded" page within minutes of each
-other, a shared, traffic-dependent limit stated to clear within 24 hours,
-confirmed by Drive's own error text rather than inferred. Retry either bag
-once the quota clears; the ground truth for the first is already on disk. No
-new dataset or tooling has to be found, only time.
-
-**Hard Point Cloud Localization.** Contains literal `indoor_kidnap` and
-`outdoor_kidnap` sequences with ground truth. A kidnap is exactly what the
-transform-jump detector claims to catch, and here it is labelled by someone else.
-
-**León attack bags.** Paired clean and attacked runs of the same route. Paired
-data is the ideal evaluation structure, because the clean run is the control.
+**Hard Point Cloud Localization** ([Zenodo](https://zenodo.org/records/10122133),
+Koide et al., AIST). Checked 2026-08-24: **CC BY 4.0, commercially clean, anonymous
+download**, with literal `indoor_kidnap` and `outdoor_kidnap` sequences introduced by
+the MegaParticles paper (arXiv:2404.16370). The catch: it is a **3D LiDAR** dataset
+with `.ply` point-cloud maps, no 2D scan and no AMCL-shaped pipeline, so using it
+means projecting 3D to 2D or running a different localiser. Kidnaps labelled by
+someone else remain exactly what `tf_jump` needs; the format is why this is future
+work rather than done.
 
 **CARMEN logs** mirrored at Bonn and Freiburg (CC BY). Thirteen different legacy
 robots, 2D laser and wheel odometry, under 200 MB in total. The cheapest platform

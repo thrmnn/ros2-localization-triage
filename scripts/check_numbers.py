@@ -120,6 +120,33 @@ def labelled_recall() -> list[int]:
     return out
 
 
+
+def stata_grading() -> list[float]:
+    """Re-run the Stata grading from the committed CSVs and return the numbers the
+    finding doc leans on. A drifted CSV or an edited doc number fails here."""
+    import subprocess
+    subprocess.run([sys.executable, str(ROOT / "scripts/stata_grade.py")],
+                   check=True, capture_output=True)
+    d = json.loads((ROOT / "results/stata/gt_comparison.json").read_text())
+    w1, w3 = d["windows"]
+    lost = d["detections_by_zone"]["part3_lost"]
+    return [w1["position_error_median_m"], w3["position_error_median_m"],
+            w3["position_error_max_m"], w3["amcl_reported_sigma_median_m"],
+            lost["pose_divergence"] + lost["covariance_spike"]]
+
+
+def leon_scan_gap_counts() -> list[float]:
+    """The before/after of the receive-time fix, from the committed detection JSONs."""
+    def count(f, det):
+        return sum(1 for d in json.loads((ROOT / "results/leon" / f).read_text())
+                   if d["detector"] == det)
+    peak = max((d["peak"] for d in
+                json.loads((ROOT / "results/leon/E1-2_header_time.json").read_text())
+                if d["detector"] == "scan_gap"))
+    return [count("E1-1_receive_time.json", "scan_gap"),
+            count("E1-1_header_time.json", "scan_gap"), round(peak, 1)]
+
+
 MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
@@ -140,6 +167,16 @@ MANIFEST = [
      "expect": [2, 14],
      "covers": [2, 14, 16, 32, 28],
      "note": "the 16 of 16, re-derived by clustering the committed JSON within 2 s"},
+    {"name": "stata grading recomputes from committed CSVs",
+     "compute": stata_grading,
+     "expect": [0.278, 19.628, 40.029, 0.063, 13],
+     "covers": [0.278, 19.628, 40.029, 0.063, 13, 19.6, 40, 646, 383],
+     "note": "healthy median, lost median and max, the confident sigma, and the 13 true positives"},
+    {"name": "leon receive-vs-header counts recompute from committed JSONs",
+     "compute": leon_scan_gap_counts,
+     "expect": [37, 0, 339.7],
+     "covers": [37, 0, 339.7, 340],
+     "note": "37 false detections before the fix, zero after, and the attack hole's ratio"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,

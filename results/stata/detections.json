@@ -1,0 +1,371 @@
+[
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 138.892632905,
+    "end_s": 139.644632905,
+    "peak": 0.4679926820343875,
+    "n_samples": 2
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 184.234407905,
+    "end_s": 198.921336905,
+    "peak": 14.231990164789355,
+    "n_samples": 30
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 184.234407905,
+    "end_s": 194.761362905,
+    "peak": 2.2315186821880424,
+    "n_samples": 22
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 185.738405905,
+    "end_s": 187.242397905,
+    "peak": 33.83195866149891,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 185.738405905,
+    "end_s": 187.242397905,
+    "peak": 1.9482784329801766,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 188.745382905,
+    "end_s": 190.249374905,
+    "peak": 17.614982852756107,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 188.745382905,
+    "end_s": 190.249374905,
+    "peak": 2.040271949300128,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 193.257367905,
+    "end_s": 194.761362905,
+    "peak": 13.283711010401474,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 193.257367905,
+    "end_s": 194.761362905,
+    "peak": 2.387109547257138,
+    "n_samples": 4
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 200.124328905,
+    "end_s": 201.628323905,
+    "peak": 1.4254818616375478,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 201.628323905,
+    "end_s": 203.132322905,
+    "peak": 1.1110152364613355,
+    "n_samples": 4
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 250.402088905,
+    "end_s": 254.011077905,
+    "peak": 15.197942088722998,
+    "n_samples": 8
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 250.853094905,
+    "end_s": 254.011077905,
+    "peak": 1.2803927052165023,
+    "n_samples": 7
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 251.855075905,
+    "end_s": 253.359070905,
+    "peak": 6.102275297941586,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 251.855075905,
+    "end_s": 253.359070905,
+    "peak": 1.5708620044810402,
+    "n_samples": 4
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 256.617057905,
+    "end_s": 261.630028905,
+    "peak": 9.997496063071265,
+    "n_samples": 13
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 256.617057905,
+    "end_s": 261.630028905,
+    "peak": 1.1763080501126393,
+    "n_samples": 13
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 257.820046905,
+    "end_s": 259.625043905,
+    "peak": 2.286246113459981,
+    "n_samples": 5
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 257.820046905,
+    "end_s": 258.723050905,
+    "peak": 0.6279175366102936,
+    "n_samples": 3
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 274.336969905,
+    "end_s": 279.901950905,
+    "peak": 1.6225833330438135,
+    "n_samples": 12
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 274.336969905,
+    "end_s": 279.901950905,
+    "peak": 1.4793164107892596,
+    "n_samples": 12
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 276.893968905,
+    "end_s": 277.394956905,
+    "peak": 0.6961944236271617,
+    "n_samples": 2
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 277.895945905,
+    "end_s": 279.399943905,
+    "peak": 1.424095649531979,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 278.898948905,
+    "end_s": 279.399943905,
+    "peak": 0.5202852827936566,
+    "n_samples": 2
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 297.094851905,
+    "end_s": 300.252834905,
+    "peak": 1.4049563850512876,
+    "n_samples": 7
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 297.094851905,
+    "end_s": 299.751843905,
+    "peak": 1.2303237384757135,
+    "n_samples": 6
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 297.746850905,
+    "end_s": 299.250848905,
+    "peak": 1.096080705852929,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 297.746850905,
+    "end_s": 298.748836905,
+    "peak": 0.6816468646591765,
+    "n_samples": 3
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 308.473808905,
+    "end_s": 315.466766905,
+    "peak": 15.045903026483147,
+    "n_samples": 15
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 308.975805905,
+    "end_s": 311.456792905,
+    "peak": 2.0586154735901316,
+    "n_samples": 6
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 309.476804905,
+    "end_s": 310.955797905,
+    "peak": 14.58081981303088,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 309.476804905,
+    "end_s": 310.955797905,
+    "peak": 1.3146864057444196,
+    "n_samples": 4
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "position_sigma_m",
+    "key": "position",
+    "start_s": 356.722580905,
+    "end_s": 368.777498905,
+    "peak": 10.83037369893996,
+    "n_samples": 25
+  },
+  {
+    "detector": "covariance_spike",
+    "param": "yaw_sigma_rad",
+    "key": "yaw",
+    "start_s": 357.223571905,
+    "end_s": 362.236551905,
+    "peak": 1.9062759161833578,
+    "n_samples": 11
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 357.724565905,
+    "end_s": 360.231560905,
+    "peak": 22.823487622527907,
+    "n_samples": 6
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 357.724565905,
+    "end_s": 358.727570905,
+    "peak": 2.54112441613808,
+    "n_samples": 3
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 359.729553905,
+    "end_s": 360.231560905,
+    "peak": 2.1317701115898324,
+    "n_samples": 2
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 361.233542905,
+    "end_s": 362.236551905,
+    "peak": 4.2831931700919466,
+    "n_samples": 3
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "yaw_delta_rad",
+    "key": "amcl_vs_odom",
+    "start_s": 361.233542905,
+    "end_s": 362.236551905,
+    "peak": 1.521575391621278,
+    "n_samples": 3
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 363.740545905,
+    "end_s": 365.243525905,
+    "peak": 14.41556561611561,
+    "n_samples": 4
+  },
+  {
+    "detector": "pose_divergence",
+    "param": "displacement_delta_m",
+    "key": "amcl_vs_odom",
+    "start_s": 366.246525905,
+    "end_s": 367.775517905,
+    "peak": 12.528931588405483,
+    "n_samples": 4
+  }
+]

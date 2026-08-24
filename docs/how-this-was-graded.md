@@ -43,8 +43,10 @@ about that recording is graded better than low-confidence.
   five reported incidents where the signal never left its own baseline. That is
   reported as `wrong`, not smoothed over, and the thresholds were left frozen
   rather than adjusted until the number improved.
-- One of four detectors, `pose_divergence`, has no demonstrated true positive on
-  the public recording at all. It is listed as such.
+- `pose_divergence` had no demonstrated true positive on the original public
+  recording, and was listed as such for the first week. It has one now, on the
+  Stata Center replay, against AprilTag ground truth independent of the localiser
+  (docs/finding-confidently-wrong.md). `tf_jump` still has none anywhere.
 
 ## What this is not
 

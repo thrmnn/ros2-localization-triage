@@ -1,0 +1,36 @@
+{
+  "gt_source": "ceiling AprilTag system, independent of AMCL (MIT Stata Center dataset)",
+  "amcl_poses_total": 646,
+  "amcl_poses_matched_to_gt": 383,
+  "windows": [
+    {
+      "window": "part1_healthy",
+      "n_matched": 196,
+      "position_error_median_m": 0.278,
+      "position_error_max_m": 0.351,
+      "forward_error_median_m": -0.276,
+      "yaw_error_median_deg": 0.39,
+      "amcl_reported_sigma_median_m": 0.044
+    },
+    {
+      "window": "part3_after_floor_change",
+      "n_matched": 187,
+      "position_error_median_m": 19.628,
+      "position_error_max_m": 40.029,
+      "forward_error_median_m": 3.205,
+      "yaw_error_median_deg": 98.1,
+      "amcl_reported_sigma_median_m": 0.063
+    }
+  ],
+  "detections_by_zone": {
+    "excursion_no_gt": {
+      "covariance_spike": 12,
+      "pose_divergence": 16
+    },
+    "part3_lost": {
+      "covariance_spike": 4,
+      "pose_divergence": 9
+    }
+  },
+  "detections_total": 41
+}
