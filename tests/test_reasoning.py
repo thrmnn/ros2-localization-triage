@@ -22,7 +22,7 @@ def signals() -> Signals:
         arrivals={"/scan": np.array([10.0, 20.0, 30.0]),
                   "/amcl_pose": np.array([10.0, 20.0, 30.0]),
                   "/particle_cloud": np.array([10.0, 20.0, 30.0])},
-        tf_edges={}, amcl=None, odom=None,
+        stamps={}, tf_edges={}, amcl=None, odom=None,
     )
 
 

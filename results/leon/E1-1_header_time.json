@@ -1,0 +1,20 @@
+[
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 13.485344399,
+    "end_s": 20.61963724,
+    "peak": 0.500711017513498,
+    "n_samples": 9
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 30.819426526,
+    "end_s": 62.61939143,
+    "peak": 0.5180860359880898,
+    "n_samples": 54
+  }
+]

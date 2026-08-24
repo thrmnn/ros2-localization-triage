@@ -1,0 +1,26 @@
+{
+  "E1-1": {
+    "receive": {
+      "n": 484,
+      "median_dt_s": 0.001,
+      "max_dt_s": 27.131
+    },
+    "header": {
+      "n": 484,
+      "median_dt_s": 0.0667,
+      "max_dt_s": 0.2
+    }
+  },
+  "E1-2": {
+    "receive": {
+      "n": 208,
+      "median_dt_s": 0.001,
+      "max_dt_s": 13.712
+    },
+    "header": {
+      "n": 208,
+      "median_dt_s": 0.0667,
+      "max_dt_s": 22.667
+    }
+  }
+}

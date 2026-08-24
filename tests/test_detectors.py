@@ -16,7 +16,7 @@ def _series(t, v):
 def _signals(**kw):
     base = dict(
         path="x", start_ns=0, duration_s=10.0, topic_types={}, topic_counts={},
-        arrivals={}, tf_edges={}, amcl=None, odom=None,
+        arrivals={}, stamps={}, tf_edges={}, amcl=None, odom=None,
     )
     return Signals(**{**base, **kw})
 
@@ -87,3 +87,17 @@ def test_pose_divergence_ignores_the_window_before_odom_starts():
     for s in score(signals, cfg):
         assert s.t[-1] <= 25.0
         assert float(np.max(s.v)) < 1e-9
+
+
+def test_scan_gap_prefers_header_stamps_over_bursty_receive_times():
+    # Recorder wrote in bursts: receive times say 200x gaps, sensor stamps are clean.
+    bursty = np.concatenate([np.arange(20) * 0.001, 4.0 + np.arange(20) * 0.001])
+    clean = np.arange(40) * 0.1
+    cfg = ScanGapConfig(topics=("/scan",), min_absolute_gap_s=0.05, baseline_min_samples=5)
+    v = scan_gap(_signals(arrivals={"/scan": bursty}, stamps={"/scan": clean}), cfg)[0].v
+    assert v.max() <= 1.5
+
+    # And a real hole in the sensor stamps is still seen at full size.
+    holed = np.concatenate([np.arange(20) * 0.1, 10.0 + np.arange(20) * 0.1])
+    v = scan_gap(_signals(arrivals={"/scan": bursty}, stamps={"/scan": holed}), cfg)[0].v
+    assert v.max() > 50

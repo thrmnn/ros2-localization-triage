@@ -63,6 +63,7 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
     store = get_typestore(_STORES[typestore])
 
     arrivals: dict[str, list[float]] = defaultdict(list)
+    stamp_rows: dict[str, list[int]] = defaultdict(list)
     tf_rows: dict[tuple[str, str], list[tuple[float, float, float, float]]] = defaultdict(list)
     odom_rows: list[tuple[float, float, float, float]] = []
     amcl_rows: list[tuple[float, float, float, float, float, float]] = []
@@ -77,6 +78,14 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
 
         for conn, ts, raw in reader.messages():
             arrivals[conn.topic].append((ts - start_ns) / 1e9)
+            if conn.topic == topics["scan"]:
+                # A bag writer that batches or stalls makes receive times measure the
+                # recorder, not the sensor. The header stamp is the sensor's own clock.
+                msg = reader.deserialize(raw, conn.msgtype)
+                stamp = _stamp_ns(msg.header)
+                if stamp > 0:
+                    skews.append(ts - stamp)
+                    stamp_rows[conn.topic].append(stamp)
             if conn.topic in (topics["tf"], topics["tf_static"]):
                 msg = reader.deserialize(raw, conn.msgtype)
                 for tr in msg.transforms:
@@ -137,6 +146,10 @@ def read_signals(bag_path: str | Path, topics: dict[str, str], typestore: str) -
         topic_types=topic_types,
         topic_counts=topic_counts,
         arrivals={k: np.asarray(sorted(v), dtype=float) for k, v in arrivals.items()},
+        stamps={
+            k: np.asarray(sorted((x + shift - start_ns) / 1e9 for x in v), dtype=float)
+            for k, v in stamp_rows.items()
+        },
         tf_edges={k: _track(v) for k, v in tf_rows.items() if len(v) >= 2},
         amcl=amcl,
         odom=_track(odom_rows) if len(odom_rows) >= 2 else None,

@@ -1,4 +1,9 @@
-"""Sensor dropout: an inter-arrival gap far larger than the topic's own median.
+"""Sensor dropout: an inter-message gap far larger than the topic's own median.
+
+Measured on header stamps where the messages carry them, receive times otherwise.
+A bag writer that batches or stalls puts multi-second holes into receive times
+while the sensor never missed a beat; on one public recording that difference
+was 37 false detections on a healthy laser.
 
 Ratio to the median rather than an absolute period, so the same threshold
 transfers between a 10 Hz and a 40 Hz recording. Gaps shorter than
@@ -19,7 +24,9 @@ from .base import ScoreSeries
 def score(signals: Signals, cfg: ScanGapConfig) -> list[ScoreSeries]:
     out: list[ScoreSeries] = []
     for topic in cfg.topics:
-        arrivals = signals.arrivals.get(topic)
+        arrivals = signals.stamps.get(topic)
+        if arrivals is None or arrivals.size < cfg.baseline_min_samples:
+            arrivals = signals.arrivals.get(topic)
         if arrivals is None or arrivals.size < cfg.baseline_min_samples:
             continue
         gaps = np.diff(arrivals)

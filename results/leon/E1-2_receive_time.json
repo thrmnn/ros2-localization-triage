@@ -1,0 +1,173 @@
+[
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 8.403554281,
+    "end_s": 8.403554281,
+    "peak": 226.72371799064004,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 9.066090882,
+    "end_s": 9.066090882,
+    "peak": 680.4187862704988,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 9.295287132,
+    "end_s": 9.295287132,
+    "peak": 224.90424346356144,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 15.951753961,
+    "end_s": 20.618206131,
+    "peak": 0.41571198298021145,
+    "n_samples": 7
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 23.019802824,
+    "end_s": 23.019802824,
+    "peak": 14334.094272087747,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 23.618294107,
+    "end_s": 23.618294107,
+    "peak": 0.3554896290004105,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 29.674186496,
+    "end_s": 29.674186496,
+    "peak": 6925.982974472536,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 32.9058767,
+    "end_s": 32.9058767,
+    "peak": 3375.1626992279803,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 33.157192426,
+    "end_s": 33.157192426,
+    "peak": 228.8051407857935,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 33.365907488,
+    "end_s": 33.365907488,
+    "peak": 216.41988388239892,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 36.521981624,
+    "end_s": 36.521981624,
+    "peak": 3290.7662184793703,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 36.733913916,
+    "end_s": 36.733913916,
+    "peak": 219.14164708297815,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 36.962017502,
+    "end_s": 36.962017502,
+    "peak": 221.3293279272775,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 37.272590617,
+    "end_s": 37.272590617,
+    "peak": 228.764686019862,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 37.558168,
+    "end_s": 37.558168,
+    "peak": 223.15612717127604,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 37.950585788,
+    "end_s": 37.950585788,
+    "peak": 218.10865920059211,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 38.257894631,
+    "end_s": 38.257894631,
+    "peak": 224.51688855714244,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 39.787887073,
+    "end_s": 39.787887073,
+    "peak": 1597.5810757345616,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": 39.993846006,
+    "end_s": 39.993846006,
+    "peak": 215.27742038577728,
+    "n_samples": 1
+  }
+]

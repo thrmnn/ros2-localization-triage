@@ -33,6 +33,7 @@ class Signals:
     topic_types: dict[str, str]
     topic_counts: dict[str, int]
     arrivals: dict[str, np.ndarray]  # topic -> receive times, seconds since bag start
+    stamps: dict[str, np.ndarray]  # topic -> header stamps for stamped sensor topics; empty when unstamped
     tf_edges: dict[tuple[str, str], PoseTrack]  # (parent, child) -> track, stamped times
     amcl: PoseCovTrack | None
     odom: PoseTrack | None

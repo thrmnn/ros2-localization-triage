@@ -1,0 +1,38 @@
+[
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": -57.71457137,
+    "end_s": -57.71457137,
+    "peak": 43.95406336183034,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "/scan",
+    "start_s": -29.847086085,
+    "end_s": -29.847086085,
+    "peak": 339.73864187172995,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 15.951753961,
+    "end_s": 20.618206131,
+    "peak": 0.41571198298021145,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "odom->base_footprint",
+    "start_s": 23.618294107,
+    "end_s": 23.618294107,
+    "peak": 0.3554896290004105,
+    "n_samples": 1
+  }
+]
