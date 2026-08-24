@@ -82,6 +82,10 @@ error, their first non-circular true positives. The same experiment proves the l
 once the wrong pose settles, both go silent, and no monitor built on the robot's own
 estimates can see it. [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)
 
+![The robot's true path and AMCL's belief drawn over the floor plan: they overlap
+until the elevator, then AMCL's red path runs through corridors the robot never
+entered.](docs/figures/stata-confidently-wrong.png)
+
 **The gap detector spent its first weeks measuring the recorder, not the sensor.** On a
 public paired clean-and-attack dataset, receive-time gaps produced 37 detections on a
 perfectly healthy laser, because the bag writer stalled for 27 seconds while the sensor

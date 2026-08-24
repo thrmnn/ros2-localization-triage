@@ -38,6 +38,10 @@ within 50 ms:
 | Floor 2, before the elevator | 0.278 m | 0.351 m | 0.4° | 0.044 m |
 | Floor 2, after returning | **19.628 m** | **40.029 m** | **98.1°** | **0.063 m** |
 
+![Floor plan traced from ground truth, with the robot's true path in green, AMCL's
+healthy tracking in blue on top of it, and AMCL's post-excursion path in red,
+displaced whole corridors away from where the robot actually drove.](figures/stata-confidently-wrong.png)
+
 Two readings, one per row.
 
 **The healthy window's 0.278 m is not error.** Decomposed in the robot's own frame
