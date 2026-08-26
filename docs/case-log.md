@@ -2,12 +2,15 @@
 
 Graded against `docs/case-log-rubric.md`, which was fixed and committed **before** any of
 this output existed. The `outcome` column is author-assessed and is stated as such; the
-citation column is mechanical and reproducible by anyone with the recordings.
+citation column is mechanical and reproducible by anyone with the recordings. Two rows,
+L1 and L2, were ruled through an adversarial review the author commissioned rather than
+graded directly; `docs/verdicts.json` records who graded what.
 
 Every `expected` value below was declared in the recording script before the run, not
 chosen after reading the result.
 
-Outcomes graded 2026-08-19. Verdicts live in `docs/verdicts.json` so the grading is
+Outcomes graded 2026-08-19 (controlled and first public recording) and 2026-08-26
+(Stata and León rows). Verdicts live in `docs/verdicts.json` so the grading is
 auditable rather than buried in prose.
 
 ## Rows from the controlled recording
@@ -54,10 +57,10 @@ AprilTag system entirely separate from AMCL. Setup and full grading in
 
 | # | Detector | Signal | Peak | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|
-| G1 | pose_divergence | displacement | 22.8 m | 303 to 390s | **ungraded** | 11 detections inside the window where ground truth puts AMCL 19.4 m off median, 39.8 m max. Peaks match the measured error. |
-| G2 | covariance_spike | position sigma | 15 m | 303 to 390s | **ungraded** | 6 detections in the same verified-lost window, sigma peaking during relocalisation churn. The caveat is structural: between churn events AMCL reports 0.081 m sigma while 19.4 m wrong, and nothing fires. |
-| G4 | tf_jump | map correction speed | 2288 m/s | 303 to 390s | **ungraded** | 13 detections on the map->odom_combined edge in the verified-lost window: AMCL teleporting its own frame while ground truth shows the robot moving normally. Two further detections in the healthy window at 2.5 to 3.2 m/s where ground truth bounds real error under 0.35 m: this edge's false-alarm floor at frozen thresholds, counted against it. |
-| G3 | all four | n/a | n/a | 113 to 302s | **ungraded** | 47 detections while the robot was on a floor the map does not contain. No ground truth exists there, so these are reported, not graded. |
+| G1 | pose_divergence | displacement | 22.8 m | 303 to 390s | **correct** | 11 detections inside the window where ground truth puts AMCL 19.4 m off median, 39.8 m max. Peaks match the measured error. |
+| G2 | covariance_spike | position sigma | 15 m | 303 to 390s | **correct** | 6 detections in the same verified-lost window, sigma peaking during relocalisation churn. The caveat is structural: between churn events AMCL reports 0.081 m sigma while 19.4 m wrong, and nothing fires. That miss is published as a boundary of the signal, not counted against these detections. |
+| G4 | tf_jump | map correction speed | 2288 m/s | 303 to 390s | **partial** | 13 detections on the map->odom_combined edge in the verified-lost window: AMCL teleporting its own frame while ground truth shows the robot moving normally. Two further detections in the healthy window at 2.5 to 3.2 m/s where ground truth bounds real error under 0.35 m. Partial because the row carries both: real catches and two firings on events that did not occur. |
+| G3 | all four | n/a | n/a | 113 to 302s | **low-confidence** | 47 detections while the robot was on a floor the map does not contain. The named ambiguity: no ground truth exists on that floor, so although the robot was demonstrably off-map, nothing independent can confirm any single detection. |
 
 ## Rows from the León attack pair, 2026-08-24
 
@@ -67,5 +70,5 @@ authors. Full writeup in `finding-recorder-artifacts.md`; numbers recompute from
 
 | # | Detector | Signal | Peak | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|
-| L1 | scan_gap | gap_ratio | 339.7 | attack run | **ungraded** | A genuine 22.7 s hole in the sensor stream during the cmd_vel flood, absent from the clean control. Found only after the receive-time defect was fixed; before the fix the same detector produced 37 false detections on the healthy control. |
-| L2 | tf_jump | odom->base speed | 0.52 m/s | both runs | **ungraded** | Fires identically on clean and attack at 0.4 to 0.5 m/s against a 0.35 threshold calibrated to a different platform's top speed. Separates nothing; transferability, not detection. |
+| L1 | scan_gap | gap_ratio | 339.7 | attack run | **correct** | A 22.7 s hole in the recorded scan stream during the cmd_vel flood, absent from the clean control, plus a second 2.9 s hole at ratio 44. Correct on event presence per rubric rule 3: the gap is mechanically recomputable from the bag. Delivery was starved 67 to 100 s during the flood, so whether the laser itself kept firing is not knowable from the bag, and the detections report at negative sensor time (a constant clock offset, which cancels in every gap). Found only after the receive-time defect was fixed; before the fix the same detector produced 37 false detections on the healthy control. |
+| L2 | tf_jump | odom->base speed | 0.52 m/s | both runs | **wrong** | Fires on both runs and harder on the clean control (peaks 0.50 to 0.52 clean, 0.36 to 0.42 attack), with the attack window sitting inside the clean run's first window: the detections track the route, not the attack. A 54-sample episode sustained over 31.8 s at half a metre per second is a robot driving, not a jump, through a 0.35 threshold calibrated to a different platform's top speed. Same verdict as R1 for the same imported-threshold failure. |

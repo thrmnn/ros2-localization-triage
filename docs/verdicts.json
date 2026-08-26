@@ -2,11 +2,26 @@
   "_readme": "Outcome verdicts, graded against docs/case-log-rubric.md which was committed before any of this output existed. Synthetic rows are graded against the expectation declared in the recording script before each run; rule 1 makes a declared negative that goes unreported a correct row, not a miss. The two real-recording classes were ruled by the author on 2026-08-19.",
   "gradedOn": "2026-08-19",
   "synthetic": {
-    "scan_dropout":  {"outcome": "correct", "why": "Laser starved for 25 s; scan_gap flagged the gap at ratio 127 and covariance rose as AMCL ran open-loop. Matches what was declared before the run."},
-    "odom_jump_100": {"outcome": "correct", "why": "100 mm steps, declared detectable. tf_jump fired on odom->base_footprint at 2.83 m/s, against a predicted 30x step magnitude."},
-    "odom_jump_12":  {"outcome": "correct", "why": "12 mm steps, declared marginal because 12 mm is the computed floor. Fired at 0.54 m/s, just above threshold — the declared ambiguity resolved toward detection."},
-    "odom_jump_5":   {"outcome": "correct", "why": "5 mm steps, declared below-floor before the run and reported by nothing. Rubric rule 1: a declared negative that goes unreported is a correct row, not a miss."},
-    "kidnap":        {"outcome": "correct", "why": "0.9 m instantaneous displacement; tf_jump fired at 26.4 m/s and covariance peaked at 1.15 m / 2.23 rad with a ~60 s recovery arc."}
+    "scan_dropout": {
+      "outcome": "correct",
+      "why": "Laser starved for 25 s; scan_gap flagged the gap at ratio 127 and covariance rose as AMCL ran open-loop. Matches what was declared before the run."
+    },
+    "odom_jump_100": {
+      "outcome": "correct",
+      "why": "100 mm steps, declared detectable. tf_jump fired on odom->base_footprint at 2.83 m/s, against a predicted 30x step magnitude."
+    },
+    "odom_jump_12": {
+      "outcome": "correct",
+      "why": "12 mm steps, declared marginal because 12 mm is the computed floor. Fired at 0.54 m/s, just above threshold — the declared ambiguity resolved toward detection."
+    },
+    "odom_jump_5": {
+      "outcome": "correct",
+      "why": "5 mm steps, declared below-floor before the run and reported by nothing. Rubric rule 1: a declared negative that goes unreported is a correct row, not a miss."
+    },
+    "kidnap": {
+      "outcome": "correct",
+      "why": "0.9 m instantaneous displacement; tf_jump fired at 26.4 m/s and covariance peaked at 1.15 m / 2.23 rad with a ~60 s recovery arc."
+    }
   },
   "real": {
     "covariance_spike": {
@@ -16,6 +31,38 @@
     "tf_jump": {
       "outcome": "low-confidence",
       "why": "The map->odom corrections are real and the peaks (1.22-3.32 m/s) are measured, but map->odom IS the localisation correction, so movement there is AMCL revising itself. The named ambiguity, per rubric rule 4: this recording has no ground truth, and there is no independent signal to cross-check against — a genuine relocalisation and ordinary filter behaviour on a featureless stretch would look the same here."
+    }
+  },
+  "stata": {
+    "gradedOn": "2026-08-26",
+    "gradedBy": "the author, in an interview",
+    "G1_pose_divergence": {
+      "outcome": "correct",
+      "why": "11 detections inside the window where independent AprilTag ground truth puts AMCL 19.4 m off median, 39.8 m max. Peaks of 14 to 23 m track the measured error."
+    },
+    "G2_covariance_spike": {
+      "outcome": "correct",
+      "why": "6 detections during relocalisation churn in the same verified-lost window. The steady-state silence at 0.081 m reported sigma while 19.4 m wrong is published separately as a boundary of the signal, not an error in these findings."
+    },
+    "G4_tf_jump": {
+      "outcome": "partial",
+      "why": "13 real catches on map->odom_combined in the verified-lost window (AMCL teleporting its own frame, implied 2288 m/s, while ground truth shows normal motion), but the same row carries 2 healthy-window firings at 2.5 to 3.2 m/s where ground truth bounds real error under 0.35 m: firings on events that did not occur."
+    },
+    "G3_excursion": {
+      "outcome": "low-confidence",
+      "why": "47 detections while the robot was on a floor the map does not contain. Named ambiguity: no ground truth exists on that floor, so although the robot was demonstrably off-map, nothing independent confirms any single detection."
+    }
+  },
+  "leon": {
+    "gradedOn": "2026-08-26",
+    "gradedBy": "delegated: the author commissioned an adversarial council review (three lenses with hostile critiques, one synthesis) and had his assistant rule on its advice. Recorded here so no row silently claims direct author assessment.",
+    "L1_scan_gap": {
+      "outcome": "correct",
+      "why": "Correct on event presence per rubric rule 3: a 22.667 s gap in the recorded scan stream against a 0.0667 s median (339.7x), mechanically recomputable from the bag, with the paired clean control at zero detections after the same fix removed 37 false positives there. Scoped to the recorded data: delivery was starved 67 to 100 s during the flood, so whether the laser itself kept firing is not knowable from the bag."
+    },
+    "L2_tf_jump": {
+      "outcome": "wrong",
+      "why": "The event tf_jump names, a transform discontinuity, did not occur: a 54-sample episode sustained over 31.8 s at 0.50 to 0.52 m/s is a robot driving, not a jump, through a 0.35 m/s threshold imported from another platform. The author-labelled clean control fires harder than the attack run and the attack window sits inside the clean run's first window, so the detections track the route, not the attack. Same verdict as R1 for the same imported-threshold failure; grading it softer on stronger evidence would be the after-the-fact downgrade rubric rule 2 forbids."
     }
   }
 }
