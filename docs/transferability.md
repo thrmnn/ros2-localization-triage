@@ -12,7 +12,7 @@ for any platform below.
 | Cartographer backpack, 2 further annotated bags | 3223 s | 32 | **36** | **0 of 16 labelled** | every annotated gap found, see below |
 | Tiago, ERL benchmark, 3 control runs | 578 s | 48 | **299** | not computable | all tf_jump; scan_gap silent |
 | Tiago, ERL benchmark, 2 runs engineered to fail | 435 s | 51 | **422** | not computable | see results/erl/ |
-| Tiago, real sensor data replayed | 113 s | 11 | **350** | **not computable** | 5 confirmed false, 6 unadjudicated |
+| Tiago, real sensor data replayed | 113.542 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
 | MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
 
 Every row above is a public recording that downloads anonymously. The MiR100 row is
@@ -38,10 +38,11 @@ data from a platform it was never calibrated on. It says nothing about the other
 detectors, and a laser dropout is the easiest of the four failure modes to see. Working
 and raw detections are in `results/labelled/`.
 
-The Tiago rate was written as 349 until a check recomputed it from the flags and seconds
-in its own row and got 350. The recording is not kept in this repo and no committed file
-carries the duration to better than a second, so the figure is stated as the arithmetic
-gives it and the row is flagged for recomputation from the recording itself.
+The Tiago rate was written as 349, then briefly as 350 after a check recomputed it from
+the whole-second 113 in its own row. The recording's own metadata states the duration as
+113.542004462 s, committed here as `plots/summary.json` `duration_s`, and 11 flags in
+113.542 s is 349 per hour. The row now carries the duration to the millisecond so the
+arithmetic is exact rather than rounded, and 349 was the right number all along.
 
 **A rate of false alarms without a rate of misses is half a number.** Two rows
 above can state both, because somebody labelled those recordings. The other two

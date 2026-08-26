@@ -35,10 +35,13 @@ otherwise. Same thresholds, same bags (`results/leon/*_header_time.json`):
 
 - **Clean run: zero scan gaps.** The 37 false detections vanish without touching a
   threshold.
-- **Attack run: the 22.7-second hole in the sensor stream surfaces at 340 times
-  the median interval.** During the flood, scan data simply stops arriving for
-  22.7 seconds of sensor time, a real absence in the recorded data, invisible
-  before the fix because receive-time bursts had crushed the baseline.
+- **Attack run: the 22.7-second hole in the recorded scan stream surfaces at 340
+  times the median interval.** During the flood, scan data simply stops arriving
+  for 22.7 seconds of sensor time, a real absence in the recorded data, invisible
+  before the fix because receive-time bursts had crushed the baseline. A second,
+  smaller hole of 2.9 seconds (44 times the median) precedes it. Whether the
+  laser itself kept firing through those windows is not knowable from the bag;
+  what the bag attests is that the data is absent.
 
 One artefact of honesty in the output: the attack run's scans arrive 67 to 100
 seconds after their sensor stamps, delivery starved by the flood, so on the sensor
@@ -65,8 +68,9 @@ localisation-layer detectors, not an intrusion detection system.
 
 ## What this pair does not establish
 
-`tf_jump` fired twice on the clean run and twice on the attack run, at 0.4 to
-0.5 m/s implied base speed against a 0.35 m/s threshold calibrated to a different
-platform's top speed. It separates nothing here and those detections are noise
-until the threshold is calibrated to this base, the same transferability result as
+`tf_jump` fired twice on the clean run and twice on the attack run, at 0.36 to
+0.52 m/s implied base speed against a 0.35 m/s threshold calibrated to a different
+platform's top speed, and the clean control fires harder than the attack run. It
+separates nothing here and those detections are noise until the threshold is
+calibrated to this base, the same transferability result as
 [docs/transferability.md](transferability.md), on a sixth platform.

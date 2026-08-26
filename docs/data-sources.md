@@ -22,7 +22,7 @@ platforms: 2D and 3D backpacks, a PR2, a MiR100 AGV, a Magazino warehouse robot.
 Its value is not volume. It ships a **"Known Issues" column** annotating specific
 bags with laser dropouts, written by its authors years before this tool existed.
 That is independently labelled ground truth for a gap detector, and it produced
-the only non-circular true positive in this work. See `transferability.md`.
+the first non-circular true positive in this work. See `transferability.md`.
 
 **fmrico/mh_amcl test bag** ([repo](https://github.com/fmrico/mh_amcl), Apache-2.0). A real Tiago with `/scan` and `/tf`,
 published alongside the map it was recorded in, specifically so it can be replayed

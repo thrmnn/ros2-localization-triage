@@ -64,8 +64,8 @@ def transfer_rates() -> list[str]:
     a reader can re-derive the flag count rather than take it on trust."""
     text = (ROOT / "docs/transferability.md").read_text()
     bad = []
-    for row in re.findall(r"^\|([^|]+)\|\s*(\d+)\s*s\s*\|\s*(\d+)\s*\|\s*\*\*(\d+)\*\*", text, re.M):
-        name, dur, flags, claimed = row[0].strip(), int(row[1]), int(row[2]), int(row[3])
+    for row in re.findall(r"^\|([^|]+)\|\s*(\d+(?:\.\d+)?)\s*s\s*\|\s*(\d+)\s*\|\s*\*\*(\d+)\*\*", text, re.M):
+        name, dur, flags, claimed = row[0].strip(), float(row[1]), int(row[2]), int(row[3])
         calc = flags * 3600 / dur
         # One unit of slack, because the durations in the table are whole seconds and the
         # true value carries a fraction. More than that is a real disagreement.
@@ -151,7 +151,7 @@ MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
      "expect": [],
-     "covers": [10, 9, 36, 299, 422, 350, 1880],
+     "covers": [10, 9, 36, 299, 422, 349, 1880],
      "note": "each flags-per-hour recomputed from the flags and seconds in the same row"},
     {"name": "scan-gap detections on the graded sweep",
      "compute": scan_gap_detections,
