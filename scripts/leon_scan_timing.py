@@ -17,6 +17,9 @@ import numpy as np
 from rosbags.highlevel import AnyReader
 from rosbags.typesys import Stores, get_typestore
 
+if len(sys.argv) < 2:
+    sys.exit("usage: leon_scan_timing.py <bagdir> [bagdir ...] -- refuses to overwrite the committed summary with nothing")
+
 out = {}
 for bag in sys.argv[1:]:
     recv, hdr = [], []

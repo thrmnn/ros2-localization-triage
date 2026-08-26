@@ -64,5 +64,17 @@
       "outcome": "wrong",
       "why": "The event tf_jump names, a transform discontinuity, did not occur: a 54-sample episode sustained over 31.8 s at 0.50 to 0.52 m/s is a robot driving, not a jump, through a 0.35 m/s threshold imported from another platform. The author-labelled clean control fires harder than the attack run and the attack window sits inside the clean run's first window, so the detections track the route, not the attack. Same verdict as R1 for the same imported-threshold failure; grading it softer on stronger evidence would be the after-the-fact downgrade rubric rule 2 forbids."
     }
+  },
+  "kidnap": {
+    "gradedOn": "2026-08-26",
+    "gradedBy": "delegated: same process as the leon section, at the author's explicit instruction. An adversarial council of three lenses with hostile critiques advised, the author's assistant ruled, and every number the council cited was recomputed from the committed artifacts before adoption.",
+    "K1_tf_jump": {
+      "outcome": "partial",
+      "why": "21 of 22 detections verify against continuous ground truth, including the one-frame onset catch, but the row bundles them with one healthy-window firing at 2.175 m/s where ground truth bounds real error under 0.28 m: a detection of an event that did not occur, the exact shape G4 was graded partial for, and the rubric's partial definition carries no count threshold. The 8.3 s silence inside the second kidnap window is the structural signal boundary (G2's shield keeps it from making the row wrong; rule 2 binds only pre-declared expectations, which these replays do not carry) but it is stated in the account, not laundered out."
+    },
+    "K2_tf_jump": {
+      "outcome": "partial",
+      "why": "20 verified catches, all three kidnaps caught, zero other healthy firings, and one firing at 1.95 s on the estimator's clock that ground truth disproves. The estimator's declared 2 s initialisation cool-time explains it, but the frozen rubric contains no initialisation carve-out and inventing one after seeing the result is the move rules 4 and 5 forbid, and it would retroactively rescue G4's two explained firings. Identical evidence shape as G4 and K1, so the identical verdict. The cool-time belongs in the notes as cause and as a prospective fix: pre-declare a startup gate before any future run."
+    }
   }
 }

@@ -80,7 +80,7 @@ def main() -> None:
         color="#c0392b",
     )
     ax.annotate(
-        "10 s silent while 13 m wrong",
+        "8.3 s silent while 13 m wrong",
         xy=(76, ymax * 0.955),
         xytext=(56, ymax * 0.80),
         fontsize=8,

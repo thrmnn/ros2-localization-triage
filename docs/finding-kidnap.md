@@ -80,12 +80,15 @@ a permanent state.
 - **Counted against it, two things.** One healthy-window firing at 2.175 m/s
   against the frozen 2.0 m/s fallback, while ground truth bounds the real
   error under 0.28 m: this pipeline's false-alarm floor, one firing in 33
-  clean seconds. And a 10-second silence spanning the entire second kidnap
-  window while the estimate was 13 m wrong: the estimator sat still on
-  degenerate clouds, nothing moved in the transform tree, and a monitor
-  watching only the robot's own estimates had nothing to see. The same
-  structural boundary the Stata replay proved for steady-state confident
-  wrongness, on a different localiser and sensor.
+  clean seconds. And an 8.3-second silence inside the second kidnap window
+  while the estimate was 13 m wrong. Detection episodes lap into that window
+  at both edges (the last churn episode ends 1.98 s after it opens, the next
+  begins 0.13 s before it closes, and the zone table's zero is
+  episode-midpoint binning), but the kidnap itself draws no onset response:
+  the estimator sat still on degenerate clouds, nothing moved in the
+  transform tree, and a monitor watching only the robot's own estimates had
+  nothing to see. The same structural boundary the Stata replay proved for
+  steady-state confident wrongness, on a different localiser and sensor.
 
 A second independent replay of the same recording reproduced the first:
 identical healthy-window median and max (0.052 m and 0.278 m both times), lost
@@ -104,9 +107,10 @@ corridor. Through that, 21 detections: three at the first kidnap, whose first
 firing begins 0.069 s before the occlusion threshold is even crossed, because
 the cover is already entering the view one frame earlier, and two each inside
 the second and third kidnap windows. Where sequence one had a silent kidnap,
-sequence two has none. Counted against it: one firing at 3.0 m/s at 2.1
-seconds into the run, inside the estimator's own two-second initialisation
-cool-time, while ground truth bounds the real error under 0.24 m.
+sequence two has none. Counted against it: one firing at 3.0 m/s at 1.95 s on the estimator's clock
+(2.13 s bag time), inside the estimator's declared two-second initialisation
+cool-time (`scripts/kidnap_replay.sh`), while ground truth bounds the real
+error under 0.24 m.
 
 A second replay of this sequence reproduces the qualitative result and not the
 numbers: healthy median and max identical (0.078 m, 0.239 m), the same onset

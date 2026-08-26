@@ -4,7 +4,7 @@
 results, ran them unchanged on 97 minutes of recordings from five platforms, and
 published what they caught, what they missed, and the raw counts behind both.
 
-Théo Alessandro Hermann, independent practitioner. [PLACEHOLDER: contact line]
+Théo Alessandro Hermann, independent practitioner. Contact: [github.com/thrmnn](https://github.com/thrmnn).
 
 Detectors for localisation incidents in ROS 2 recordings, and a sweep harness that
 picks their thresholds for you off generated plots instead of off intuition.
@@ -35,7 +35,7 @@ recordings do not call their lasers `/scan`, and a detector pointed at a topic t
 does not exist returns zero and looks exactly like a clean bill of health. Then
 `detect`, with the topic names corrected and no threshold touched.
 
-Reproduce that exact result in three commands:
+Reproduce that exact result in three commands (the bag is a 576 MB download):
 
 ```bash
 git clone https://github.com/thrmnn/ros2-localization-triage && cd ros2-localization-triage && python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
@@ -43,7 +43,10 @@ curl -O https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d
 .venv/bin/loctriage --config config/cartographer-backpack.yaml detect b2-2015-05-12-12-46-34.bag
 ```
 
-Working, raw detections and the label source: [results/labelled/](results/labelled/).
+It prints 28 detections, which cluster to the 14 labelled gaps: each physical
+dropout fires on both of the backpack's lasers about a second apart, and
+detections within two seconds are one event. Working, raw detections and the
+label source: [results/labelled/](results/labelled/).
 
 ---
 
@@ -92,9 +95,10 @@ dataset's own map and graded against its continuous ground truth: five-centimetr
 tracking for 33 seconds, then the first kidnap leaves the localiser 10 to 16 metres
 wrong for the rest of the run. `tf_jump` fired 0.064 s after the view was covered,
 one frame at the sensor's own cadence, and 19 more times across the verified-lost
-phase. The same run also reproduces the boundary: the entire second kidnap passed in
-silence while the estimate was 13 metres wrong. A second sequence degrades instead
-of collapsing, and there every one of its three kidnaps is caught.
+phase. The same run also reproduces the boundary: an 8-second silence inside the
+second kidnap window while the estimate was 13 metres wrong, with no onset response
+to the kidnap itself. A second sequence degrades instead of collapsing, and there
+every one of its three kidnaps is caught.
 [docs/finding-kidnap.md](docs/finding-kidnap.md)
 
 ![Position error against ground truth: flat at five centimetres, then jumping to
@@ -261,11 +265,12 @@ running it yourself:
 .venv/bin/python -m pytest
 ```
 
-Twenty-two tests: config strictness (a misspelled or omitted threshold is a hard
+Twenty-four tests: config strictness (a misspelled or omitted threshold is a hard
 error, because a silent fallback to a code default would put a live threshold
-outside version control), detection merging and duration filtering, two detector
-unit tests, and an end-to-end run over the synthetic fixture asserting each
-detector fires at its injected time.
+outside version control), detection merging and duration filtering, detector unit
+tests including the header-stamp-versus-receive-time preference, and an
+end-to-end run over the synthetic fixture asserting each detector fires at its
+injected time.
 
 ## Regenerating the animation
 

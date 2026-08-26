@@ -1,8 +1,12 @@
 # The gap detector was measuring the recorder, not the sensor
 
 A public dataset of paired clean-and-attacked runs made the tool's own defect
-visible, and the fixed tool then separated the pair cleanly. Numbers recompute
-from `results/leon/` via `scripts/leon_scan_timing.py`.
+visible, and the fixed tool then separated the pair cleanly. The detection
+counts recompute from the committed JSONs in `results/leon/` via
+`scripts/check_numbers.py`; the timing table recomputes from the dataset's own
+bags (Experiment_1.zip from the Zenodo record below, 1.6 MB) with
+`python3 scripts/leon_scan_timing.py E1-1 E1-2`, run from the repo root with
+the two unzipped bag directories beside it.
 
 ## The dataset
 
