@@ -135,20 +135,20 @@ def stata_grading() -> list[float]:
             lost["pose_divergence"] + lost["covariance_spike"] + lost["tf_jump"]]
 
 
-def kidnap_grading() -> list[float]:
+def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
     """Re-run the kidnap grading from the committed files and return the numbers the
     finding doc leans on: healthy median, worst error, onset latency, detection
-    counts, and the silent second-kidnap median."""
+    counts, and the second-kidnap median and count."""
     import subprocess
-    subprocess.run([sys.executable, str(ROOT / "scripts/kidnap_grade.py")],
+    subprocess.run([sys.executable, str(ROOT / "scripts/kidnap_grade.py"), resdir],
                    check=True, capture_output=True, cwd=ROOT)
-    d = json.loads((ROOT / "results/kidnap/gt_comparison.json").read_text())
+    d = json.loads((ROOT / resdir / "gt_comparison.json").read_text())
     z = d["zones"]
     total = sum(v["detections"] for v in z.values())
     max_err = max(v["max_error_m"] for v in z.values())
-    occ = json.loads((ROOT / "results/kidnap/occlusion_windows.json").read_text())
-    dets = json.loads((ROOT / "results/kidnap/detections.json").read_text())
-    meta = json.loads((ROOT / "results/kidnap/replay_meta.json").read_text())
+    occ = json.loads((ROOT / resdir / "occlusion_windows.json").read_text())
+    dets = json.loads((ROOT / resdir / "detections.json").read_text())
+    meta = json.loads((ROOT / resdir / "replay_meta.json").read_text())
     shift = meta["replay_bag_start_s"] - occ["bag_t0_s"]
     w1 = occ["windows"][0]
     onset = min(d_["start_s"] + shift for d_ in dets
@@ -206,6 +206,11 @@ MANIFEST = [
      "expect": [0.052, 16.784, 0.064, 22, 1, 13.163, 0],
      "covers": [0.052, 16.784, 0.064, 22, 13.163, 17.0, 2.175, 26.6, 2154, 16.8],
      "note": "healthy median, worst error, one-frame onset latency, 22 detections with one healthy graze, and the silent second kidnap at 13 m wrong"},
+    {"name": "second kidnap sequence recomputes from committed files",
+     "compute": lambda: kidnap_grading("results/kidnap02"),
+     "expect": [0.078, 14.796, -0.069, 21, 1, 3.283, 2],
+     "covers": [0.078, 14.796, 21, 3.283, 3.021, 45.3, 1608, 14.8],
+     "note": "the degraded-not-lost sequence: healthy median, worst error, onset a frame before the occlusion threshold, and both later kidnaps caught"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,

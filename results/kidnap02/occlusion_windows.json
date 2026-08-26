@@ -1,0 +1,25 @@
+{
+  "bag_t0_s": 1693731671.6084647,
+  "threshold_range_m": 0.6,
+  "n_clouds": 1609,
+  "windows": [
+    {
+      "start_s": 20.47,
+      "end_s": 29.19,
+      "clouds": 130,
+      "median_range_m": 0.076
+    },
+    {
+      "start_s": 52.34,
+      "end_s": 58.52,
+      "clouds": 90,
+      "median_range_m": 0.065
+    },
+    {
+      "start_s": 80.0,
+      "end_s": 85.99,
+      "clouds": 91,
+      "median_range_m": 0.072
+    }
+  ]
+}

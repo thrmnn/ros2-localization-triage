@@ -93,7 +93,8 @@ tracking for 33 seconds, then the first kidnap leaves the localiser 10 to 16 met
 wrong for the rest of the run. `tf_jump` fired 0.064 s after the view was covered,
 one frame at the sensor's own cadence, and 19 more times across the verified-lost
 phase. The same run also reproduces the boundary: the entire second kidnap passed in
-silence while the estimate was 13 metres wrong.
+silence while the estimate was 13 metres wrong. A second sequence degrades instead
+of collapsing, and there every one of its three kidnaps is caught.
 [docs/finding-kidnap.md](docs/finding-kidnap.md)
 
 ![Position error against ground truth: flat at five centimetres, then jumping to
