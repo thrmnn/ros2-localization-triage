@@ -1,0 +1,200 @@
+[
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 29.742977243,
+    "end_s": 29.742977243,
+    "peak": 2.175163365283708,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 32.809758445,
+    "end_s": 32.87644122,
+    "peak": 17.01836960858879,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 33.076934671,
+    "end_s": 36.861661063,
+    "peak": 13.840717170546048,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 40.728625019,
+    "end_s": 50.077384666,
+    "peak": 9.360827268032407,
+    "n_samples": 9
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 40.861954979,
+    "end_s": 63.011501248,
+    "peak": 21.64560251649785,
+    "n_samples": 64
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 53.544262117,
+    "end_s": 53.544262117,
+    "peak": 5.219857609533593,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 56.677757899,
+    "end_s": 56.677757899,
+    "peak": 3.7633200474708395,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 62.678136928,
+    "end_s": 62.678136928,
+    "peak": 3.258013907842646,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 67.478403076,
+    "end_s": 70.878825883,
+    "peak": 16.30054080508446,
+    "n_samples": 12
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 67.878435397,
+    "end_s": 72.597070444,
+    "peak": 20.916159227317507,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 80.864138121,
+    "end_s": 82.130871809,
+    "peak": 17.373738547168955,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 81.064135581,
+    "end_s": 84.94606254,
+    "peak": 24.57911859713235,
+    "n_samples": 13
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 88.336273227,
+    "end_s": 90.013110921,
+    "peak": 5.325052186740399,
+    "n_samples": 5
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 93.413227238,
+    "end_s": 93.413227238,
+    "peak": 10.58852846208381,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 96.74690279,
+    "end_s": 115.681147076,
+    "peak": 18.21301068719737,
+    "n_samples": 52
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 97.613535111,
+    "end_s": 98.546889423,
+    "peak": 6.351928527215478,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 101.613703192,
+    "end_s": 111.280898382,
+    "peak": 10.290033882190391,
+    "n_samples": 13
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 115.681147076,
+    "end_s": 118.13295962,
+    "peak": 42.62591442210045,
+    "n_samples": 11
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 123.066580806,
+    "end_s": 123.266591169,
+    "peak": 10.747725745670534,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->depth_camera_link",
+    "start_s": 123.199924162,
+    "end_s": 145.682880454,
+    "peak": 26.587484396801074,
+    "n_samples": 58
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 129.615276122,
+    "end_s": 130.215321135,
+    "peak": 14.408747532298491,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->depth_camera_link",
+    "start_s": 135.282222839,
+    "end_s": 143.149414525,
+    "peak": 18.989948612831835,
+    "n_samples": 10
+  }
+]

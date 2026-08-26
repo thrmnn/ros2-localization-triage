@@ -135,6 +135,31 @@ def stata_grading() -> list[float]:
             lost["pose_divergence"] + lost["covariance_spike"] + lost["tf_jump"]]
 
 
+def kidnap_grading() -> list[float]:
+    """Re-run the kidnap grading from the committed files and return the numbers the
+    finding doc leans on: healthy median, worst error, onset latency, detection
+    counts, and the silent second-kidnap median."""
+    import subprocess
+    subprocess.run([sys.executable, str(ROOT / "scripts/kidnap_grade.py")],
+                   check=True, capture_output=True, cwd=ROOT)
+    d = json.loads((ROOT / "results/kidnap/gt_comparison.json").read_text())
+    z = d["zones"]
+    total = sum(v["detections"] for v in z.values())
+    max_err = max(v["max_error_m"] for v in z.values())
+    occ = json.loads((ROOT / "results/kidnap/occlusion_windows.json").read_text())
+    dets = json.loads((ROOT / "results/kidnap/detections.json").read_text())
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from kidnap_grade import REPLAY_BAG_START_S
+    shift = REPLAY_BAG_START_S - occ["bag_t0_s"]
+    w1 = occ["windows"][0]
+    onset = min(d_["start_s"] + shift for d_ in dets
+                if w1["start_s"] <= (d_["start_s"] + d_["end_s"]) / 2 + shift
+                < w1["end_s"]) - w1["start_s"]
+    return [z["clear_1"]["median_error_m"], max_err, round(onset, 3), total,
+            z["clear_1"]["detections"], z["occluded_2"]["median_error_m"],
+            z["occluded_2"]["detections"]]
+
+
 def leon_scan_gap_counts() -> list[float]:
     """The before/after of the receive-time fix, from the committed detection JSONs."""
     def count(f, det):
@@ -177,6 +202,11 @@ MANIFEST = [
      "expect": [37, 0, 339.7],
      "covers": [37, 0, 339.7, 340],
      "note": "37 false detections before the fix, zero after, and the attack hole's ratio"},
+    {"name": "kidnap grading recomputes from committed files",
+     "compute": kidnap_grading,
+     "expect": [0.052, 16.784, 0.064, 22, 1, 13.163, 0],
+     "covers": [0.052, 16.784, 0.064, 22, 13.163, 17.0, 2.175, 26.6, 2154, 16.8],
+     "note": "healthy median, worst error, one-frame onset latency, 22 detections with one healthy graze, and the silent second kidnap at 13 m wrong"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,

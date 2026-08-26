@@ -16,7 +16,9 @@ recordings and get the same answer. Nothing about it depends on trusting me.
 
 ## Claim 2: "outcome", assessed by the author
 
-Whether a finding was *right* is my judgement.
+Whether a finding was *right* is my judgement. Two rows, L1 and L2, were ruled
+through an adversarial review I commissioned rather than graded directly;
+`docs/verdicts.json` records who graded what.
 
 For the controlled recording this is nearly mechanical, because the expected
 result was written down **before each run**, in the script that injects the
@@ -48,7 +50,8 @@ about that recording is graded better than low-confidence.
   Stata Center replay, against AprilTag ground truth independent of the
   localiser, and the same replay gave `covariance_spike` and `tf_jump` theirs
   (docs/finding-confidently-wrong.md). All four detectors now have at least one
-  catch on real data that is not self-graded against their own output.
+  catch on real data that is not self-graded against their own output, and
+  `tf_jump` has a second on a 3D pipeline (docs/finding-kidnap.md).
 
 ## What this is not
 

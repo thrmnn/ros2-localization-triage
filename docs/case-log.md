@@ -62,6 +62,18 @@ AprilTag system entirely separate from AMCL. Setup and full grading in
 | G4 | tf_jump | map correction speed | 2288 m/s | 303 to 390s | **partial** | 13 detections on the map->odom_combined edge in the verified-lost window: AMCL teleporting its own frame while ground truth shows the robot moving normally. Two further detections in the healthy window at 2.5 to 3.2 m/s where ground truth bounds real error under 0.35 m. Partial because the row carries both: real catches and two firings on events that did not occur. |
 | G3 | all four | n/a | n/a | 113 to 302s | **low-confidence** | 47 detections while the robot was on a floor the map does not contain. The named ambiguity: no ground truth exists on that floor, so although the robot was demonstrably off-map, nothing independent can confirm any single detection. |
 
+## Row from the kidnap replay, 2026-08-26
+
+A handheld sensor kidnapped three times (view covered, carried elsewhere), with the
+dataset's own continuous ground truth. Full writeup in `finding-kidnap.md`; numbers
+recompute from `results/kidnap/` via `scripts/kidnap_grade.py`. The replay generates
+the localiser output, disclosed as everywhere else; the occlusion windows that zone
+the grading are derived from the point clouds, not from the localiser.
+
+| # | Detector | Signal | Peak | Window | Outcome | Notes |
+|---|---|---|---|---|---|---|
+| K1 | tf_jump | map correction speed | 26.6 m/s | full run | **ungraded** | 22 detections. The first kidnap is caught 0.064 s after the view is covered (one frame at the sensor's own cadence), at an implied 17 m/s while the sensor was carried at walking pace, and 19 further detections fire across the 110 s the localiser is 10 to 16 m wrong and never recovers. Counted against it: one healthy-window firing at 2.175 m/s against the frozen 2.0 fallback while ground truth bounds real error under 0.28 m, and a 10 s silence spanning the second kidnap while 13 m wrong. |
+
 ## Rows from the León attack pair, 2026-08-24
 
 Paired clean and attacked runs of the same route, attack label written by the dataset's

@@ -67,11 +67,12 @@ runs) is downloaded and unexamined.
 **Hard Point Cloud Localization** ([Zenodo](https://zenodo.org/records/10122133),
 Koide et al., AIST). Checked 2026-08-24: **CC BY 4.0, commercially clean, anonymous
 download**, with literal `indoor_kidnap` and `outdoor_kidnap` sequences introduced by
-the MegaParticles paper (arXiv:2404.16370). The catch: it is a **3D LiDAR** dataset
-with `.ply` point-cloud maps, no 2D scan and no AMCL-shaped pipeline, so using it
-means projecting 3D to 2D or running a different localiser. Kidnaps labelled by
-someone else remain exactly what `tf_jump` needs; the format is why this is future
-work rather than done.
+the MegaParticles paper (arXiv:2404.16370). It is a **3D** dataset with `.ply`
+point-cloud maps and no AMCL-shaped pipeline, so using it meant running a different
+localiser. Used 2026-08-26, and it delivered: `indoor_kidnap_01` replayed through
+hdl_localization against the dataset's own map, graded against its TUM ground
+truth. See `finding-kidnap.md` and `results/kidnap/`. Four more sequences with
+ground truth remain unexamined.
 
 **CARMEN logs** mirrored at Bonn and Freiburg (CC BY). Thirteen different legacy
 robots, 2D laser and wheel odometry, under 200 MB in total. The cheapest platform

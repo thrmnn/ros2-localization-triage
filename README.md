@@ -49,7 +49,7 @@ Working, raw detections and the label source: [results/labelled/](results/labell
 
 ## What this found
 
-Six results, in the order a sceptical reader should care about. Each links to the
+Seven results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
 
 **The same frozen thresholds mean opposite things on different robots.** Calibrated
@@ -85,6 +85,21 @@ estimates can see it. [docs/finding-confidently-wrong.md](docs/finding-confident
 ![The robot's true path and AMCL's belief drawn over the floor plan: they overlap
 until the elevator, then AMCL's red path runs through corridors the robot never
 entered.](docs/figures/stata-confidently-wrong.png)
+
+**A kidnap caught one frame after the view goes dark, on a 3D pipeline.** A handheld
+sensor from a public kidnap dataset, replayed through hdl_localization against the
+dataset's own map and graded against its continuous ground truth: five-centimetre
+tracking for 33 seconds, then the first kidnap leaves the localiser 10 to 16 metres
+wrong for the rest of the run. `tf_jump` fired 0.064 s after the view was covered,
+one frame at the sensor's own cadence, and 19 more times across the verified-lost
+phase. The same run also reproduces the boundary: the entire second kidnap passed in
+silence while the estimate was 13 metres wrong.
+[docs/finding-kidnap.md](docs/finding-kidnap.md)
+
+![Position error against ground truth: flat at five centimetres, then jumping to
+between 10 and 16 metres at the first shaded kidnap window and staying there, with
+detection marks along the top and a visible gap during the second
+kidnap.](docs/figures/kidnap-onset.png)
 
 **The gap detector spent its first weeks measuring the recorder, not the sensor.** On a
 public paired clean-and-attack dataset, receive-time gaps produced 37 detections on a
