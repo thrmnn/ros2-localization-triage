@@ -148,9 +148,8 @@ def kidnap_grading() -> list[float]:
     max_err = max(v["max_error_m"] for v in z.values())
     occ = json.loads((ROOT / "results/kidnap/occlusion_windows.json").read_text())
     dets = json.loads((ROOT / "results/kidnap/detections.json").read_text())
-    sys.path.insert(0, str(ROOT / "scripts"))
-    from kidnap_grade import REPLAY_BAG_START_S
-    shift = REPLAY_BAG_START_S - occ["bag_t0_s"]
+    meta = json.loads((ROOT / "results/kidnap/replay_meta.json").read_text())
+    shift = meta["replay_bag_start_s"] - occ["bag_t0_s"]
     w1 = occ["windows"][0]
     onset = min(d_["start_s"] + shift for d_ in dets
                 if w1["start_s"] <= (d_["start_s"] + d_["end_s"]) / 2 + shift

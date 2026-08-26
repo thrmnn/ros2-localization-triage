@@ -22,10 +22,6 @@ from pathlib import Path
 import numpy as np
 
 MATCH_TOLERANCE_S = 0.05
-# Detection times in detections.json are relative to the replay bag's own start
-# (its first recorded message), which trails the first cloud stamp the zone
-# clock is based on. reader.start_time of hdl_out.bag:
-REPLAY_BAG_START_S = 1693731518.791423292
 
 
 def load_poses(path: Path) -> np.ndarray:
@@ -49,7 +45,12 @@ def main() -> None:
     gt = np.loadtxt(root / "gt_traj.txt")[:, :4]  # t, x, y, z
     occ = json.load(open(root / "occlusion_windows.json"))
     detections = json.load(open(root / "detections.json"))
+    meta = json.load(open(root / "replay_meta.json"))
     t0 = occ["bag_t0_s"]
+    # Detection times are relative to the replay bag's own start (its first
+    # recorded message), which trails the first cloud stamp the zone clock is
+    # based on.
+    det_shift = meta["replay_bag_start_s"] - t0
 
     # Match each estimated pose to the nearest GT pose in time.
     idx = np.searchsorted(gt[:, 0], est[:, 0])
@@ -74,7 +75,6 @@ def main() -> None:
               "n_matched": int(ok.sum()), "zones": {}}
     for name, lo, hi in zones:
         m = ok & (rel >= lo) & (rel < hi)
-        det_shift = REPLAY_BAG_START_S - t0
         dz = [
             d
             for d in detections

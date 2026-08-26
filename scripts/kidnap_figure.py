@@ -16,8 +16,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from kidnap_grade import REPLAY_BAG_START_S
-
 
 def main() -> None:
     root = Path(sys.argv[1] if len(sys.argv) > 1 else "results/kidnap")
@@ -37,6 +35,7 @@ def main() -> None:
     gt = np.loadtxt(root / "gt_traj.txt")[:, :4]
     occ = json.load(open(root / "occlusion_windows.json"))
     detections = json.load(open(root / "detections.json"))
+    meta = json.load(open(root / "replay_meta.json"))
     t0 = occ["bag_t0_s"]
 
     idx = np.searchsorted(gt[:, 0], est[:, 0])
@@ -55,7 +54,7 @@ def main() -> None:
             alpha=0.45,
             label="view covered (from the clouds)" if i == 0 else None,
         )
-    shift = REPLAY_BAG_START_S - t0
+    shift = meta["replay_bag_start_s"] - t0
     ymax = err.max() * 1.12
     for i, d in enumerate(detections):
         ax.axvspan(

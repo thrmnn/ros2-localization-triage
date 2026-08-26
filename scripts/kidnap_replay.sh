@@ -16,19 +16,21 @@
 #
 # usage (host): docker run --rm -v <datadir>:/data -v <thisdir>:/scripts \
 #   hdl-noetic bash /scripts/kidnap_replay.sh /data/kidnap01.bag \
-#   /data/map_indoor_easy.pcd /data/out
+#   /data/map_indoor_easy.pcd /data/out [x y z qx qy qz qw]
 set -eo pipefail
-BAG=${1:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir>}
-MAP=${2:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir>}
-OUT=${3:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir>}
+BAG=${1:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir> [x y z qx qy qz qw]}
+MAP=${2:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir> [x y z qx qy qz qw]}
+OUT=${3:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir> [x y z qx qy qz qw]}
+# Initial pose = the sequence's first ground-truth pose (TUM line 1, printed by
+# kidnap_prepare.py), so the run starts localised and every later divergence is
+# the sequence's doing, not the seed's. Defaults are indoor_kidnap_01's.
+IX=${4:-4.055344}; IY=${5:-3.677024}; IZ=${6:-0.044252}
+QX=${7:--0.660053}; QY=${8:--0.237017}; QZ=${9:-0.299488}; QW=${10:-0.646885}
 source /opt/ros/noetic/setup.bash
 source /ws/devel/setup.bash
 mkdir -p "$OUT"
 
-# Initial pose = the first ground-truth pose (TUM line 1 of
-# gt/traj_lidar_indoor_kidnap_01.txt), so the run starts localised and every
-# later divergence is the sequence's doing, not the seed's.
-cat > /tmp/replay.launch <<'EOF'
+cat > /tmp/replay.launch <<EOF
 <launch>
   <node pkg="nodelet" type="nodelet" name="mgr" args="manager" output="screen"/>
   <node pkg="nodelet" type="nodelet" name="globalmap_server_nodelet"
@@ -50,13 +52,13 @@ cat > /tmp/replay.launch <<'EOF'
     <param name="ndt_resolution" value="1.0" />
     <param name="downsample_resolution" value="0.1" />
     <param name="specify_init_pose" value="true" />
-    <param name="init_pos_x" value="4.055344" />
-    <param name="init_pos_y" value="3.677024" />
-    <param name="init_pos_z" value="0.044252" />
-    <param name="init_ori_x" value="-0.660053" />
-    <param name="init_ori_y" value="-0.237017" />
-    <param name="init_ori_z" value="0.299488" />
-    <param name="init_ori_w" value="0.646885" />
+    <param name="init_pos_x" value="$IX" />
+    <param name="init_pos_y" value="$IY" />
+    <param name="init_pos_z" value="$IZ" />
+    <param name="init_ori_x" value="$QX" />
+    <param name="init_ori_y" value="$QY" />
+    <param name="init_ori_z" value="$QZ" />
+    <param name="init_ori_w" value="$QW" />
     <param name="use_global_localization" value="false" />
   </node>
 </launch>
