@@ -26,6 +26,9 @@ OUT=${3:?usage: kidnap_replay.sh <bag> <map.pcd> <outdir> [x y z qx qy qz qw]}
 # the sequence's doing, not the seed's. Defaults are indoor_kidnap_01's.
 IX=${4:-4.055344}; IY=${5:-3.677024}; IZ=${6:-0.044252}
 QX=${7:--0.660053}; QY=${8:--0.237017}; QZ=${9:-0.299488}; QW=${10:-0.646885}
+# Sensor wiring, overridable by env for the outdoor Livox sequences.
+POINTS_TOPIC=${POINTS_TOPIC:-/points2/decompressed}
+CHILD_FRAME=${CHILD_FRAME:-depth_camera_link}
 source /opt/ros/noetic/setup.bash
 source /ws/devel/setup.bash
 mkdir -p "$OUT"
@@ -41,8 +44,8 @@ cat > /tmp/replay.launch <<EOF
   </node>
   <node pkg="nodelet" type="nodelet" name="hdl_localization_nodelet"
         args="load hdl_localization/HdlLocalizationNodelet mgr" output="screen">
-    <remap from="/velodyne_points" to="/points2/decompressed" />
-    <param name="odom_child_frame_id" value="depth_camera_link" />
+    <remap from="/velodyne_points" to="$POINTS_TOPIC" />
+    <param name="odom_child_frame_id" value="$CHILD_FRAME" />
     <param name="use_imu" value="false" />
     <param name="enable_robot_odometry_prediction" value="false" />
     <param name="cool_time_duration" value="2.0" />
@@ -76,7 +79,7 @@ sleep 8
 
 rosbag record -O "$OUT/hdl_out.bag" /odom /tf __name:=rec > "$OUT/record.log" 2>&1 &
 sleep 2
-rosbag play --clock --rate 0.5 --topics /points2/decompressed -- "$BAG" \
+rosbag play --clock --rate 0.5 --topics "$POINTS_TOPIC" -- "$BAG" \
   > "$OUT/play.log" 2>&1
 sleep 3
 rosnode kill /rec > /dev/null 2>&1 || true

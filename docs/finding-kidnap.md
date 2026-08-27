@@ -7,10 +7,11 @@ none requires the 2.35 GB bag.
 
 ## The experiment
 
-Two handheld sequences from the
+Two handheld indoor sequences from the
 [Hard Point Cloud Localization Dataset](https://zenodo.org/records/10122133)
-were replayed; this section describes the first, 147 seconds long, and the
-second follows further down. Both come from the same source:
+were replayed and graded; this section describes the first, 147 seconds long,
+the second follows further down, and an ungraded outdoor observation closes
+the doc. Both come from the same source:
 (Koide et al., AIST, CC BY 4.0), each an Azure Kinect carried through a
 building at walking pace and kidnapped three times, meaning its view was
 covered while it was carried somewhere else, sometimes into another room. The dataset ships its own
@@ -120,9 +121,64 @@ degraded estimator wanders, and where it wanders varies between runs; the
 catastrophic first sequence reproduced almost exactly because a settled wrong
 pose has nowhere to wander. Committed artifacts are the first run of each.
 
+## The outdoor sequence, reported as an observation
+
+The same dataset ships one outdoor kidnap sequence: a Livox MID360 carried
+for 554 seconds through the AIST campus and kidnapped repeatedly, nine
+occlusion windows by the same point-cloud criterion (median range collapsing
+to about 11 cm). No case-log row was frozen for it before the replay ran, so
+like the camera-spoofing result in
+[finding-recorder-artifacts.md](finding-recorder-artifacts.md) it is reported
+as an observation, not a held prediction. Same pipeline, frozen thresholds
+unchanged; only the topic and tf edge differ
+(`results/kidnap_outdoor/detectors_kidnap.yaml`), because hdl_localization
+publishes `map->livox_frame` for this sensor.
+
+What the ground truth says (`results/kidnap_outdoor/gt_comparison.json`, all
+4016 generated poses matched within 50 ms): centimetre tracking for the first
+27.7 seconds (median 0.068 m), then the first kidnap ends the run. The
+localiser never regains the map, and outdoors there is no wrong corridor to
+settle into: the error climbs monotonically, 14.5 m median in the first
+kidnap window, 49 m in the next clear stretch, past 100 m by the third
+kidnap, peaking at 181 m. The indoor collapse held at 10 to 16 m because
+walls kept offering wrong-but-plausible basins; open ground offers none.
+
+`tf_jump` fires 37 times (`results/kidnap_outdoor/detections.json`). The
+first kidnap is flagged 0.80 s after the view is covered, about six frames at
+the cloud stream's 7.3 Hz, and detections then recur through almost the whole
+lost phase, which is the behaviour you would want from a monitor watching a
+permanently lost estimator. But two results count against it, and they are
+the reason this section exists:
+
+- **The frozen threshold sits below the carrier's real speed.** Two
+  healthy-window detection episodes, 12.4 and 3.2 seconds long, fire at
+  implied peaks of 2.64 and 4.59 m/s while ground truth bounds the real
+  error under 0.25 m. The ground truth itself shows the sensor genuinely
+  moving at a median 1.68 m/s with instantaneous peaks of 2.36 m/s: the
+  2.0 m/s fallback, calibrated indoors, is inside this carrier's normal
+  motion. Alarms and real motion are not separable at these thresholds on
+  this edge, the same non-transferability result as
+  [transferability.md](transferability.md), on yet another platform.
+- **Once lost, it is a siren, not a detector.** Merged detection episodes
+  cover 79 percent of the 526 lost seconds and overlap all nine kidnap
+  windows; the longest quiet stretch is 11.4 s. That is the right behaviour
+  for a monitor whose job is "this robot is not where it thinks", and useless
+  for attributing individual events: past the first onset, no detection here
+  distinguishes a kidnap from the estimator's ordinary churn while lost. The
+  zone table's zeros in the final two zones are episode-midpoint binning, not
+  silence; one episode runs from 471.7 s to 0.2 s before the bag ends.
+
+A second independent replay, run a day later in the same pinned image,
+reproduced this one exactly: the extracted pose stream is byte-identical to
+the committed one, and all 37 detections carry bit-identical peak values,
+their timestamps differing only by the 6 ms offset between the two
+recordings' start times. Where the degraded indoor sequence wandered between
+runs, a pipeline this far gone has nothing left to vary. The committed
+artifacts are the first run.
+
 ## What this does not establish
 
-Two sequences, one localiser, one platform. The `map->depth_camera_link` edge
+Two graded sequences and an outdoor observation, one localiser. The `map->depth_camera_link` edge
 carries real sensor motion as well as corrections, because a handheld sensor
 has no odom frame; on a wheeled robot the map->odom edge isolates corrections
 and the same thresholds mean something stricter. And the onset catch is a

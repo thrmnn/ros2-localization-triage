@@ -72,8 +72,9 @@ point-cloud maps and no AMCL-shaped pipeline, so using it meant running a differ
 localiser. Used 2026-08-26, and it delivered: `indoor_kidnap_01` and
 `indoor_kidnap_02` replayed through hdl_localization against the dataset's own
 map, graded against its TUM ground truth. See `finding-kidnap.md`,
-`results/kidnap/` and `results/kidnap02/`. The outdoor and indoor-hard
-sequences remain unexamined.
+`results/kidnap/` and `results/kidnap02/`. The outdoor kidnap sequence was
+replayed 2026-08-27 and reported as an ungraded observation
+(`results/kidnap_outdoor/`); the indoor-hard sequences remain unexamined.
 
 **CARMEN logs** mirrored at Bonn and Freiburg (CC BY). Thirteen different legacy
 robots, 2D laser and wheel odometry, under 200 MB in total. The cheapest platform

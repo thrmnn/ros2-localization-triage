@@ -1,0 +1,96 @@
+# The outdoor kidnap replay (Livox MID360, Zenodo 10122133). Copied from
+# results/kidnap/detectors_kidnap.yaml with ONLY the tf edge name changed:
+# hdl_localization publishes map->livox_frame for this sensor.
+#
+# NOTHING here is retuned: every threshold below is byte-for-byte the one in
+# config/detectors.yaml, calibrated on a simulated TurtleBot3 and frozen. The
+# only changes are the topic names and the tf edge list. The replay output has
+# no wheel odometry (the sensor is handheld), no covariance-bearing pose topic
+# and no scan topic, so pose_divergence, covariance_spike and scan_gap have no
+# input by construction; tf_jump watches the single map->livox_frame
+# edge hdl_localization publishes, which carries real motion plus any
+# relocalisation jump. That edge matches no per_signal override, so the
+# fallback thresholds apply, also frozen.
+typestore: ros2_humble   # fallback message definitions; bags written before Iron embed none
+
+topics:
+  tf: /tf
+  tf_static: /tf_static
+  odom: /wheel_odom_absent
+  amcl_pose: /amcl_pose_absent
+  scan: /scan_absent
+
+detectors:
+
+  # AMCL's own stated uncertainty. Spikes when the particle filter loses
+  # confidence: occlusion, kidnap, featureless corridor.
+  covariance_spike:
+    enabled: true
+    min_duration_s: 0.5      # a single noisy sample is not an incident
+    merge_gap_s: 1.0
+    thresholds:
+      position_sigma_m: 0.35
+      yaw_sigma_rad: 0.25
+    sweeps:
+      position_sigma_m: {min: 0.01, max: 5.0, steps: 60, log: true}
+      yaw_sigma_rad: {min: 0.005, max: 2.0, steps: 60, log: true}
+
+  # Transform discontinuity, expressed as the speed the transform implies.
+  # map->odom is the localisation correction and should sit near zero;
+  # odom->base_footprint should never exceed the base's real top speed.
+  tf_jump:
+    enabled: true
+    edges: ["map->livox_frame"]
+    min_dt_s: 0.005
+    min_duration_s: 0.0      # a jump is a single-sample event by definition
+    # A repeating fault publishes one discontinuity per cycle; without a merge
+    # window wider than that cycle, one incident is reported as dozens of
+    # detections and the case log counts the same event many times.
+    merge_gap_s: 3.0
+    thresholds:
+      # Fallback for any edge without an override below.
+      linear_speed_mps: 2.0
+      angular_speed_radps: 3.0
+    # The two edges are physically different quantities, so they get different
+    # numbers. Calibrated 2026-08-19: a Waffle tops out at 0.26 m/s and
+    # 1.82 rad/s, so anything above that on odom->base_footprint is not motion.
+    # map->odom is the localisation correction and should sit near zero -- any
+    # appreciable movement there IS the relocalisation event.
+    per_signal:
+      "map->odom":
+        linear_speed_mps: 0.30
+        angular_speed_radps: 0.50
+      "odom->base_footprint":
+        linear_speed_mps: 0.35
+        angular_speed_radps: 2.00
+    sweeps:
+      linear_speed_mps: {min: 0.05, max: 200.0, steps: 60, log: true}
+      angular_speed_radps: {min: 0.05, max: 200.0, steps: 60, log: true}
+
+  # Dead reckoning vs the corrected pose, compared over a trailing window as
+  # displacement magnitude and heading change (the two sources are in different
+  # frames, so absolute positions are not comparable).
+  pose_divergence:
+    enabled: true
+    window_s: 2.0
+    min_duration_s: 0.0
+    merge_gap_s: 1.0
+    thresholds:
+      displacement_delta_m: 0.5
+      yaw_delta_rad: 0.4
+    sweeps:
+      displacement_delta_m: {min: 0.01, max: 10.0, steps: 60, log: true}
+      yaw_delta_rad: {min: 0.01, max: 3.0, steps: 60, log: true}
+
+  # Sensor dropout, as a multiple of the topic's own median inter-arrival time.
+  scan_gap:
+    enabled: true
+    topics: ["/scan"]
+    min_absolute_gap_s: 0.05   # gaps shorter than this are clamped to ratio 1.0; keep it well under a plausible dropout
+    baseline_min_samples: 20
+    min_duration_s: 0.0
+    merge_gap_s: 0.0
+    thresholds:
+      gap_ratio: 4.0
+    sweeps:
+      gap_ratio: {min: 1.1, max: 200.0, steps: 60, log: true}

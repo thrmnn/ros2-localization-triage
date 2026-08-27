@@ -6,7 +6,11 @@ occluder: median point range drops to centimetres. That signature is a property
 of the recorded data, independent of any localiser, which is what makes the
 windows usable as grading zones. Writes the windows JSON the grading reads.
 
-usage: kidnap_occlusion.py <ros2_bag_dir> <out.json>
+usage: kidnap_occlusion.py <ros2_bag_dir[,ros2_bag_dir...]> <out.json> [topic]
+
+The outdoor sequences ship as two consecutive bags: pass both, comma-separated.
+The topic defaults to the indoor Kinect's /points2/decompressed; the outdoor
+Livox uses /livox/points.
 """
 import itertools
 import json
@@ -23,19 +27,23 @@ SUBSAMPLE = 37
 
 
 def main() -> None:
-    bagdir, out = sys.argv[1], sys.argv[2]
+    bagdirs, out = sys.argv[1].split(","), sys.argv[2]
+    topic = sys.argv[3] if len(sys.argv) > 3 else "/points2/decompressed"
     rows = []
     t0 = None
     typestore = get_typestore(Stores.ROS2_HUMBLE)
-    with AnyReader([Path(bagdir)], default_typestore=typestore) as reader:
-        conns = [c for c in reader.connections if c.topic == "/points2/decompressed"]
+    with AnyReader([Path(b) for b in bagdirs], default_typestore=typestore) as reader:
+        conns = [c for c in reader.connections if c.topic == topic]
         for conn, _, raw in reader.messages(connections=conns):
             msg = reader.deserialize(raw, conn.msgtype)
             st = msg.header.stamp.sec + msg.header.stamp.nanosec / 1e9
             if t0 is None:
                 t0 = st
-            pts = np.frombuffer(msg.data, dtype=np.float32)
-            pts = pts.reshape(-1, msg.point_step // 4)[::SUBSAMPLE, :3]
+            offs = {f.name: f.offset for f in msg.fields}
+            assert (offs["x"], offs["y"], offs["z"]) == (0, 4, 8), offs
+            buf = np.frombuffer(msg.data, dtype=np.uint8)
+            xyz = buf.reshape(-1, msg.point_step)[::SUBSAMPLE, :12]
+            pts = xyz.copy().view(np.float32).reshape(-1, 3)
             dist = np.linalg.norm(pts, axis=1)
             ok = np.isfinite(dist) & (dist > 0.05)
             rows.append((st - t0, float(np.median(dist[ok])) if ok.any() else 0.0))

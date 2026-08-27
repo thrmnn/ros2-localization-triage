@@ -61,4 +61,4 @@ log* and why there is no headline accuracy figure. The failures here are also
 isolated, each injected one at a time, while real fleet incidents compound.
 That limitation is stated rather than solved.
 
-External technical readthrough: **PLACEHOLDER, not yet arranged**.
+External technical readthrough: **pending**.

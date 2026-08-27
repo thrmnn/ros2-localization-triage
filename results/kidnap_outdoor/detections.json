@@ -1,0 +1,335 @@
+[
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 4.536889334,
+    "end_s": 16.937444495,
+    "peak": 2.6444934828678055,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 20.537402281,
+    "end_s": 23.736965591,
+    "peak": 4.593988724122389,
+    "n_samples": 3
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 28.037622516,
+    "end_s": 28.037622516,
+    "peak": 3.7480844427520177,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 28.037622516,
+    "end_s": 36.137678337,
+    "peak": 15.073844370369239,
+    "n_samples": 11
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 40.836887905,
+    "end_s": 47.03675721,
+    "peak": 11.979629791558445,
+    "n_samples": 5
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 47.936755553,
+    "end_s": 79.63735796,
+    "peak": 14.632754607880296,
+    "n_samples": 93
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 79.83669761,
+    "end_s": 104.437818063,
+    "peak": 30.98005734849778,
+    "n_samples": 90
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 105.037882127,
+    "end_s": 106.037785987,
+    "peak": 3.8180925241722696,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 111.338051098,
+    "end_s": 113.637290364,
+    "peak": 12.214096483391122,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 117.337140001,
+    "end_s": 143.937381847,
+    "peak": 27.426931301513623,
+    "n_samples": 101
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 142.837085577,
+    "end_s": 145.337230981,
+    "peak": 6.747445244600488,
+    "n_samples": 5
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 148.637425989,
+    "end_s": 148.637425989,
+    "peak": 4.660929294662837,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 149.137260589,
+    "end_s": 153.937453955,
+    "peak": 30.558744883719008,
+    "n_samples": 15
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 158.33739391,
+    "end_s": 165.837732057,
+    "peak": 9.488746345884989,
+    "n_samples": 12
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 166.539423536,
+    "end_s": 197.636974298,
+    "peak": 10.95297923373344,
+    "n_samples": 96
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 207.637207438,
+    "end_s": 234.537689116,
+    "peak": 21.863237594436534,
+    "n_samples": 74
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 234.836995878,
+    "end_s": 254.536966688,
+    "peak": 27.131861837531225,
+    "n_samples": 63
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 237.837862644,
+    "end_s": 238.237391817,
+    "peak": 5.7546599091547606,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 253.736838505,
+    "end_s": 255.036799795,
+    "peak": 11.378120599220031,
+    "n_samples": 9
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 258.436904939,
+    "end_s": 294.637722601,
+    "peak": 13.353046651286611,
+    "n_samples": 82
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 302.137054671,
+    "end_s": 302.137054671,
+    "peak": 25.619225127650743,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 302.436850911,
+    "end_s": 302.837903691,
+    "peak": 26.10230401398172,
+    "n_samples": 4
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 306.036953188,
+    "end_s": 315.536903989,
+    "peak": 21.17066356302909,
+    "n_samples": 26
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 322.73694687,
+    "end_s": 324.436987174,
+    "peak": 25.486616064895994,
+    "n_samples": 13
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 327.536994282,
+    "end_s": 335.237143442,
+    "peak": 18.76020011642549,
+    "n_samples": 25
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 341.537400378,
+    "end_s": 366.337852455,
+    "peak": 32.851946204193816,
+    "n_samples": 50
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 370.736995015,
+    "end_s": 375.037074297,
+    "peak": 12.839832431777412,
+    "n_samples": 9
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 378.836890105,
+    "end_s": 389.83721649,
+    "peak": 8.756789691952811,
+    "n_samples": 10
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 390.336730229,
+    "end_s": 393.737499047,
+    "peak": 19.881124516400124,
+    "n_samples": 14
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 397.037358827,
+    "end_s": 397.637360795,
+    "peak": 9.159731956492495,
+    "n_samples": 3
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 406.436772978,
+    "end_s": 437.837105367,
+    "peak": 33.73917305008209,
+    "n_samples": 148
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 436.836640665,
+    "end_s": 441.337259146,
+    "peak": 13.77025035340726,
+    "n_samples": 15
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 444.536624746,
+    "end_s": 448.836848068,
+    "peak": 14.894458969796995,
+    "n_samples": 7
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 455.337134527,
+    "end_s": 456.137178923,
+    "peak": 3.783900768755786,
+    "n_samples": 2
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 467.537430624,
+    "end_s": 467.537430624,
+    "peak": 3.7426540178416148,
+    "n_samples": 1
+  },
+  {
+    "detector": "tf_jump",
+    "param": "linear_speed_mps",
+    "key": "map->livox_frame",
+    "start_s": 471.737746055,
+    "end_s": 553.237927591,
+    "peak": 32.158603830681706,
+    "n_samples": 477
+  },
+  {
+    "detector": "tf_jump",
+    "param": "angular_speed_radps",
+    "key": "map->livox_frame",
+    "start_s": 483.137683297,
+    "end_s": 483.737711023,
+    "peak": 6.688128135180836,
+    "n_samples": 3
+  }
+]
