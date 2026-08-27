@@ -1,7 +1,7 @@
 # localization-triage
 
 **I read robot navigation logs.** I froze four fault detectors before I looked at any
-results, ran them unchanged on 97 minutes of recordings from five platforms, and
+results, ran them unchanged on 108 minutes of recordings from five platforms, and
 published what they caught, what they missed, and the raw counts behind both.
 
 Théo Alessandro Hermann, independent practitioner. Contact: [github.com/thrmnn](https://github.com/thrmnn).

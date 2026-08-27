@@ -77,4 +77,4 @@ localisation-layer detectors, not an intrusion detection system.
 platform's top speed, and the clean control fires harder than the attack run. It
 separates nothing here and those detections are noise until the threshold is
 calibrated to this base, the same transferability result as
-[docs/transferability.md](transferability.md), on a sixth platform.
+[docs/transferability.md](transferability.md), on yet another robot.

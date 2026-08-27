@@ -171,6 +171,43 @@ def leon_scan_gap_counts() -> list[float]:
             count("E1-1_header_time.json", "scan_gap"), round(peak, 1)]
 
 
+def readme_corpus() -> list[int]:
+    """Recompute the README's opening "N minutes of recordings from P platforms".
+
+    That sentence is the first thing a reader sees and it went stale silently every
+    time the corpus grew, which it did three times after it was written. One rule
+    decides what counts, and the same rule decides both numbers: a real recording
+    the frozen detectors were run on, reported or graded, whose duration is fixed by
+    a committed artifact or by the transferability table's own row, whose arithmetic
+    the first check above already audits. Out, therefore: the simulated TurtleBot3
+    calibration recording, because these are recordings of real platforms; the
+    ungraded outdoor kidnap observation; and the Leon bags, because nothing
+    committed here fixes their duration, only their scan cadence. Platforms are
+    counted by robot family, so the three different Tiago-family robots are one
+    platform and the count stays deliberately conservative."""
+    seconds, platforms = 0.0, set()
+    for name, dur in re.findall(
+            r"^\|([^|]+)\|\s*(\d+(?:\.\d+)?)\s*s\s*\|",
+            (ROOT / "docs/transferability.md").read_text(), re.M):
+        if "simulated" in name:
+            continue
+        seconds += float(dur)
+        platforms.add(re.sub(r"\s+b\d+$", "", name.split(",")[0].strip()))
+    # Replays graded against somebody else's ground truth, each one a pose stream
+    # committed in full, so its duration is the artifact rather than a claim.
+    seconds += _span("results/stata/amcl_poses.csv", "# timestamp_us")
+    platforms.add("PR2")
+    for seq in ("results/kidnap", "results/kidnap02"):
+        seconds += _span(f"{seq}/hdl_poses.csv", "timestamp_us")
+    platforms.add("handheld 3D rig")
+    return [int(seconds // 60), len(platforms)]
+
+
+def _span(rel: str, col: str) -> float:
+    t = [float(r[col]) / 1e6 for r in _csv_rows(rel)]
+    return max(t) - min(t)
+
+
 MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
@@ -215,6 +252,12 @@ MANIFEST = [
      "expect": [0.078, 14.796, -0.069, 21, 1, 3.283, 2],
      "covers": [0.078, 14.796, 21, 3.283, 3.021, 45.3, 1608, 14.8],
      "note": "the degraded-not-lost sequence: healthy median, worst error, onset a frame before the occlusion threshold, and both later kidnaps caught"},
+    {"name": "the README's corpus size recomputes from the same rule",
+     "compute": readme_corpus,
+     "expect": [108, 5],
+     "covers": [108],
+     "note": "108 minutes across five platforms, counted by one stated rule, so the "
+             "opening sentence cannot go stale the next time the corpus grows"},
     {"name": "rubric commit resolves",
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,

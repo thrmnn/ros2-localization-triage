@@ -20,7 +20,7 @@ Every row above is a public recording that downloads anonymously. The MiR100 row
 from the same Cartographer public dataset, run with
 [`config/mir100.yaml`](../config/mir100.yaml), which is the stock config with the two
 laser topic names changed and no threshold touched. The dataset's own index states
-that bag as 180 s; it is **359.938 s**, measured with `loctriage inspect`, and the
+that bag as 180 s; it is 359.938 s, measured with `loctriage inspect`, and the
 rate here uses the measured duration.
 
 ## Recall, measured for the first time
@@ -62,7 +62,7 @@ authors years before this tool existed. Bag `b0-2014-07-21-12-49-19` is annotate
 
 Run against it, thresholds frozen, the gap detector reported exactly one event: a
 **8.91 second** interruption on `vertical_laser_2d` at t=82 s, against a median
-interval of 26.3 ms. That is **338 times** the normal spacing. The horizontal
+interval of 26.3 ms. That is 338 times the normal spacing. The horizontal
 laser on the same robot, which carries no annotation, produced nothing.
 
 Bag `b2-2016-02-02-14-01-56` is annotated "1 gap in laser data". Both lasers
@@ -85,7 +85,7 @@ them look like real dropouts. Reproduce the whole row in one command:
 - The threshold is a gap ratio of 4.0.
 - The 188 flags have a **median ratio of 4.57**, a minimum of exactly 4.00, and a
   maximum of 9.0. **61 percent sit within 20 percent of the line.**
-- For contrast, the two genuine dropouts above peaked at **338** and **104**.
+- For contrast, the two genuine dropouts above peaked at 338 and 104.
 
 A real dropout is two orders of magnitude clear of the threshold. These sit on it.
 The AGV's scan timing simply has a different jitter profile than the platform the

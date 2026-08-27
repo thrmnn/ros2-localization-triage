@@ -41,12 +41,12 @@ on yaw, read from `/amcl_pose`.
 
 | window | heading uncertainty (1 sigma) |
 |---|---|
-| quiet baseline, first 60 s | median **0.153**, max 0.177 rad |
-| after the 100 mm jump, 175 to 205 s | median **0.340** rad, and it does return to baseline |
-| after the 12 mm jump, 235 to 265 s | median **1.294** rad, and it does not |
-| immediately before the 0.9 m displacement | median **2.207**, max 2.511 rad |
-| 72 s after the displacement | median **1.738**, max 3.178 rad |
-| final sample, at 455 s | **2.540** rad |
+| quiet baseline, first 60 s | median 0.153, max 0.177 rad |
+| after the 100 mm jump, 175 to 205 s | median 0.340 rad, and it does return to baseline |
+| after the 12 mm jump, 235 to 265 s | median 1.294 rad, and it does not |
+| immediately before the 0.9 m displacement | median 2.207, max 2.511 rad |
+| 72 s after the displacement | median 1.738, max 3.178 rad |
+| final sample, at 455 s | 2.540 rad |
 
 **Nothing rechecks these six numbers.** They were computed from the `/amcl_pose` yaw
 covariance of one controlled recording that is not committed, because it is too large
