@@ -30,7 +30,7 @@ repo: scans and transforms are recorded, the pose and its covariance are generat
 
 ## What the ground truth says AMCL did
 
-From `results/stata/gt_comparison.json`, 383 of 646 AMCL poses matched to a GT pose
+From `results/stata/gt_comparison.json`, 382 of 647 AMCL poses matched to a GT pose
 within 50 ms:
 
 | Window | Median position error | Max | Median yaw error | AMCL's own reported sigma |
@@ -76,6 +76,8 @@ itself into the zones:
   peaking at an implied 2288 m/s, which is AMCL teleporting its own frame to a
   wrong corridor while the ground truth shows the robot moving normally. First
   non-circular true positives for all three.
+- **After the ground truth ends: 1 `tf_jump`.** The AprilTag stream stops before
+  the recording does, so nothing grades this one either.
 
 Two independent replays of this stochastic experiment were run, and the second
 reproduced the first: identical healthy-window median (0.278 m both times), lost

@@ -52,6 +52,12 @@ a ground-truth pose within 50 ms:
 | First kidnap window | 6.1 m | 8.5 m |
 | Everything after (106 s) | 10.7 to 13.8 m per zone | **16.8 m** |
 
+The error above is graded in three dimensions, while `tf_jump` and
+`pose_divergence` are planar: `PoseTrack` in
+`src/localization_triage/signals.py` carries x, y and yaw only, and `tf_jump`
+measures displacement with `np.hypot` on x and y. The detector therefore sees
+the horizontal component of an error graded in 3D.
+
 ![Position error against ground truth over time. Flat at five centimetres for
 33 seconds, then the first shaded kidnap window sends it to between 10 and 16
 metres, where it stays for the rest of the run. A red band along the top marks
@@ -75,7 +81,7 @@ a permanent state.
   occluder, the estimate lurches at an implied 17.0 m/s while the ground truth
   shows walking pace. Nothing about the cover itself is visible to a transform
   watcher; what it catches is the estimator reacting to it, instantly.
-- **19 further detections fire across the lost phase**, implied speeds up to
+- **20 further detections fire across the lost phase**, implied speeds up to
   26.6 m/s, as the estimate keeps snapping between wrong basins. The ground
   truth confirms every one of those windows sits 7 to 16 m from the truth.
 - **Counted against it, two things.** One healthy-window firing at 2.175 m/s
@@ -97,7 +103,7 @@ medians of 11.3 and 10.3 m, 22 detections in both runs, the same single
 healthy-window graze, and the same onset latency of 0.064 s to the millisecond.
 The committed artifacts are the first run.
 
-## The second sequence tells a different story, and both kidnaps get caught
+## The second sequence tells a different story, and all three kidnaps get caught
 
 `indoor_kidnap_02` (109 s, three kidnaps, identical pipeline and frozen config,
 `results/kidnap02/`) does not collapse the same way. Tracking holds at 0.078 m

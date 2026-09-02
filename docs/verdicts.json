@@ -1,6 +1,7 @@
 {
   "_readme": "Outcome verdicts, graded against docs/case-log-rubric.md which was committed before any of this output existed. Synthetic rows are graded against the expectation declared in the recording script before each run; rule 1 makes a declared negative that goes unreported a correct row, not a miss. The two real-recording classes were ruled by the author on 2026-08-19.",
-  "gradedOn": "2026-08-19",
+  "gradedOnNote": "The synthetic and real rows were graded 2026-08-19; the stata, leon and kidnap sections carry their own later date and keep it.",
+  "gradedOn": "2026-08-19 to 2026-08-26",
   "synthetic": {
     "scan_dropout": {
       "outcome": "correct",
@@ -35,7 +36,7 @@
   },
   "stata": {
     "gradedOn": "2026-08-26",
-    "gradedBy": "the author, in an interview",
+    "gradedBy": "the author, ruling row by row in a recorded session with the assistant",
     "G1_pose_divergence": {
       "outcome": "correct",
       "why": "11 detections inside the window where independent AprilTag ground truth puts AMCL 19.4 m off median, 39.8 m max. Peaks of 14 to 23 m track the measured error."

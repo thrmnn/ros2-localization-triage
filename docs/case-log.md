@@ -2,15 +2,15 @@
 
 Graded against `docs/case-log-rubric.md`, which was fixed and committed **before** any of
 this output existed. The `outcome` column is author-assessed and is stated as such; the
-citation column is mechanical and reproducible by anyone with the recordings. Two rows,
-L1 and L2, were ruled through an adversarial review the author commissioned rather than
-graded directly; `docs/verdicts.json` records who graded what.
+citation column is mechanical and reproducible by anyone with the recordings. Four rows,
+L1, L2, K1 and K2, were ruled through an adversarial review the author commissioned rather
+than graded directly; `docs/verdicts.json` records who graded what.
 
 Every `expected` value below was declared in the recording script before the run, not
 chosen after reading the result.
 
 Outcomes graded 2026-08-19 (controlled and first public recording) and 2026-08-26
-(Stata and León rows). Verdicts live in `docs/verdicts.json` so the grading is
+(Stata, León and kidnap rows). Verdicts live in `docs/verdicts.json` so the grading is
 auditable rather than buried in prose.
 
 ## Rows from the controlled recording
@@ -73,7 +73,7 @@ the grading are derived from the point clouds, not from the localiser.
 
 | # | Detector | Signal | Peak | Window | Outcome | Notes |
 |---|---|---|---|---|---|---|
-| K1 | tf_jump | map correction speed | 26.6 m/s | full run | **partial** | 22 detections. The first kidnap is caught 0.064 s after the view is covered (one frame at the sensor's own cadence), at an implied 17 m/s while the sensor was carried at walking pace, and 19 further detections fire across the 110 s the localiser is 10 to 16 m wrong and never recovers. Counted against it: one healthy-window firing at 2.175 m/s against the frozen 2.0 fallback while ground truth bounds real error under 0.28 m, and an 8.3 s silence inside the second kidnap window while 13 m wrong (detection episodes lap into the window at both edges: the last churn episode ends 1.98 s after it opens, the next begins 0.13 s before it closes; the kidnap itself draws no onset response, the structural boundary published with the Stata result). Partial per the G4 precedent: real catches bundled with a firing on an event ground truth disproves. |
+| K1 | tf_jump | map correction speed | 26.6 m/s | full run | **partial** | 22 detections. The first kidnap is caught 0.064 s after the view is covered (one frame at the sensor's own cadence), at an implied 17 m/s while the sensor was carried at walking pace, and 20 further detections fire across the 110 s the localiser is 10 to 16 m wrong and never recovers. Counted against it: one healthy-window firing at 2.175 m/s against the frozen 2.0 fallback while ground truth bounds real error under 0.28 m, and an 8.3 s silence inside the second kidnap window while 13 m wrong (detection episodes lap into the window at both edges: the last churn episode ends 1.98 s after it opens, the next begins 0.13 s before it closes; the kidnap itself draws no onset response, the structural boundary published with the Stata result). Partial per the G4 precedent: real catches bundled with a firing on an event ground truth disproves. |
 | K2 | tf_jump | map correction speed | 45.3 m/s | full run | **partial** | 21 detections on the second sequence, where the localiser degrades (zone medians 2 to 5 m, excursions to 14.8 m) rather than settling wrong. All three kidnaps caught, the first from one frame before the occlusion threshold is crossed as the cover enters the view. Counted against it: one firing at 3.0 m/s at 1.95 s on the estimator's clock (2.13 s bag time), inside the estimator's declared 2 s initialisation cool-time (`scripts/kidnap_replay.sh`), with real error under 0.24 m. The cool-time explains the firing but the frozen rubric has no initialisation carve-out, and inventing one after the result would be the move rules 4 and 5 forbid: partial, same shape as G4 and K1. |
 
 ## Rows from the León attack pair, 2026-08-24

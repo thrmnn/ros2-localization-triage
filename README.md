@@ -6,11 +6,56 @@ published what they caught, what they missed, and the raw counts behind both.
 
 Théo Alessandro Hermann, independent practitioner. Contact: [github.com/thrmnn](https://github.com/thrmnn).
 
-Detectors for localisation incidents in ROS 2 recordings, and a sweep harness that
-picks their thresholds for you off generated plots instead of off intuition.
+**The problem.** A fleet's worst localisation incidents are the quiet ones: the robot
+that was somewhere else while reporting centimetre confidence, the alarm that fired on a
+healthy machine, the failure nobody can reproduce from the bag. Stock Nav2 ships AMCL
+with kidnap recovery switched off, so a displaced robot has no mechanism to conclude it
+is lost. Someone has to notice, and the bag is usually all they have.
 
-Reads rosbag2 directories and ROS 1 `.bag` files. Four detectors, every threshold in
-a YAML file, nothing hard-coded in the Python.
+**What this is.** Four detectors that read a recording (rosbag2 or ROS 1 `.bag`) for the
+signals a localiser leaks when it is in trouble: covariance spikes, transform jumps,
+disagreement between the localiser and dead reckoning, and gaps in the sensor stream.
+Every threshold lives in a YAML file. The thresholds were calibrated once on a
+simulated TurtleBot3, frozen, and then run without change on public recordings from
+other people's robots, graded against ground truth the localiser never saw.
+
+**Three results a fleet engineer should take from it, each with its working:**
+
+- **The same frozen thresholds meant opposite things on different robots.** 9 to 36
+  flags per robot-hour on Cartographer backpack recordings, every one a real dropout;
+  1880 on a MiR100 warehouse AGV, none of them real. A threshold is not a property of
+  a failure. It is a property of the machine it was measured on.
+  [docs/transferability.md](docs/transferability.md)
+- **Against labels somebody else wrote, years before this tool existed: 16 of 16 gaps
+  found, nothing else flagged.** [results/labelled/](results/labelled/)
+- **A localiser 19.4 metres wrong reported 8 centimetres of uncertainty.** The detectors
+  caught the transition, then went silent once the wrong pose settled. No monitor built
+  on the robot's own estimates can see steady-state confident wrongness.
+  [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)
+
+![Two Cartographer backpack recordings on a shared timeline, with every detector event
+marked. The dataset's Known Issues column counts 2 and 14 laser gaps; the frozen detector
+found 2 and 14 events and nothing elsewhere.](docs/figures/labelled-recall.png)
+
+**What this means for a fleet.** Monitoring rules tuned on one robot mean something
+different on the next one, and a localiser that has settled into a wrong pose looks
+healthy to any check that trusts its own estimate. Triage on a fleet is therefore a
+calibration-and-ground-truth problem before it is a tooling problem.
+
+**What this does not claim.** These are localisation-layer detectors, not an intrusion
+detection system and not a product. I recorded, ran and graded everything myself, under a
+[rubric](docs/case-log-rubric.md) committed before any real result existed; the
+[case log](docs/case-log.md) carries one verdict of wrong and three of partial. Nothing
+in the stock config is calibrated for your robot. Every emphasised number in these pages
+recomputes from a committed artifact with one script, `scripts/check_numbers.py`.
+
+**If a robot in your fleet was somewhere it should not have been, and the bag exists,**
+twenty minutes over that bag is the conversation I am proposing. Contact:
+[github.com/thrmnn](https://github.com/thrmnn).
+
+---
+
+## Seeing it run
 
 ![Thresholds calibrated on a simulated TurtleBot3 and frozen, then run against a real
 Cartographer backpack recording. All 14 laser gaps that the dataset's own authors
@@ -21,8 +66,6 @@ somebody else, eleven years before it existed.** The thresholds came off a simul
 TurtleBot3 and were frozen at calibration. The recording is a real Cartographer
 backpack. The label is the dataset's own Known Issues column. Nothing was retuned,
 and nothing beyond the labelled gaps was flagged.
-
-### What running it looks like
 
 ![A real terminal session: loctriage inspect shows the recording calls its lasers
 horizontal_laser_2d and vertical_laser_2d rather than /scan, and that it carries no
@@ -46,11 +89,13 @@ curl -O https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d
 It prints 28 detections, which cluster to the 14 labelled gaps: each physical
 dropout fires on both of the backpack's lasers about a second apart, and
 detections within two seconds are one event. Working, raw detections and the
-label source: [results/labelled/](results/labelled/).
+label source: [results/labelled/](results/labelled/). The Known Issues column
+gives how many gaps each recording has, not when, so the match is a match of
+counts: every annotated gap has one event and no event lacks an annotated gap.
 
 ---
 
-## What this found
+## What this found, in full
 
 Seven results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
@@ -66,6 +111,9 @@ property of a failure. It is a property of the machine it was measured on.
 ![The same threshold on two robots: on the simulated robot it sits above the noise and
 the injected faults run off the top of the axis; on real Tiago data with no faults at
 all, 38 percent of samples are above the same line.](docs/figures/threshold-transfer.png)
+
+The 38 percent in that caption is computed by `sim/plot_transfer.py` from two bags that
+are not committed, so it is not covered by the number gate; the rates in the table are.
 
 **Against labels somebody else wrote, the gap detector found 16 of 16.** Two Cartographer
 recordings carry 2 and 14 laser gaps in the dataset's own Known Issues column, written
@@ -94,11 +142,12 @@ sensor from a public kidnap dataset, replayed through hdl_localization against t
 dataset's own map and graded against its continuous ground truth: five-centimetre
 tracking for 33 seconds, then the first kidnap leaves the localiser 10 to 16 metres
 wrong for the rest of the run. `tf_jump` fired 0.064 s after the view was covered,
-one frame at the sensor's own cadence, and 19 more times across the verified-lost
+one frame at the sensor's own cadence, and 20 more times across the verified-lost
 phase. The same run also reproduces the boundary: an 8-second silence inside the
 second kidnap window while the estimate was 13 metres wrong, with no onset response
 to the kidnap itself. A second sequence degrades instead of collapsing, and there
-every one of its three kidnaps is caught.
+every one of its three kidnaps is caught. An outdoor sequence on a different sensor
+is reported at the end of the same document as an ungraded observation.
 [docs/finding-kidnap.md](docs/finding-kidnap.md)
 
 ![Position error against ground truth: flat at five centimetres, then jumping to
@@ -113,13 +162,15 @@ never missed a beat. Measured on the sensor's own stamps instead: zero on the cl
 and the attack run's genuine 22.7-second data hole surfaces at 340 times the median
 interval. [docs/finding-recorder-artifacts.md](docs/finding-recorder-artifacts.md)
 
-**A pre-registered prediction that the detectors would find nothing, which held.** On a
-benchmark whose authors engineered two runs to fail by locking the robot's route, the
-prediction that these detectors would not separate the failures from the matched controls
-was written and committed before the run. It held: the gap detector fired zero times on
-all 1013 seconds, and the transform detector's 1.40x elevation is well inside the bound
-the prediction named. A tool that finds something in every dataset it is pointed at is a
-mirror, not a detector. [results/erl/](results/erl/)
+**A pre-registered prediction that the detectors would find nothing, two thirds of which
+held.** On a benchmark whose authors engineered two runs to fail by locking the robot's
+route, three predictions were written and committed before the run. The gap detector
+fired zero times on all 1013 seconds, as predicted, and no detector separated the
+failures from the matched controls, as predicted. The third prediction, that the
+transform detector would not rise either, did not hold as written: it rose 1.40 times on
+five runs, which is a thing to test with more runs rather than a finding. A tool that
+finds something in every dataset it is pointed at is a mirror, not a detector.
+[results/erl/](results/erl/)
 
 **Stock Nav2 ships AMCL with kidnap recovery switched off.** Both `recovery_alpha` terms
 default to 0.0, so a displaced robot has no mechanism to conclude it is lost. Measured on
@@ -143,7 +194,8 @@ One `curl` checks this without trusting me.
 ## Run it on your own bag
 
 Nothing here assumes a TurtleBot3, a particular ROS distribution, or your topics being
-named the way mine are. The four steps below are the whole loop.
+named the way mine are. The four steps below are the whole loop, and a sweep harness
+picks the thresholds off generated plots instead of off intuition.
 
 **1. See what the recording actually contains.** Topic names, message counts, TF edges,
 and whether the topics a detector needs are present at all.
@@ -153,8 +205,8 @@ and whether the topics a detector needs are present at all.
 ```
 
 Do this first, always. Three datasets in the survey behind this work declare `/tf` or
-`/imu` and publish **zero messages** on them. A topic list is not evidence that a topic
-has data, and a detector that silently scores an empty topic looks exactly like a
+`/tf_static` and publish **zero messages** on them. A topic list is not evidence that a
+topic has data, and a detector that silently scores an empty topic looks exactly like a
 detector that found nothing wrong.
 
 **2. Point the config at your topic names.** Copy the stock config and edit it:
@@ -232,6 +284,21 @@ why the score is defined the way it is. Scores are computed once per recording
 and the whole threshold grid is evaluated against the cached scores, so a 60-point
 sweep costs one pass over the bag.
 
+Every threshold is in the YAML and a misspelled or missing one is a hard error. Four
+guard constants that are not thresholds do have code defaults, named in
+`src/localization_triage/config.py`: the minimum time step below which an implied
+speed is quantisation noise, the divergence window, the minimum absolute gap, and the
+number of samples a gap baseline needs before it is trusted.
+
+**There is also an `explain` command, and it is optional.** It asks a small local model
+(Ollama, off by default and never required by anything above) for one short hypothesis
+linking a window's detections to a plausible cause, with citations into the recording.
+Every citation is checked against the bag before the hypothesis is shown, and a
+hypothesis whose citations do not check out is downgraded and labelled rather than
+dropped, because silently discarding the model's failures would make the output look
+better than the method is. No result in this repository comes from it. The detectors
+detect; this only narrates.
+
 ## What is calibrated and what is not
 
 **Nothing in `config/detectors.yaml` is calibrated.** The values there are
@@ -242,11 +309,12 @@ Two reference sweeps are committed so you can see real harness output before
 running it yourself:
 
 - **`plots/`**: a public 113.5 s rosbag2 recording of a real PAL Robotics Tiago
-  (`fmrico/mh_amcl`, Apache-2.0). It contains `/scan`, `/tf`, `/tf_static` and
-  nothing else, so only `tf_jump` and `scan_gap` have input; the other two plots
-  are the "no input" placeholders. `/amcl_pose` does not exist in any archived
-  bag. It is AMCL's live output, produced by replaying a recording through AMCL,
-  not something anyone records ahead of time.
+  (`fmrico/mh_amcl`, Apache-2.0), the raw bag as archived. It contains `/scan`,
+  `/tf`, `/tf_static` and nothing else, so only `tf_jump` and `scan_gap` have input;
+  the other two plots are the "no input" placeholders. `/amcl_pose` does not exist in
+  any archived bag. It is AMCL's live output, produced by replaying a recording
+  through AMCL, not something anyone records ahead of time; the Tiago row in
+  [docs/transferability.md](docs/transferability.md) is that replay of this same bag.
   What the sweep shows: `odom->base_footprint` implied speed never exceeds
   0.286 m/s across all 5,677 samples (median 0.260, and 155 samples at exactly
   zero while the base is stationary), and `/scan` inter-arrival never exceeds
@@ -265,24 +333,28 @@ running it yourself:
 .venv/bin/python -m pytest
 ```
 
-Twenty-four tests: config strictness (a misspelled or omitted threshold is a hard
-error, because a silent fallback to a code default would put a live threshold
-outside version control), detection merging and duration filtering, detector unit
-tests including the header-stamp-versus-receive-time preference, and an
-end-to-end run over the synthetic fixture asserting each detector fires at its
-injected time.
+Twenty-four tests: six on config strictness (a misspelled or omitted threshold is a
+hard error, because a silent fallback to a code default would put a live threshold
+outside version control), six detector unit tests including the
+header-stamp-versus-receive-time preference and detection merging, two end-to-end runs
+over the synthetic fixture asserting each detector fires at its injected time, and ten
+on the `explain` command's citation verification and downgrade rule, which test the
+checking half only and never call a model.
 
-## Regenerating the animation
+## Regenerating the figures
 
 ```bash
 .venv/bin/python scripts/make_demo_gif.py b2-2015-05-12-12-46-34.bag
+.venv/bin/python scripts/labelled_figure.py
 ```
 
 The GIF at the top is generated by committed code from a public recording, so it
 can be checked rather than believed. The script's docstring states the two ways
 the drawing departs from the raw data: the flat baseline is subsampled for file
 size, and 38 minutes of recording play in 20 seconds. Nothing above the threshold
-is ever dropped, and the count in the corner comes from the detector.
+is ever dropped, and the count in the corner comes from the detector. The
+labelled-recall figure is drawn from the committed detections in
+`results/labelled/` and prints its own counts, which the number gate rechecks.
 
 ---
 
@@ -296,8 +368,9 @@ Exits non-zero if anything that must be true before this repo is public is not:
 no identifying strings in content, filenames, commit messages, authorship or bag
 binaries; a real author on the LICENSE; the self-grading disclosure present; a
 case log carrying at least three rows including one the tool got wrong and one it
-could not resolve; every load-bearing number recomputing from a committed
-artifact; and every external link resolving for a logged-out stranger.
+could not resolve; every number in the manifest recomputing from its committed
+artifact, and every other emphasised number either covered or stripped of its
+emphasis; and every external link resolving for a logged-out stranger.
 
 It is a gate rather than a checklist on purpose. A checklist under deadline
 pressure is a list of things someone decides to skip.

@@ -89,15 +89,17 @@ diversity available, at the cost of one format adapter.
 - **foxglove.dev/data** returns 404 and the sample MCAP URLs are dead.
 - **ros2/rosbag2 and Nav2 fixtures** are synthetic, not robot recordings.
 - IEEE DataPort is not usefully searchable; Kaggle is login-walled.
-- **EuRoC's classic ASL URL moved silently and still returns 200**, which is worse
+- **EuRoC's classic ASL URL moved silently and still returns HTTP 200**, which is worse
   than a 404 because it looks fine.
 
 ## On localisation topics specifically
 
-`/amcl_pose` is essentially unpublished. Three sources exist in the whole survey
-and only one is a real robot, at 86 seconds with no declared licence. This is
-structural rather than an oversight: localisation output is an algorithm's product,
-not a measurement, so nobody records it.
+`/amcl_pose` is rare. The survey turned up three sources in all, and only one of
+them was a real robot, at 86 seconds with no declared licence. This is structural
+rather than an oversight: localisation output is an algorithm's product, not a
+measurement, so nobody records it. One real-robot exception has since been found
+and used: the León dataset's Experiment 2 full bags do carry a real `/amcl_pose`
+([finding-recorder-artifacts.md](finding-recorder-artifacts.md)).
 
 **Replaying real sensor data through a localiser yourself is the only scalable
 route**, and it must be stated as such wherever those signals are used. The scans

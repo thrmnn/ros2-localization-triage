@@ -1,4 +1,4 @@
-# The same thresholds, on five platforms
+# The same thresholds, on four real platforms and a simulated one
 
 Every number here comes from the thresholds calibrated once on a simulated
 TurtleBot3 and then frozen, as the scoring rubric requires. Nothing was retuned
@@ -12,7 +12,7 @@ for any platform below.
 | Cartographer backpack, 2 further annotated bags | 3223 s | 32 | **36** | **0 of 16 labelled** | every annotated gap found, see below |
 | Tiago, ERL benchmark, 3 control runs | 578 s | 48 | **299** | not computable | all tf_jump; scan_gap silent |
 | Tiago, ERL benchmark, 2 runs engineered to fail | 435 s | 51 | **422** | not computable | see results/erl/ |
-| Tiago, real sensor data replayed | 113.542 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
+| Tiago, raw bag replayed through AMCL | 113.542 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
 | MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
 
 Every row above is a public recording that downloads anonymously. The MiR100 row is
@@ -21,7 +21,9 @@ from the same Cartographer public dataset, run with
 [`config/mir100.yaml`](../config/mir100.yaml), which is the stock config with the two
 laser topic names changed and no threshold touched. The dataset's own index states
 that bag as 180 s; it is 359.938 s, measured with `loctriage inspect`, and the
-rate here uses the measured duration.
+rate here uses the measured duration. What the detector measures in that bag is
+scan inter-arrival cadence, which does not depend on whatever the file name's
+"uncalibrated" refers to.
 
 ## Recall, measured for the first time
 
@@ -38,11 +40,12 @@ data from a platform it was never calibrated on. It says nothing about the other
 detectors, and a laser dropout is the easiest of the four failure modes to see. Working
 and raw detections are in `results/labelled/`.
 
-The Tiago rate was written as 349, then briefly as 350 after a check recomputed it from
-the whole-second 113 in its own row. The recording's own metadata states the duration as
-113.542004462 s, committed here as `plots/summary.json` `duration_s`, and 11 flags in
-113.542 s is 349 per hour. The row now carries the duration to the millisecond so the
-arithmetic is exact rather than rounded, and 349 was the right number all along.
+The Tiago recording's own metadata states its duration as 113.542004462 s, committed
+here as `plots/summary.json` `duration_s`, and 11 flags in 113.542 s is 349 per hour. The
+row carries the duration to the millisecond so the arithmetic is exact rather than
+rounded. That row is the AMCL replay of the bag: `plots/` in the repository holds the
+sweep over the raw recording, which carries `/scan` and `/tf` only, so the two are
+different artifacts from the same 113.5 seconds.
 
 **A rate of false alarms without a rate of misses is half a number.** Two rows
 above can state both, because somebody labelled those recordings. The other two
@@ -50,7 +53,7 @@ cannot, because nobody has, and no amount of analysis on our side creates a labe
 Where a miss rate is not computable it is written as such rather than left out,
 because an absent column reads as zero.
 
-**A spread of roughly 200 to 1 in false alarm rate, from one set of thresholds.**
+A spread of roughly 200 to 1 in false alarm rate, from one set of thresholds.
 That is the finding. A threshold is not a property of a failure. It is a property
 of the platform it was measured on.
 
@@ -61,7 +64,7 @@ authors years before this tool existed. Bag `b0-2014-07-21-12-49-19` is annotate
 **"1 gap in vertical laser data"**.
 
 Run against it, thresholds frozen, the gap detector reported exactly one event: a
-**8.91 second** interruption on `vertical_laser_2d` at t=82 s, against a median
+8.91 second interruption on `vertical_laser_2d` at t=82 s, against a median
 interval of 26.3 ms. That is 338 times the normal spacing. The horizontal
 laser on the same robot, which carries no annotation, produced nothing.
 
@@ -75,7 +78,7 @@ rubric. It is the first evidence here that is not circular.
 
 ## The failure, on a commercial AGV
 
-On the MiR100, the same gap detector fired **188 times in six minutes**. None of
+On the MiR100, the same gap detector fired 188 times in six minutes. None of
 them look like real dropouts. Reproduce the whole row in one command:
 
     loctriage --config config/mir100.yaml detect landmarks_demo_uncalibrated.bag
@@ -83,8 +86,8 @@ them look like real dropouts. Reproduce the whole row in one command:
 
 
 - The threshold is a gap ratio of 4.0.
-- The 188 flags have a **median ratio of 4.57**, a minimum of exactly 4.00, and a
-  maximum of 9.0. **61 percent sit within 20 percent of the line.**
+- The 188 flags have a median ratio of 4.57, a minimum of exactly 4.00, and a
+  maximum of 9.0. 61 percent sit within 20 percent of the line.
 - For contrast, the two genuine dropouts above peaked at 338 and 104.
 
 A real dropout is two orders of magnitude clear of the threshold. These sit on it.
@@ -98,7 +101,9 @@ non-transfer is large enough to make a detector useless without recalibration. O
 the one platform where independent labels exist, the detector found the labelled
 events and nothing else.
 
-Not supported: any claim about detection rate on faults in general. Three of four
-detectors still have no confirmed true positive, because no public recording we
-have found carries labelled localisation incidents. Recall is unestimated, not
-zero.
+Not supported: any claim about detection rate on faults in general. All four
+detectors now have at least one graded catch on real data, from the Stata Center
+and kidnap replays ([how-this-was-graded.md](how-this-was-graded.md),
+[case-log.md](case-log.md)), but no public recording we have found carries
+labelled localisation incidents, so recall on faults in general is unestimated,
+not zero.

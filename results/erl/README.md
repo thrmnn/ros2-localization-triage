@@ -1,4 +1,4 @@
-# The prediction held: these detectors do not see a navigation failure
+# Two predictions of three held: these detectors do not see a navigation failure
 
 Run after `PREREGISTRATION.md` was committed, against the predictions written in it.
 Thresholds frozen. ERL Navigation Benchmark, Zenodo record 10518775, CC-BY-4.0, five runs
@@ -21,10 +21,12 @@ failures: the route locked, and locked with replanning disabled.
 times on all five runs**, over 1013 s of real laser data. A locked route does not
 interrupt a laser, and the detector agrees.
 
-**Prediction 2, `tf_jump` shows no elevation and may show less: half wrong.** It did not
-show less. Both failure runs sit above every control. But the elevation is 1.40x on the
-group means, well inside the factor of two the prediction named as the line, so the
-prediction stands as written.
+**Prediction 2, `tf_jump` shows no elevation and may show less: did not hold.** It did
+not show less, and it did not show no elevation: `tf_jump` rose 1.40x on the group means
+and both failure runs sit above every control. The factor-of-two line in
+`PREREGISTRATION.md` was written for prediction 1, `scan_gap`, only. Prediction 2 named
+no bound, none is applied to it after the fact, and it did not hold as written. Five runs
+cannot say whether the 1.40x is real; the plausible mechanism is described below.
 
 **Prediction 3, no clean separation: held.** The highest control is 388 and the lowest
 failure is 421. **An 8 percent gap, with three controls and two failures, is not
@@ -46,10 +48,11 @@ real robots, which no other detector here has.
 
 ## What it does not establish
 
-`covariance_spike` and `pose_divergence` never ran: **no recording here contains
+`covariance_spike` and `pose_divergence` never ran here: **no recording here contains
 `/amcl_pose`**, because localisation output is an algorithm's product and nobody ships it
-pre-recorded. Two of four detectors remain untested against real data, as everywhere else
-in this work.
+pre-recorded. Both have since been graded against real data elsewhere, on the Stata
+Center replay
+([docs/finding-confidently-wrong.md](../../docs/finding-confidently-wrong.md)).
 
 Five runs is five runs. The 1.40x on `tf_jump` may be real, and a plausible mechanism
 exists, since a robot blocked on its route may rotate in place and attempt recovery

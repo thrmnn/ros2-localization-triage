@@ -55,10 +55,11 @@ about that recording is graded better than low-confidence.
 
 ## What this is not
 
-It is not a benchmark. A single simulated session and one public recording
-cannot support statistical claims, which is why the public-facing word is *case
-log* and why there is no headline accuracy figure. The failures here are also
-isolated, each injected one at a time, while real fleet incidents compound.
-That limitation is stated rather than solved.
+It is not a benchmark. The corpus is 108 minutes of recordings from five
+platforms, and a handful of graded events inside it cannot support statistical
+claims, which is why the public-facing word is *case log* and why there is no
+headline accuracy figure. The failures here are also isolated, each injected one
+at a time, while real fleet incidents compound. That limitation is stated rather
+than solved.
 
 External technical readthrough: **pending**.

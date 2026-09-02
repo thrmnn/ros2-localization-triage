@@ -28,7 +28,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ["README.md", "docs/case-log.md", "docs/transferability.md",
-        "docs/finding-amcl-recovery.md", "docs/how-this-was-graded.md"]
+        "docs/finding-amcl-recovery.md", "docs/how-this-was-graded.md",
+        "docs/finding-confidently-wrong.md", "docs/finding-kidnap.md",
+        "docs/finding-recorder-artifacts.md", "docs/data-sources.md"]
 
 
 def _csv_rows(rel: str) -> list[dict]:
@@ -121,6 +123,22 @@ def labelled_recall() -> list[int]:
 
 
 
+def labelled_figure_numbers() -> list[int]:
+    """The numbers docs/figures/labelled-recall.png prints on itself.
+
+    The check above recomputes the events but compares them to a count typed into this
+    manifest, so it never reads the authors' labels. The figure does: it takes the
+    Known Issues counts and the durations from the results/labelled README table and
+    draws a gap mark per annotated gap beside an event mark per detection. Calling the
+    figure's own function, rather than repeating its arithmetic, is what makes the gate
+    and the picture the same claim: an edited label column moves both or neither.
+    Returns total annotated, total found, total flagged elsewhere, then events per bag."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import labelled_figure
+
+    return labelled_figure.figure_numbers()
+
+
 def stata_grading() -> list[float]:
     """Re-run the Stata grading from the committed CSVs and return the numbers the
     finding doc leans on. A drifted CSV or an edited doc number fails here."""
@@ -132,13 +150,19 @@ def stata_grading() -> list[float]:
     lost = d["detections_by_zone"]["part3_lost"]
     return [w1["position_error_median_m"], w3["position_error_median_m"],
             w3["position_error_max_m"], w3["amcl_reported_sigma_median_m"],
-            lost["pose_divergence"] + lost["covariance_spike"] + lost["tf_jump"]]
+            lost["pose_divergence"] + lost["covariance_spike"] + lost["tf_jump"],
+            d["amcl_poses_matched_to_gt"], d["amcl_poses_total"],
+            w3["yaw_error_median_deg"], d["detections_total"],
+            sum(d["detections_by_zone"]["excursion_no_gt"].values()),
+            round(w3["amcl_reported_sigma_median_m"] * 100)]
 
 
 def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
     """Re-run the kidnap grading from the committed files and return the numbers the
     finding doc leans on: healthy median, worst error, onset latency, detection
-    counts, and the second-kidnap median and count."""
+    counts, the second-kidnap median and count, and the detections left over once
+    the healthy-window firing and the onset catch are set aside, which is the
+    "N further detections" the finding doc states and nothing recomputed."""
     import subprocess
     subprocess.run([sys.executable, str(ROOT / "scripts/kidnap_grade.py"), resdir],
                    check=True, capture_output=True, cwd=ROOT)
@@ -156,7 +180,8 @@ def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
                 < w1["end_s"]) - w1["start_s"]
     return [z["clear_1"]["median_error_m"], max_err, round(onset, 3), total,
             z["clear_1"]["detections"], z["occluded_2"]["median_error_m"],
-            z["occluded_2"]["detections"]]
+            z["occluded_2"]["detections"],
+            total - z["clear_1"]["detections"] - 1]
 
 
 def leon_scan_gap_counts() -> list[float]:
@@ -169,6 +194,16 @@ def leon_scan_gap_counts() -> list[float]:
                 if d["detector"] == "scan_gap"))
     return [count("E1-1_receive_time.json", "scan_gap"),
             count("E1-1_header_time.json", "scan_gap"), round(peak, 1)]
+
+
+def leon_timing() -> list[float]:
+    """The worst inter-arrival gap on each León run, from the committed timing summary.
+
+    The recorder-artifacts table prints these two as the whole point of the finding:
+    the clean run's 27 s hole is a recorder artifact in receive time, the attack run's
+    22.7 s hole survives into header time and is real."""
+    d = json.loads((ROOT / "results/leon/timing_summary.json").read_text())
+    return [d["E1-1"]["receive"]["max_dt_s"], d["E1-2"]["header"]["max_dt_s"]]
 
 
 def readme_corpus() -> list[int]:
@@ -216,9 +251,9 @@ MANIFEST = [
      "note": "each flags-per-hour recomputed from the flags and seconds in the same row"},
     {"name": "scan-gap detections on the graded sweep",
      "compute": scan_gap_detections,
-     "pattern": r"exactly (one|1) event",
      "expect": 1,
-     "note": "one event, which is what the Cartographer label says"},
+     "note": "one event, which is the dropout injected into the simulated recording "
+             "the sweep in plots/day3/ was run on (bag 20260819T170915Z)"},
     {"name": "published configs are the frozen one plus topic names",
      "compute": frozen_configs,
      "expect": [],
@@ -228,11 +263,20 @@ MANIFEST = [
      "expect": [2, 14],
      "covers": [2, 14, 16, 32, 28],
      "note": "the 16 of 16, re-derived by clustering the committed JSON within 2 s"},
+    {"name": "the labelled-recall figure draws the same 16 of 16",
+     "compute": labelled_figure_numbers,
+     "expect": [16, 16, 0, 2, 14],
+     "covers": [16, 0, 2, 14],
+     "note": "the figure's own headline, read from the authors' labels and the raw "
+             "detections, so the picture and the gate cannot disagree"},
     {"name": "stata grading recomputes from committed CSVs",
      "compute": stata_grading,
-     "expect": [0.278, 19.428, 39.802, 0.081, 30],
-     "covers": [0.278, 19.428, 39.802, 0.081, 30, 19.4, 646, 383, 2288],
-     "note": "healthy median, lost median and max, the confident sigma, and the 13 true positives"},
+     "expect": [0.278, 19.428, 39.802, 0.081, 30, 382, 647, 26.4, 80, 47, 8],
+     "covers": [0.278, 19.428, 39.802, 0.081, 30, 382, 647, 26.4, 80, 47, 8, 19.4, 2288],
+     "note": "healthy median, lost median and max, the confident sigma, the 13 true "
+             "positives, the matched-pose counts, the lost yaw error, the detection "
+             "total, the ungradeable excursion count, and the same sigma in whole "
+             "centimetres because that is how the headline states it"},
     {"name": "leon receive-vs-header counts recompute from committed JSONs",
      "compute": leon_scan_gap_counts,
      "expect": [37, 0, 339.7],
@@ -240,18 +284,24 @@ MANIFEST = [
      "note": "37 false detections before the fix, zero after, and the attack hole's ratio"},
     {"name": "kidnap grading recomputes from committed files",
      "compute": kidnap_grading,
-     "expect": [0.052, 16.784, 0.064, 22, 1, 13.163, 0],
-     "covers": [0.052, 16.784, 0.064, 22, 13.163, 17.0, 2.175, 26.6, 2154, 16.8],
+     "expect": [0.052, 16.784, 0.064, 22, 1, 13.163, 0, 20],
+     "covers": [0.052, 16.784, 0.064, 22, 13.163, 20, 17.0, 2.175, 26.6, 2154, 16.8],
      "note": "healthy median, worst error, one-frame onset latency, 22 detections with one healthy graze, and the silent second kidnap at 13 m wrong"},
     {"name": "outdoor kidnap observation recomputes from committed files",
      "compute": lambda: kidnap_grading("results/kidnap_outdoor"),
-     "expect": [0.068, 181.062, 0.801, 37, 2, 72.712, 1],
+     "expect": [0.068, 181.062, 0.801, 37, 2, 72.712, 1, 34],
      "note": "the outdoor Livox observation: healthy median, 181 m worst error, 0.8 s onset, 37 detections with two healthy-window episodes, second window at 73 m"},
     {"name": "second kidnap sequence recomputes from committed files",
      "compute": lambda: kidnap_grading("results/kidnap02"),
-     "expect": [0.078, 14.796, -0.069, 21, 1, 3.283, 2],
+     "expect": [0.078, 14.796, -0.069, 21, 1, 3.283, 2, 19],
      "covers": [0.078, 14.796, 21, 3.283, 3.021, 45.3, 1608, 14.8],
      "note": "the degraded-not-lost sequence: healthy median, worst error, onset a frame before the occlusion threshold, and both later kidnaps caught"},
+    {"name": "leon gap durations recompute from the committed timing summary",
+     "compute": leon_timing,
+     "expect": [27.131, 22.667],
+     "covers": [27.131, 22.667, 22.7],
+     "note": "the clean run's receive-time hole and the attack run's header-time hole, "
+             "the second also written rounded as 22.7 s"},
     {"name": "the README's corpus size recomputes from the same rule",
      "compute": readme_corpus,
      "expect": [108, 5],
@@ -263,6 +313,28 @@ MANIFEST = [
      "expect": True,
      "note": "the rubric's commit must exist or 'written before' cannot be checked"},
 ]
+
+
+def _number_tokens(value: object) -> set[str]:
+    """Every number in a manifest value or a stretch of prose, as comparable tokens.
+
+    Thousands separators and a trailing ".0" are spelling, not value, so both are
+    normalised away before the two sides are compared."""
+    if isinstance(value, (list, tuple)):
+        return {n for v in value for n in _number_tokens(v)}
+    text = re.sub(r"\d{4}-\d{2}-\d{2}", " ", str(value))  # a date is not a quantity
+    out = set()
+    for m in re.finditer(r"\d[\d,]*(?:\.\d+)?", text):
+        before, after = text[:m.start()], text[m.end():]
+        if before[-1:].isalpha() or after[:1].isalpha():
+            continue  # 3D, 2D, v2: the digit names a thing rather than counting one
+        if re.search(r"\b(?:CC BY|HTTP)\s$", before):
+            continue  # a licence or protocol identifier
+        if not before.strip() and after[:1] == "." and after[1:2] in (" ", ""):
+            continue  # a numbered list item opening the span
+        n = m.group().replace(",", "")
+        out.add(n[:-2] if n.endswith(".0") else n)
+    return out
 
 
 def main() -> None:
@@ -294,16 +366,21 @@ def main() -> None:
     # Built from the numbers each check actually guards. Using each check's pass/fail
     # expectation instead reported genuinely-checked figures as unmanaged, which
     # diluted the one signal that matters into false positives a reviewer skims past.
-    managed = " ".join(
-        str(v) for m in MANIFEST for v in (m.get("covers") or [m["expect"]]))
+    # Compared token by token, not as substrings of one joined string: "**4.0**" was
+    # counted as managed because "14.0" appeared somewhere in it. And every number
+    # inside a bold span is extracted, not only a span that is nothing but a number,
+    # because "**61 percent sit within 20 percent of the line**" is a claim too.
+    managed = {n for m in MANIFEST
+               for n in _number_tokens(m["covers"] if "covers" in m else m["expect"])}
     loose: set[str] = set()
     for rel in DOCS:
         f = ROOT / rel
         if not f.exists():
             continue
-        for n in re.findall(r"\*\*([\d][\d,.]*)\s*(?:times|percent|%|s\b)?\*\*", f.read_text()):
-            if n not in managed:
-                loose.add(f"{rel}:{n}")
+        for span in re.findall(r"\*\*(.+?)\*\*", f.read_text(), re.S):
+            for n in _number_tokens(span):
+                if n not in managed:
+                    loose.add(f"{rel}:{n}")
     if loose:
         print(f"\n  {len(loose)} emphasised number(s) with no manifest entry:")
         for x in sorted(loose)[:12]:
