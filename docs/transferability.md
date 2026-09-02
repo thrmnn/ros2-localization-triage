@@ -1,4 +1,4 @@
-# The same thresholds, on four real platforms and a simulated one
+# The same thresholds, on three real platform families and a simulated one
 
 Every number here comes from the thresholds calibrated once on a simulated
 TurtleBot3 and then frozen, as the scoring rubric requires. Nothing was retuned
@@ -81,7 +81,7 @@ rubric. It is the first evidence here that is not circular.
 On the MiR100, the same gap detector fired 188 times in six minutes. None of
 them look like real dropouts. Reproduce the whole row in one command:
 
-    loctriage --config config/mir100.yaml detect landmarks_demo_uncalibrated.bag
+    .venv/bin/loctriage --config config/mir100.yaml detect landmarks_demo_uncalibrated.bag
 
 
 

@@ -150,8 +150,10 @@ def render(recs: list[dict], headline: str, subtitle: str) -> None:
     total_ev = sum(len(r["events"]) for r in recs)
     fig.text(0.035, 0.025,
              f"The Known Issues column gives how many gaps each recording has, not when, "
-             f"so the match is a match of counts:\nevery annotated gap has one event and "
-             f"no event lacks an annotated gap.\nEach dropout fires on both lasers about "
+             f"so the match is a match of counts,\none for one: "
+             f"{len(recs[0]['events'])} events against {recs[0]['annotated']} annotated "
+             f"gaps, {len(recs[1]['events'])} against {recs[1]['annotated']}.\n"
+             f"Each dropout fires on both lasers about "
              f"a second apart: {total_det} raw detections cluster to {total_ev} events at 2 s.",
              fontsize=8.5, color=C_INK_2, va="bottom", ha="left", linespacing=1.5)
 

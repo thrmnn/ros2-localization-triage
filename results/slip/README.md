@@ -28,7 +28,7 @@ Six arms, identical route, thresholds frozen, only the tyre changed.
 | 0.15 | 9.74 m | 11.73 m | 0.831 |
 | 0.4 | 10.08 m | 10.96 m | 0.920 |
 | 1.0 | 9.92 m | 11.37 m | 0.873 |
-| **20.0** | 9.60 m | 10.47 m | **0.918** |
+| **20.0** | 9.60 m | 10.47 m | 0.918 |
 
 **If the wheels were slipping, odometry would over-report distance and the ratio would
 rise with compliance. It does neither.** At compliance 20, four hundred times the smallest

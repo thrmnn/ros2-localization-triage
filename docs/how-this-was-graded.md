@@ -16,8 +16,8 @@ recordings and get the same answer. Nothing about it depends on trusting me.
 
 ## Claim 2: "outcome", assessed by the author
 
-Whether a finding was *right* is my judgement. Two rows, L1 and L2, were ruled
-through an adversarial review I commissioned rather than graded directly;
+Whether a finding was *right* is my judgement. Four rows, L1, L2, K1 and K2, were
+ruled through an adversarial review I commissioned rather than graded directly;
 `docs/verdicts.json` records who graded what.
 
 For the controlled recording this is nearly mechanical, because the expected

@@ -83,7 +83,9 @@ a permanent state.
   watcher; what it catches is the estimator reacting to it, instantly.
 - **20 further detections fire across the lost phase**, implied speeds up to
   26.6 m/s, as the estimate keeps snapping between wrong basins. The ground
-  truth confirms every one of those windows sits 7 to 16 m from the truth.
+  truth puts the first of those windows, 33.08 to 36.86 s, across the
+  transition itself at 1.3 to 6.1 m from the truth, and every later window
+  between 6.6 and 16.8 m.
 - **Counted against it, two things.** One healthy-window firing at 2.175 m/s
   against the frozen 2.0 m/s fallback, while ground truth bounds the real
   error under 0.28 m: this pipeline's false-alarm floor, one firing in 33

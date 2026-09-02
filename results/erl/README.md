@@ -28,7 +28,7 @@ and both failure runs sit above every control. The factor-of-two line in
 no bound, none is applied to it after the fact, and it did not hold as written. Five runs
 cannot say whether the 1.40x is real; the plausible mechanism is described below.
 
-**Prediction 3, no clean separation: held.** The highest control is 388 and the lowest
+Prediction 3, no clean separation: held. The highest control is 388 and the lowest
 failure is 421. **An 8 percent gap, with three controls and two failures, is not
 separation.** It is an ordering that would be produced by chance often enough that nobody
 should act on it. Reporting it as a detection capability would be the kind of claim this

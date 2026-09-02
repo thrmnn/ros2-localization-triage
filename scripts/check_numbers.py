@@ -30,7 +30,10 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS = ["README.md", "docs/case-log.md", "docs/transferability.md",
         "docs/finding-amcl-recovery.md", "docs/how-this-was-graded.md",
         "docs/finding-confidently-wrong.md", "docs/finding-kidnap.md",
-        "docs/finding-recorder-artifacts.md", "docs/data-sources.md"]
+        "docs/finding-recorder-artifacts.md", "docs/data-sources.md",
+        "results/erl/README.md", "results/labelled/README.md", "results/leon/README.md",
+        "results/slip/README.md", "results/stata/README.md", "results/kidnap/README.md",
+        "results/kidnap02/README.md", "results/kidnap_outdoor/README.md"]
 
 
 def _csv_rows(rel: str) -> list[dict]:
@@ -184,6 +187,50 @@ def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
             total - z["clear_1"]["detections"] - 1]
 
 
+def kidnap_window_errors() -> list[float]:
+    """Per-detection-window ground-truth error on the kidnap replay.
+
+    The finding doc used to say every lost-phase window sat 7 to 16 m from the
+    truth. The first window after the onset straddles the transition, so it
+    starts near the truth, and no committed artifact contradicted the sentence
+    because nothing recomputed it. This does: it matches each localiser pose to
+    the nearest ground-truth pose within the same 50 ms the grader uses, then
+    reports the first post-onset window's range and the range across every later
+    window. Returns [first low, first high, later low, later high]."""
+    import numpy as np
+
+    root = ROOT / "results/kidnap"
+    est = np.array([(int(r["timestamp_us"]) / 1e6, float(r["x_m"]),
+                     float(r["y_m"]), float(r["z_m"]))
+                    for r in _csv_rows("results/kidnap/hdl_poses.csv")])
+    gt = np.loadtxt(root / "gt_traj.txt")[:, :4]
+    occ = json.loads((root / "occlusion_windows.json").read_text())
+    meta = json.loads((root / "replay_meta.json").read_text())
+    dets = sorted(json.loads((root / "detections.json").read_text()),
+                  key=lambda d: d["start_s"])
+    shift = meta["replay_bag_start_s"] - occ["bag_t0_s"]
+
+    idx = np.clip(np.searchsorted(gt[:, 0], est[:, 0]), 1, len(gt) - 1)
+    idx[np.abs(gt[idx - 1, 0] - est[:, 0]) < np.abs(gt[idx, 0] - est[:, 0])] -= 1
+    ok = np.abs(gt[idx, 0] - est[:, 0]) <= 0.05
+    err = np.linalg.norm(est[:, 1:4] - gt[idx, 1:4], axis=1)
+    rel = est[:, 0] - occ["bag_t0_s"]
+
+    spans = []
+    for d in dets[2:]:  # [0] is the healthy graze, [1] is the onset catch
+        lo, hi = d["start_s"] + shift, d["end_s"] + shift
+        m = ok & (rel >= lo) & (rel <= hi)
+        if m.any():
+            e = err[m]
+        else:  # an instantaneous detection: the nearest pose in time
+            e = err[[int(np.argmin(np.abs(rel - (lo + hi) / 2)))]]
+        spans.append((float(e.min()), float(e.max())))
+    first, later = spans[0], spans[1:]
+    return [round(first[0], 1), round(first[1], 1),
+            round(min(s[0] for s in later), 1),
+            round(max(s[1] for s in later), 1)]
+
+
 def leon_scan_gap_counts() -> list[float]:
     """The before/after of the receive-time fix, from the committed detection JSONs."""
     def count(f, det):
@@ -287,6 +334,11 @@ MANIFEST = [
      "expect": [0.052, 16.784, 0.064, 22, 1, 13.163, 0, 20],
      "covers": [0.052, 16.784, 0.064, 22, 13.163, 20, 17.0, 2.175, 26.6, 2154, 16.8],
      "note": "healthy median, worst error, one-frame onset latency, 22 detections with one healthy graze, and the silent second kidnap at 13 m wrong"},
+    {"name": "kidnap per-window errors recompute from the ground truth",
+     "compute": kidnap_window_errors,
+     "expect": [1.3, 6.1, 6.6, 16.8],
+     "note": "the first post-onset window straddles the transition at 1.3 to 6.1 m; "
+             "every later window sits between 6.6 and 16.8 m from the truth"},
     {"name": "outdoor kidnap observation recomputes from committed files",
      "compute": lambda: kidnap_grading("results/kidnap_outdoor"),
      "expect": [0.068, 181.062, 0.801, 37, 2, 72.712, 1, 34],

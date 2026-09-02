@@ -5,7 +5,8 @@ below contradict these predictions, the predictions stay on the page.
 
 ## The recordings
 
-ERL Navigation Benchmark, Zenodo record 10518775, CC-BY-4.0, rosbag2 sqlite3, Humble.
+ERL Navigation Benchmark, Zenodo record
+[10518775](https://zenodo.org/records/10518775), CC-BY-4.0, rosbag2 sqlite3, Humble.
 A PAL Tiago-family base. Five runs, 1013 s in total.
 
 | run | duration | messages |
