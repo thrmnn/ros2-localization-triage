@@ -53,7 +53,8 @@ cannot, because nobody has, and no amount of analysis on our side creates a labe
 Where a miss rate is not computable it is written as such rather than left out,
 because an absent column reads as zero.
 
-A spread of roughly 200 to 1 in false alarm rate, from one set of thresholds.
+A spread of roughly 200 to 1 in flag rate from one set of thresholds, all signal on one
+platform and all noise on the other.
 That is the finding. A threshold is not a property of a failure. It is a property
 of the platform it was measured on.
 
