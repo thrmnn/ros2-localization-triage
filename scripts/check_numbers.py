@@ -27,13 +27,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DOCS = ["README.md", "docs/case-log.md", "docs/transferability.md",
-        "docs/finding-amcl-recovery.md", "docs/how-this-was-graded.md",
-        "docs/finding-confidently-wrong.md", "docs/finding-kidnap.md",
-        "docs/finding-recorder-artifacts.md", "docs/data-sources.md",
-        "results/erl/README.md", "results/labelled/README.md", "results/leon/README.md",
-        "results/slip/README.md", "results/stata/README.md", "results/kidnap/README.md",
-        "results/kidnap02/README.md", "results/kidnap_outdoor/README.md"]
+# Every page a reader can reach: the README, every doc, every results README. A glob,
+# so a new page is gated the day it is added rather than the day someone lists it.
+DOCS = ["README.md"] + sorted(str(p.relative_to(ROOT)) for p in (ROOT / "docs").glob("*.md")) \
+       + sorted(str(p.relative_to(ROOT)) for p in ROOT.glob("results/*/README.md"))
 
 
 def _csv_rows(rel: str) -> list[dict]:

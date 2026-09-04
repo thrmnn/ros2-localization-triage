@@ -56,8 +56,9 @@ fifteen graded rows. The 108 minutes count the recordings whose durations are fi
 committed artifacts, and the counting rule is `readme_corpus()` in the gate script.
 Nothing in the stock config is calibrated for your robot. Every emphasised number in
 these pages recomputes with one script, `scripts/check_numbers.py`, from a committed
-artifact. The transfer rates are the exception: they recompute from the flag count and
-duration stated in the same row, with the bag linked so the count can be re-derived.
+artifact, with two exceptions: the transfer rates recompute from the flag count and
+duration stated in the same row, with the bag linked so the count can be re-derived,
+and the 38 percent in one figure caption comes from two bags that are not committed.
 
 **Correction, 2026-09-04.** Until this date the first result on this page was a
 200-to-1 spread in flag rate between two platforms. The high side, 1880 flags per robot-hour on
@@ -123,7 +124,7 @@ the two gaps the dataset annotates.](docs/figures/running-it.gif)
 - Frozen thresholds fired on a healthy Tiago, graded wrong; the 1880-per-hour row
   withdrawn as a recorder artifact.
   [docs/transferability.md](docs/transferability.md)
-- Against labels years older than this tool: 16 of 16 gaps found.
+- Against labels years older than this tool: 16 of 16 gaps found, as a count match.
   [results/labelled/](results/labelled/)
 - 19.4 m wrong, reporting 8 cm confidence; caught, then silent once settled.
   [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)

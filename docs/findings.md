@@ -3,11 +3,11 @@
 Seven results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
 
-**The same frozen thresholds do not transfer between robots.** Calibrated once on a
-simulated TurtleBot3 and never retuned, the covariance threshold of 0.25 rad sits inside
-a real Tiago's healthy yaw noise, which runs 0.24 to 0.31 rad on a recording where
-nothing is wrong, so it fired five times on a healthy machine and the case log grades
-that row wrong. On the Cartographer backpack recordings the gap detector flags 9 to 36
+**The same frozen thresholds do not transfer between robots.** The covariance
+threshold of 0.25 rad was calibrated once on a simulated TurtleBot3 and never retuned.
+On a real Tiago the healthy yaw noise runs 0.24 to 0.31 rad, so on a recording where
+nothing is wrong the threshold fired five times, and the case log grades that row
+wrong. On the Cartographer backpack recordings the gap detector flags 9 to 36
 times per robot-hour, where **every single flag is a real dropout**. Until 2026-09-04
 this paragraph also reported 1880 flags per robot-hour on a MiR100 AGV; that row was a
 recorder artifact and is withdrawn, with a dated correction and both runs committed.
@@ -44,10 +44,10 @@ until the elevator, then AMCL's red path runs through corridors the robot never
 entered.](figures/stata-confidently-wrong.png)
 
 **A kidnap caught one frame after the view goes dark, on a 3D pipeline.** A handheld
-sensor from a public kidnap dataset, replayed through hdl_localization against the
-dataset's own map and graded against its continuous ground truth: five-centimetre
-tracking for 33 seconds, then the first kidnap leaves the localiser 10 to 16 metres
-wrong for the rest of the run. `tf_jump` fired 0.064 s after the view was covered,
+sensor from a public kidnap dataset was replayed through hdl_localization against the
+dataset's own map and graded against its continuous ground truth. Five-centimetre
+tracking held for 33 seconds; then the first kidnap left the localiser between 6.6 and
+16.8 metres wrong in every later window of the run. `tf_jump` fired 0.064 s after the view was covered,
 one frame at the sensor's own cadence, and 20 more times across the verified-lost
 phase. The same run also reproduces the boundary: an 8-second silence inside the
 second kidnap window while the estimate was 13 metres wrong, with no onset response
