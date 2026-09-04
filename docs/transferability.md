@@ -9,7 +9,8 @@ for any platform below.
 | TurtleBot3, simulated | 458 s | 131 | not comparable | 0 of 5 injected | faults were injected here on purpose |
 | Cartographer backpack b0, real | 344 s | 1 | **10** | **0 of 1 labelled** | 1 true positive |
 | Cartographer backpack b2, real | 787 s | 2 | **9** | **0 of 1 labelled** | 1 real event seen on 2 lasers |
-| Cartographer backpack, 2 further annotated bags | 3223 s | 32 | **36** | **0 of 16 labelled** | every annotated gap found, see below |
+| Cartographer backpack, b2-2015-05-12-12-29-05, annotated | 942.1 s | 4 | **15** | **0 of 2 labelled** | every annotated gap found, see below |
+| Cartographer backpack, b2-2015-05-12-12-46-34, annotated | 2281.0 s | 28 | **44** | **0 of 14 labelled** | every annotated gap found, see below |
 | Tiago, ERL benchmark, 3 control runs | 578 s | 48 | **299** | not computable | all tf_jump; scan_gap silent |
 | Tiago, ERL benchmark, 2 runs engineered to fail | 435 s | 51 | **422** | not computable | see results/erl/ |
 | Tiago, raw bag replayed through AMCL | 113.542 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
@@ -47,9 +48,9 @@ rounded. That row is the AMCL replay of the bag: `plots/` in the repository hold
 sweep over the raw recording, which carries `/scan` and `/tf` only, so the two are
 different artifacts from the same 113.5 seconds.
 
-**A rate of false alarms without a rate of misses is half a number.** Two rows
-above can state both, because somebody labelled those recordings. The other two
-cannot, because nobody has, and no amount of analysis on our side creates a label.
+**A flag rate without a rate of misses is half a number.** Four rows
+above can state both, because somebody labelled those recordings. The other five,
+the simulated row among them, cannot, because nobody has, and no amount of analysis on our side creates a label.
 Where a miss rate is not computable it is written as such rather than left out,
 because an absent column reads as zero.
 

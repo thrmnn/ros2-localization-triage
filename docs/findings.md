@@ -7,8 +7,8 @@ working, and each says what it does not establish.
 threshold of 0.25 rad was calibrated once on a simulated TurtleBot3 and never retuned.
 On a real Tiago the healthy yaw noise runs 0.24 to 0.31 rad, so on a recording where
 nothing is wrong the threshold fired five times, and the case log grades that row
-wrong. On the Cartographer backpack recordings the gap detector flags 9 to 36
-times per robot-hour, where **every single flag is a real dropout**. Until 2026-09-04
+wrong. On the Cartographer backpack recordings the gap detector flags 9 to 44
+(corrected 2026-09-04) times per robot-hour, where **every single flag is a real dropout**. Until 2026-09-04
 this paragraph also reported 1880 flags per robot-hour on a MiR100 AGV; that row was a
 recorder artifact and is withdrawn, with a dated correction and both runs committed.
 [transferability.md](transferability.md)
@@ -80,9 +80,9 @@ finds something in every dataset it is pointed at is a mirror, not a detector.
 
 **Stock Nav2 ships AMCL with kidnap recovery switched off.** Both `recovery_alpha` terms
 default to 0.0, so a displaced robot has no mechanism to conclude it is lost. Measured on
-a simulated robot given four small disturbances in one recording: after the second,
-heading uncertainty never returned to its quiet baseline again, ending sixteen times
-higher. One `curl` checks the two defaults without trusting me.
+a simulated robot given five small disturbances in one recording: after the second,
+heading uncertainty never returned to its quiet baseline again, ending seventeen times
+(corrected 2026-09-04) higher. One `curl` checks the two defaults without trusting me.
 [finding-amcl-recovery.md](finding-amcl-recovery.md)
 
 > **Who graded this.** I recorded the faults, ran the tool, and graded the results.

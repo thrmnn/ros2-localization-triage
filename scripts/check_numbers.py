@@ -90,15 +90,19 @@ def frozen_configs() -> list[str]:
     stock = [l for l in (ROOT / "config/detectors.yaml").read_text().splitlines()
              if l.strip() and not l.lstrip().startswith("#")]
     bad = []
-    for name in ("cartographer-backpack.yaml", "mir100.yaml"):
-        other = [l for l in (ROOT / "config" / name).read_text().splitlines()
+    # Keys a published copy may legitimately change: where a signal lives, never how
+    # it is scored. A threshold key never has one of these names.
+    allowed = {"topics", "edges", "tf", "tf_static", "odom", "amcl_pose", "scan"}
+    for rel in ("config/cartographer-backpack.yaml", "config/mir100.yaml",
+                "results/leon/detectors_leon.yaml", "results/stata/detectors_stata.yaml"):
+        other = [l for l in (ROOT / rel).read_text().splitlines()
                  if l.strip() and not l.lstrip().startswith("#")]
         changed = [l for l in difflib.unified_diff(stock, other, lineterm="", n=0)
                    if l.startswith(("+", "-")) and not l.startswith(("+++", "---"))]
-        offenders = [l for l in changed if "topics:" not in l]
+        offenders = [l for l in changed if l[1:].strip().split(":")[0] not in allowed]
         if offenders:
-            bad.append(f"{name} differs from the calibrated config beyond its topic "
-                       f"list: {'; '.join(o.strip() for o in offenders)}")
+            bad.append(f"{rel} differs from the calibrated config beyond topic and frame "
+                       f"names: {'; '.join(o.strip() for o in offenders)}")
     return bad
 
 
@@ -310,11 +314,67 @@ def labelled_header_rerun() -> list:
     return out
 
 
+def recovery_numbers() -> list[float]:
+    """Recompute every number docs/finding-amcl-recovery.md's table and headline
+    sentences state about the AMCL yaw-uncertainty series, from the committed
+    results/recovery/yaw_sigma.csv (written by scripts/recovery_extract.py from
+    sim/out/20260819T190412Z, the recording whose computed values match the
+    finding's, not sim/out/20260819T170915Z).
+
+    Corrected 2026-09-04: the windows below are bag-relative, matching the CSV and
+    docs/case-log.md's S1 to S5 rows, not the session log's t_rel clock the finding
+    used before, which runs 3.2 to 5.2 s earlier. Window bounds are each incident's
+    bag-relative begin/end from the session log's own epoch timestamps
+    (scripts/recovery_extract.py:parse_incidents), rounded to the whole second to
+    match case-log.md. The quiet baseline runs 0 s up to the scan dropout's start
+    (63 s); each of the five post-incident windows is the 30 s starting when that
+    incident ends; the kidnap also gets the 72 s window the finding's superseded
+    table used. Returns, in table order, [median, max, n] for the quiet baseline,
+    then for the windows after the scan dropout, the 100 mm jump, the 12 mm jump,
+    the 5 mm jump, the kidnap (30 s) and the kidnap (72 s), followed by the last
+    return-to-baseline time, the final value and the final-over-baseline ratio."""
+    import numpy as np
+
+    rows = _csv_rows("results/recovery/yaw_sigma.csv")
+    t = np.array([float(r["t_s"]) for r in rows])
+    sigma = np.array([float(r["yaw_sigma_rad"]) for r in rows])
+    order = np.argsort(t)
+    t, sigma = t[order], sigma[order]
+
+    def window(w0: float, w1: float, end_inclusive: bool = True) -> tuple[float, float, int]:
+        mask = (t >= w0) & (t <= w1 if end_inclusive else t < w1)
+        win = sigma[mask]
+        return float(np.median(win)), float(np.max(win)), int(mask.sum())
+
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from recovery_extract import parse_incidents
+    inc = parse_incidents()
+    ends = [round(i["end"]) for i in inc]
+    first_begin = round(inc[0]["begin"])
+    kidnap_begin = round(inc[-1]["begin"])
+    base_med, base_max, base_n = window(0, first_begin, end_inclusive=False)
+
+    out: list[float] = [round(base_med, 3), round(base_max, 3), base_n]
+    windows = [(e, e + 30) for e in ends[:-1]] + [(ends[-2] + 30, kidnap_begin),
+                                                   (ends[-1], ends[-1] + 30), (ends[-1], ends[-1] + 72)]
+    for w0, w1 in windows:
+        med, mx, n = window(w0, w1)
+        out += [round(med, 3), round(mx, 3), n]
+
+    # base_max, not its rounded display value, decides "returned to baseline": rounding
+    # it first would drop samples in (rounded, raw] and could move the last-return time.
+    last_return = float(np.max(t[sigma <= base_max]))
+    final_value = float(sigma[-1])
+    out += [round(last_return, 1), round(final_value, 3), round(final_value / base_med)]
+    return out
+
+
 MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
      "expect": [],
-     "covers": [10, 9, 36, 299, 422, 349, 0],
+     "covers": [10, 9, 15, 44, 299, 422, 349, 0],
      "note": "each flags-per-hour recomputed from the flags and seconds in the same row"},
     {"name": "scan-gap detections on the graded sweep",
      "compute": scan_gap_detections,
@@ -394,6 +454,28 @@ MANIFEST = [
      "compute": lambda: commit_exists("641ca02"),
      "expect": True,
      "note": "the rubric's commit must exist or 'written before' cannot be checked"},
+    {"name": "recovery series recomputes the finding's numbers",
+     "compute": recovery_numbers,
+     "expect": [0.153, 0.177, 98,
+                0.162, 0.912, 49,
+                0.647, 1.208, 43,
+                1.352, 1.735, 11,
+                1.765, 1.87, 18,
+                1.624, 2.586, 38,
+                1.695, 2.586, 83,
+                184.1, 2.54, 17],
+     "covers": [0.153, 0.177, 98,
+                0.162, 0.912, 49,
+                0.647, 1.208, 43,
+                1.352, 1.735, 11,
+                1.765, 1.870, 18,
+                1.624, 2.586, 38,
+                1.695, 2.586, 83,
+                184.1, 2.54, 2.540, 17],
+     "note": "every window's median, max and n in the table, plus the last return to the "
+             "quiet baseline, the final value and the ratio, from "
+             "results/recovery/yaw_sigma.csv; rebuilt on the bag clock and corrected from "
+             "four faults and a ratio of sixteen to five faults and seventeen on 2026-09-04"},
 ]
 
 
@@ -426,7 +508,7 @@ def main() -> None:
 
     if args.list:
         for m in MANIFEST:
-            print(f"  {m['name']}: expect {m['expect']} — {m['note']}")
+            print(f"  {m['name']}: expect {m['expect']}, {m['note']}")
         return
 
     fail = 0

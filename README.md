@@ -164,6 +164,7 @@ the two gaps the dataset annotates.](docs/figures/running-it.gif)
 **Provenance.**
 - [docs/data-sources.md](docs/data-sources.md): data provenance
 - [results/header_rerun/README.md](results/header_rerun/README.md): backpack rows on header stamps
+- [results/recovery/README.md](results/recovery/README.md): the recovery series, gated
 - File manifests: [kidnap](results/kidnap/README.md), [kidnap02](results/kidnap02/README.md), [kidnap_outdoor](results/kidnap_outdoor/README.md), [leon](results/leon/README.md), [stata](results/stata/README.md)
 - [sim/README.md](sim/README.md): calibration robot
 

@@ -1,14 +1,17 @@
 # Every threshold the detectors use. Nothing is hard-coded in the Python.
 #
-# The `thresholds:` values below are PROVISIONAL STARTING POINTS chosen from
-# physical plausibility (a Tiago-class base tops out near 1 m/s, a healthy AMCL
-# sits at a few centimetres of position sigma). They are NOT calibrated against
-# any recording. Run `loctriage sweep` on the recording you care about, read the
-# plots, and replace them. Anything left at a starting value should be treated
-# as unset.
+# The `thresholds:` values below were calibrated once, on 2026-08-19, on the simulated
+# TurtleBot3 under sim/, and frozen. This copy differs from the frozen file in
+# topic names and the tf frame names; scripts/check_numbers.py checks that every threshold is
+# identical. Do not edit a threshold here
+# after a result has been published from it: copy the file, run `loctriage sweep` on
+# your own recording, read the plots, and calibrate the copy.
 #
 # Each detector declares one threshold per swept parameter and one sweep range
 # per threshold. Adding a key that no detector knows about is a hard error.
+#
+# This copy changes topic names, odom is /base_odometry/odom and scan is /base_scan,
+# and the tf frame names, map->odom_combined and odom_combined->base_footprint.
 
 typestore: ros2_humble   # fallback message definitions; bags written before Iron embed none
 
