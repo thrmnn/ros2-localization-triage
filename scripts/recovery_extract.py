@@ -34,6 +34,7 @@ import ast
 import csv
 import re
 import sys
+import json
 from pathlib import Path
 
 import numpy as np
@@ -52,6 +53,14 @@ CSV_PATH = OUT_DIR / "yaw_sigma.csv"
 _LOG_LINE = re.compile(r"\[(\d+\.\d+)\].*?(\{.*\})")
 
 
+def write_incidents(path: Path, incidents: list[dict]) -> None:
+    """The bag-relative schedule, committed so the number gate can rebuild every window
+    without the session log, which lives under sim/out and is not committed."""
+    rows = [{"id": i["id"], "kind": i["kind"], "begin_s": round(float(i["begin"]), 3),
+             "end_s": round(float(i["end"]), 3)} for i in incidents]
+    path.write_text(json.dumps(rows, indent=1) + "\n")
+
+
 def main() -> None:
     cfg = yaml.safe_load((ROOT / "config/detectors.yaml").read_text())
     sig = read_signals(BAG, cfg["topics"], cfg["typestore"])
@@ -65,6 +74,7 @@ def main() -> None:
         w.writerow(["t_s", "yaw_sigma_rad"])
         for t, sigma in zip(amcl.t, amcl.yaw_sigma):
             w.writerow([f"{t:.6f}", f"{sigma:.6f}"])
+    write_incidents(OUT_DIR / "incidents.json", parse_incidents())
 
     print(f"wrote {len(amcl.t)} rows to {CSV_PATH}, duration {sig.duration_s:.3f} s")
     print()

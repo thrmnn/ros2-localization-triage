@@ -346,13 +346,12 @@ def recovery_numbers() -> list[float]:
         win = sigma[mask]
         return float(np.median(win)), float(np.max(win)), int(mask.sum())
 
-    import sys
-    sys.path.insert(0, str(ROOT / "scripts"))
-    from recovery_extract import parse_incidents
-    inc = parse_incidents()
-    ends = [round(i["end"]) for i in inc]
-    first_begin = round(inc[0]["begin"])
-    kidnap_begin = round(inc[-1]["begin"])
+    # The incident schedule is committed next to the series, written from the session
+    # log by scripts/recovery_extract.py, so a fresh clone can derive every window.
+    inc = json.loads((ROOT / "results/recovery/incidents.json").read_text())
+    ends = [round(i["end_s"]) for i in inc]
+    first_begin = round(inc[0]["begin_s"])
+    kidnap_begin = round(inc[-1]["begin_s"])
     base_med, base_max, base_n = window(0, first_begin, end_inclusive=False)
 
     out: list[float] = [round(base_med, 3), round(base_max, 3), base_n]

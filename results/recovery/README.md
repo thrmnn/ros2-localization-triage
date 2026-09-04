@@ -30,3 +30,6 @@ which runs 3.2 to 5.2 s earlier and is not the CSV's clock:
 
     .venv/bin/python scripts/recovery_extract.py
     .venv/bin/python scripts/check_numbers.py
+
+`incidents.json` is the bag-relative fault schedule, written from the session log by
+the same script, so the number gate rebuilds every window from committed files alone.

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "inc-01",
+  "kind": "scan_dropout",
+  "begin_s": 63.238,
+  "end_s": 88.488
+ },
+ {
+  "id": "inc-02",
+  "kind": "odom_jump",
+  "begin_s": 148.825,
+  "end_s": 179.097
+ },
+ {
+  "id": "inc-03",
+  "kind": "odom_jump",
+  "begin_s": 209.274,
+  "end_s": 239.549
+ },
+ {
+  "id": "inc-04",
+  "kind": "odom_jump",
+  "begin_s": 269.718,
+  "end_s": 299.996
+ },
+ {
+  "id": "inc-05",
+  "kind": "kidnap",
+  "begin_s": 360.239,
+  "end_s": 363.258
+ }
+]
