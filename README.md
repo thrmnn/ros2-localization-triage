@@ -60,19 +60,37 @@ duration stated in the same row, with the bag linked so the count can be re-deri
 
 ## Run it in five minutes
 
-The bag is a 576 MB download:
+A 20 second, 3.7 MB excerpt of a real Cartographer backpack recording is committed
+under `demo/`, so the first detection needs no download. It holds two of the laser gaps
+the dataset's own authors annotated; `demo/NOTICE.md` carries the attribution.
 
 ```bash
 git clone https://github.com/thrmnn/ros2-localization-triage
 cd ros2-localization-triage
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
+.venv/bin/loctriage --config config/cartographer-backpack.yaml detect demo/backpack-gaps-20s.bag
+```
+
+You should see exactly this: each gap fires on both lasers a second apart, and
+detections within two seconds count as one event.
+
+```
+   15.066s..   15.066s  scan_gap           gap_ratio              horizontal_laser_2d        peak=41.08
+   16.065s..   16.065s  scan_gap           gap_ratio              vertical_laser_2d          peak=107.8
+   18.466s..   18.466s  scan_gap           gap_ratio              horizontal_laser_2d        peak=40.05
+   19.465s..   19.465s  scan_gap           gap_ratio              vertical_laser_2d          peak=106.9
+
+4 detection(s) at current thresholds
+```
+
+The full recording is a 576 MB download and gives the 16-of-16 result in the figure
+above: 28 detections clustering to the 14 gaps annotated in that bag.
+
+```bash
 curl -O https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-12-12-46-34.bag
 .venv/bin/loctriage --config config/cartographer-backpack.yaml detect b2-2015-05-12-12-46-34.bag
 ```
-
-It prints 28 detections, clustering to the 14 labelled gaps: each dropout fires on both
-lasers a second apart, and detections within two seconds count as one event.
 
 ![Thresholds calibrated on a simulated TurtleBot3 and frozen, run against a real
 Cartographer backpack recording: all 14 annotated laser gaps are found, nothing else

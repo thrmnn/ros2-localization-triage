@@ -99,12 +99,13 @@ running it yourself:
 .venv/bin/python -m pytest
 ```
 
-Twenty-five tests in four groups. Six on config strictness, where a misspelled or
+Twenty-six tests in five groups. Six on config strictness, where a misspelled or
 omitted threshold is a hard error, because a silent fallback to a code default would put
 a live threshold outside version control. Six detector unit tests, including the
 header-stamp-versus-receive-time preference and detection merging. Three end-to-end runs
 over the synthetic fixture assert each detector fires at its injected time and that a
-renamed laser still gets its header stamps, and ten cover
+renamed laser still gets its header stamps, one run over the committed demo slice
+asserts it still shows two gaps on both lasers, and ten cover
 the `explain` command's citation verification and downgrade rule, which test the checking
 half only and never call a model.
 

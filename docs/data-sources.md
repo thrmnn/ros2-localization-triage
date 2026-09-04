@@ -111,3 +111,10 @@ CC BY-ND forbids derivative datasets, which includes a converted or re-cut versi
 NC-SA blocks commercial use, which matters for anything client-facing. Several
 otherwise attractive sources declare no licence at all, and no licence means no
 permission, not free rein.
+
+## The committed demo slice
+
+`demo/backpack-gaps-20s.bag` is a 20 second, lasers-only excerpt of
+`b2-2015-05-12-12-46-34.bag` from the Cartographer public data set, Apache 2.0,
+cut by `scripts/make_demo_slice.py`; the attribution the licence requires is in
+[`demo/NOTICE.md`](../demo/NOTICE.md).
