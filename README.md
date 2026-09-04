@@ -188,7 +188,8 @@ every citation; no result in this repository comes from it.
 
 Do this first. Three datasets in the survey behind this work declare `/tf` or
 `/tf_static` and publish zero messages, and a config pointed at the wrong laser name
-measures nothing.
+measures nothing. `detect` now says so: a detector whose topics are not in the
+recording is named on stderr, with the topics the recording does carry.
 
 **2. Point the config at your topics.**
 

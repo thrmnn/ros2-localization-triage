@@ -58,7 +58,8 @@ def _track(rows: list[tuple[float, float, float, float]]) -> PoseTrack:
     return PoseTrack(t=a[:, 0], x=a[:, 1], y=a[:, 2], yaw=np.unwrap(a[:, 3]))
 
 
-def read_signals(bag_path: str | Path, topics: dict[str, object], typestore: str) -> Signals:
+def read_signals(bag_path: str | Path, topics: dict[str, object], typestore: str,
+                 progress=None) -> Signals:
     path = Path(bag_path)
     store = get_typestore(_STORES[typestore])
     # Every laser the gap detector reads needs its header stamps, not only the one
@@ -81,8 +82,13 @@ def read_signals(bag_path: str | Path, topics: dict[str, object], typestore: str
         topic_types = {t: info.msgtype for t, info in reader.topics.items()}
         topic_counts = {t: info.msgcount for t, info in reader.topics.items()}
 
+        next_mark = 0.1
         for conn, ts, raw in reader.messages():
-            arrivals[conn.topic].append((ts - start_ns) / 1e9)
+            rel = (ts - start_ns) / 1e9
+            arrivals[conn.topic].append(rel)
+            if progress is not None and duration_s > 0 and rel / duration_s >= next_mark:
+                progress(rel, duration_s)
+                next_mark += 0.1
             if conn.topic in scan_topics:
                 # A bag writer that batches or stalls makes receive times measure the
                 # recorder, not the sensor. The header stamp is the sensor's own clock.

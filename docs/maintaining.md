@@ -93,19 +93,28 @@ running it yourself:
   against real serialised messages of their own input type, and so the
   `--labels` false-positive path has committed output. Never present it as data.
 
+## If the install hangs
+
+`pip install -e` can sit for minutes at "Building editable" with no output when the
+temporary directory is on a slow filesystem, which on WSL means anything under
+`/mnt/c`. Point it at Linux storage first: `export TMPDIR=$HOME/.cache/tmp` after
+creating that directory. The install then takes about a minute.
+
 ## Tests
 
 ```bash
 .venv/bin/python -m pytest
 ```
 
-Twenty-six tests in five groups. Six on config strictness, where a misspelled or
+Twenty-eight tests in six groups. Six on config strictness, where a misspelled or
 omitted threshold is a hard error, because a silent fallback to a code default would put
 a live threshold outside version control. Six detector unit tests, including the
 header-stamp-versus-receive-time preference and detection merging. Three end-to-end runs
 over the synthetic fixture assert each detector fires at its injected time and that a
 renamed laser still gets its header stamps, one run over the committed demo slice
-asserts it still shows two gaps on both lasers, and ten cover
+asserts it still shows two gaps on both lasers, two on the CLI assert that a config
+pointed at topics the recording lacks warns on stderr and a matching one does not, and
+ten cover
 the `explain` command's citation verification and downgrade rule, which test the checking
 half only and never call a model.
 

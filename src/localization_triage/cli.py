@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict
 from pathlib import Path
 
@@ -74,9 +75,47 @@ def signal_topics(config: Config) -> dict[str, object]:
     }
 
 
+def _progress(done: float, total: float) -> None:
+    # A 40-minute recording takes minutes to read with nothing on the screen, which
+    # is indistinguishable from a hang. One line per tenth, on stderr, is enough.
+    print(f"read {done:.0f} of {total:.0f} s", file=sys.stderr)
+
+
 def _load(args) -> tuple[Config, object]:
     config = Config.load(args.config)
-    return config, read_signals(args.bag, signal_topics(config), config.typestore)
+    return config, read_signals(args.bag, signal_topics(config), config.typestore, progress=_progress)
+
+
+def missing_inputs(config: Config, signals) -> list[str]:
+    """One line per detector whose input topics are not in the recording. A detector
+    pointed at a topic that does not exist returns zero detections and looks exactly
+    like a clean bill of health; this is the difference between the two."""
+    present = set(signals.topic_counts)
+    needs = {
+        "covariance_spike": [config.topics.amcl_pose],
+        "tf_jump": [config.topics.tf],
+        "pose_divergence": [config.topics.amcl_pose, config.topics.odom],
+    }
+    lines = []
+    for name, cfg in config.detectors.items():
+        required = list(cfg.topics) if name == "scan_gap" else needs.get(name, [])
+        absent = [t for t in required if t not in present]
+        if absent:
+            lines.append(f"{name} has no input: {', '.join(absent)} not in this recording")
+    return lines
+
+
+def _warn_missing(config: Config, signals, found_any: bool) -> None:
+    lines = missing_inputs(config, signals)
+    if not lines:
+        return
+    for line in lines:
+        print(f"warning: {line}", file=sys.stderr)
+    print(f"warning: this recording carries {', '.join(sorted(signals.topic_counts))}. "
+          f"Run `loctriage inspect` and point the config at those names.", file=sys.stderr)
+    if not found_any and len(lines) == len(config.detectors):
+        print("warning: no detector had any input, so 0 detections here means nothing was measured.",
+              file=sys.stderr)
 
 
 def cmd_inspect(args) -> int:
@@ -103,6 +142,7 @@ def cmd_detect(args) -> int:
         for series in scores[name]:
             found += detections_from(series, cfg.threshold_for(series.param, series.key), cfg.merge_gap_s, cfg.min_duration_s)
     found.sort(key=lambda d: d.start_s)
+    _warn_missing(config, signals, bool(found))
     for d in found:
         print(f"{d.start_s:9.3f}s..{d.end_s:9.3f}s  {d.detector:<18} {d.param:<22} {d.key:<26} peak={d.peak:.4g}")
     print(f"\n{len(found)} detection(s) at current thresholds")
