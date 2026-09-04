@@ -96,7 +96,9 @@ storage before the install, or it can sit for minutes; see docs/maintaining.md.
 ```
 
 The full recording is a 576 MB download and gives 14 of the 16 in the figure above: 28
-detections clustering to the 14 gaps annotated in that bag. The other two are in a
+detections clustering to the 14 gaps annotated in that bag. Reading it takes a long
+time, more than an hour on the laptop this was written on; the progress lines on stderr
+show it moving. The other two are in a
 second annotated bag, linked from [results/labelled/](results/labelled/).
 
 ```bash
