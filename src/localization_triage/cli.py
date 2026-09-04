@@ -105,17 +105,21 @@ def missing_inputs(config: Config, signals) -> list[str]:
     return lines
 
 
-def _warn_missing(config: Config, signals, found_any: bool) -> None:
+def _warn_missing(config: Config, signals, found_any: bool) -> bool:
+    """Returns True when nothing was measured at all, so detect can exit non-zero: a
+    wrapper that only reads the exit code must not mistake that for a clean pass."""
     lines = missing_inputs(config, signals)
     if not lines:
-        return
+        return False
     for line in lines:
         print(f"warning: {line}", file=sys.stderr)
     print(f"warning: this recording carries {', '.join(sorted(signals.topic_counts))}. "
           f"Run `loctriage inspect` and point the config at those names.", file=sys.stderr)
-    if not found_any and len(lines) == len(config.detectors):
+    nothing = not found_any and len(lines) == len(config.detectors)
+    if nothing:
         print("warning: no detector had any input, so 0 detections here means nothing was measured.",
               file=sys.stderr)
+    return nothing
 
 
 def cmd_inspect(args) -> int:
@@ -142,12 +146,14 @@ def cmd_detect(args) -> int:
         for series in scores[name]:
             found += detections_from(series, cfg.threshold_for(series.param, series.key), cfg.merge_gap_s, cfg.min_duration_s)
     found.sort(key=lambda d: d.start_s)
-    _warn_missing(config, signals, bool(found))
+    nothing_measured = _warn_missing(config, signals, bool(found))
     for d in found:
         print(f"{d.start_s:9.3f}s..{d.end_s:9.3f}s  {d.detector:<18} {d.param:<22} {d.key:<26} peak={d.peak:.4g}")
     print(f"\n{len(found)} detection(s) at current thresholds")
     if args.json:
         Path(args.json).write_text(json.dumps([asdict(d) for d in found], indent=2) + "\n")
+    if nothing_measured:
+        return 2
     return 0
 
 

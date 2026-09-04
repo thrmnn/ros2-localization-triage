@@ -106,14 +106,16 @@ creating that directory. The install then takes about a minute.
 .venv/bin/python -m pytest
 ```
 
-Twenty-eight tests in six groups. Six on config strictness, where a misspelled or
+Twenty-nine tests in six groups. The run takes a few minutes and prints nothing until
+it ends; pass `-v` to watch it. Six on config strictness, where a misspelled or
 omitted threshold is a hard error, because a silent fallback to a code default would put
 a live threshold outside version control. Six detector unit tests, including the
 header-stamp-versus-receive-time preference and detection merging. Three end-to-end runs
 over the synthetic fixture assert each detector fires at its injected time and that a
 renamed laser still gets its header stamps, one run over the committed demo slice
-asserts it still shows two gaps on both lasers, two on the CLI assert that a config
-pointed at topics the recording lacks warns on stderr and a matching one does not, and
+asserts it still shows two gaps on both lasers, three on the CLI assert that a config
+pointed at topics the recording lacks warns on stderr, exits 2 when nothing at all was
+measured, and stays quiet when it matches, and
 ten cover
 the `explain` command's citation verification and downgrade rule, which test the checking
 half only and never call a model.

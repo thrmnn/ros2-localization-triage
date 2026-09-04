@@ -59,8 +59,8 @@ these pages recomputes with one script, `scripts/check_numbers.py`, from a commi
 artifact. The transfer rates are the exception: they recompute from the flag count and
 duration stated in the same row, with the bag linked so the count can be re-derived.
 
-**Correction, 2026-09-04.** Until this date the first result above was a 200-to-1
-spread in flag rate between two platforms. The high side, 1880 flags per robot-hour on
+**Correction, 2026-09-04.** Until this date the first result on this page was a
+200-to-1 spread in flag rate between two platforms. The high side, 1880 flags per robot-hour on
 a MiR100, was the recorder's clock, not the sensor's: measured on the lasers' own
 stamps the same recording gives zero. The reader is fixed, both runs are committed, and
 the account is in [docs/transferability.md](docs/transferability.md).
@@ -82,7 +82,8 @@ python3 -m venv .venv
 ```
 
 You should see exactly this: each gap fires on both lasers a second apart, and
-detections within two seconds count as one event.
+detections within two seconds count as one event. On WSL, point `TMPDIR` at Linux
+storage before the install, or it can sit for minutes; see docs/maintaining.md.
 
 ```
    15.066s..   15.066s  scan_gap           gap_ratio              horizontal_laser_2d        peak=41.08
@@ -189,7 +190,8 @@ every citation; no result in this repository comes from it.
 Do this first. Three datasets in the survey behind this work declare `/tf` or
 `/tf_static` and publish zero messages, and a config pointed at the wrong laser name
 measures nothing. `detect` now says so: a detector whose topics are not in the
-recording is named on stderr, with the topics the recording does carry.
+recording is named on stderr, with the topics the recording does carry, and when no
+detector had any input the exit code is 2.
 
 **2. Point the config at your topics.**
 
