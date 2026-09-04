@@ -1,5 +1,10 @@
 # Two predictions of three held: these detectors do not see a navigation failure
 
+Platform: PAL Tiago-family base  
+Duration: 1013 s  
+Graded against: the predictions in PREREGISTRATION.md  
+Verdict: two of three predictions held
+
 Run after `PREREGISTRATION.md` was committed, against the predictions written in it.
 Thresholds frozen. ERL Navigation Benchmark, Zenodo record 10518775, CC-BY-4.0, five runs
 on a PAL Tiago-family base, 1013 s in total.

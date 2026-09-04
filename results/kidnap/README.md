@@ -1,5 +1,10 @@
 # Kidnap replay artifacts
 
+Platform: handheld Azure Kinect  
+Duration: 147 s  
+Graded against: gt_traj.txt, the dataset's own ground truth  
+Verdict: partial (K1)
+
 Everything the finding doc cites, recomputable without the 2.35 GB bag:
 `gt_traj.txt` is the dataset's own ground truth (TUM format, CC BY 4.0, Hard
 Point Cloud Localization Dataset, Zenodo 10122133), `hdl_poses.csv` is the

@@ -1,5 +1,11 @@
 # Recall against somebody else's labels
 
+Platform: Cartographer 2D backpack  
+Duration: 942.1 s and 2281.0 s (two bags)  
+Command: `loctriage --config <config with those two topic names> detect <bag> --json out.json`  
+Graded against: the dataset's own Known Issues column  
+Verdict: 16 of 16 found
+
 Two recordings from Google's Cartographer public data, run with the thresholds frozen at
 calibration. Neither had been used before. Their Known Issues column, written by the
 dataset's authors years before this tool existed, states the number of laser gaps in each.

@@ -1,5 +1,8 @@
 # The physics-level slip rig does not work at this operating point
 
+Platform: simulated robot (Gazebo WheelSlipPlugin)  
+Verdict: negative result, no usable curve
+
 A negative result, recorded so nobody spends another day on it.
 
 ## What was attempted, and why

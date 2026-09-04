@@ -1,5 +1,10 @@
 # Kidnap replay artifacts, outdoor sequence
 
+Platform: Livox MID360  
+Duration: 554 s  
+Graded against: gt_traj.txt, the dataset's own ground truth  
+Verdict: ungraded observation
+
 `outdoor_kidnap` from the same dataset (Livox MID360, two consecutive bags
 merged), through the identical pipeline as `results/kidnap/` (see that README
 for the file roles). Reported as an observation, not a graded prediction: no
