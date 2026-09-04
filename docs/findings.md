@@ -3,11 +3,14 @@
 Seven results, in the order a sceptical reader should care about. Each links to the
 working, and each says what it does not establish.
 
-**The same frozen thresholds mean opposite things on different robots.** Calibrated
-once on a simulated TurtleBot3 and never retuned, the gap detector flags 9 to 36
-times per robot-hour across four Cartographer backpack recordings, where **every
-single flag is a real dropout**, and 1880 times per robot-hour on a MiR100 warehouse
-AGV, where **none of them look real**. Same numbers, untouched.
+**The same frozen thresholds do not transfer between robots.** Calibrated once on a
+simulated TurtleBot3 and never retuned, the covariance threshold of 0.25 rad sits inside
+a real Tiago's healthy yaw noise, which runs 0.24 to 0.31 rad on a recording where
+nothing is wrong, so it fired five times on a healthy machine and the case log grades
+that row wrong. On the Cartographer backpack recordings the gap detector flags 9 to 36
+times per robot-hour, where **every single flag is a real dropout**. Until 2026-09-04
+this paragraph also reported 1880 flags per robot-hour on a MiR100 AGV; that row was a
+recorder artifact and is withdrawn, with a dated correction and both runs committed.
 [transferability.md](transferability.md)
 
 ![The same threshold on two robots: on the simulated robot it sits above the noise and

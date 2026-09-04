@@ -1,0 +1,38 @@
+[
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 208.6596341,
+    "end_s": 208.6596341,
+    "peak": 40.54343566298408,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 209.6671285,
+    "end_s": 209.6671285,
+    "peak": 107.31121478846637,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 813.6582589,
+    "end_s": 813.6582589,
+    "peak": 40.37641346660277,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 814.6709656,
+    "end_s": 814.6709656,
+    "peak": 93.42593919113189,
+    "n_samples": 1
+  }
+]

@@ -13,7 +13,7 @@ for any platform below.
 | Tiago, ERL benchmark, 3 control runs | 578 s | 48 | **299** | not computable | all tf_jump; scan_gap silent |
 | Tiago, ERL benchmark, 2 runs engineered to fail | 435 s | 51 | **422** | not computable | see results/erl/ |
 | Tiago, raw bag replayed through AMCL | 113.542 s | 11 | **349** | **not computable** | 5 confirmed false, 6 unadjudicated |
-| MiR100 AGV, real | 360 s | 188 | **1880** | **not computable** | threshold grazing, see below |
+| MiR100 AGV, real | 360 s | 0 | **0** | **not computable** | 188 on receive times, 0 on the lasers' own stamps; corrected 2026-09-04, see below |
 
 Every row above is a public recording that downloads anonymously. The MiR100 row is
 [`mir/landmarks_demo_uncalibrated.bag`](https://storage.googleapis.com/cartographer-public-data/bags/mir/landmarks_demo_uncalibrated.bag)
@@ -53,10 +53,12 @@ cannot, because nobody has, and no amount of analysis on our side creates a labe
 Where a miss rate is not computable it is written as such rather than left out,
 because an absent column reads as zero.
 
-A spread of roughly 200 to 1 in flag rate from one set of thresholds, all signal on one
-platform and all noise on the other.
-That is the finding. A threshold is not a property of a failure. It is a property
-of the platform it was measured on.
+Until 2026-09-04 this page put a spread of roughly 200 to 1 here, from the MiR100
+row. That row was the recorder, not the thresholds; the correction is below. What
+remains is the covariance threshold on the Tiago, which sits inside that robot's
+healthy noise and fires on a machine with nothing wrong, graded wrong in the case log.
+A threshold is not a property of a failure. It is a property of the platform it was
+measured on.
 
 ## The true positives, which we did not label
 
@@ -77,30 +79,44 @@ This matters because the labels are not ours. We did not inject these faults, we
 did not choose them, and we could not have tuned toward them without breaking the
 rubric. It is the first evidence here that is not circular.
 
-## The failure, on a commercial AGV
+## Correction, 2026-09-04: the MiR100 row was the recorder
 
-On the MiR100, the same gap detector fired 188 times in six minutes. None of
-them look like real dropouts. Reproduce the whole row in one command:
+Until 2026-09-04 this section reported the gap detector firing 188 times in six
+minutes on the MiR100, 1880 per robot-hour, and read it as a threshold that does not
+transfer. It was the same defect that
+[finding-recorder-artifacts.md](finding-recorder-artifacts.md) had already found on
+the Leon pair, in a place the fix had not reached. The reader collected laser header
+stamps for the topic named `topics.scan` only; `config/mir100.yaml` names the
+detector's lasers `/f_scan` and `/b_scan`, so the detector fell back to bag receive
+times without saying so. The 188 flags had a median ratio of 4.57 against a threshold
+of 4.0, a minimum of 4.00 and a maximum of 9.0, and 61 percent sat within 20
+percent of the line: the recorder's jitter, not the sensor's.
+
+Measured on the lasers' own header stamps, with the reader fixed to collect them for
+every laser the detector reads, the same command on the same recording with the same
+thresholds produces zero detections. Both runs are committed in
+[results/mir100/](../results/mir100/) and the pair is checked by the number gate.
+Reproduce the corrected row in one command:
 
     .venv/bin/loctriage --config config/mir100.yaml detect landmarks_demo_uncalibrated.bag
 
-
-
-- The threshold is a gap ratio of 4.0.
-- The 188 flags have a median ratio of 4.57, a minimum of exactly 4.00, and a
-  maximum of 9.0. 61 percent sit within 20 percent of the line.
-- For contrast, the two genuine dropouts above peaked at 338 and 104.
-
-A real dropout is two orders of magnitude clear of the threshold. These sit on it.
-The AGV's scan timing simply has a different jitter profile than the platform the
-threshold was measured on, and a ratio of 4.0 lands inside its normal variation.
+The cost of the error is stated here rather than smoothed over: the 200-to-1 spread
+was the first result on the README for two weeks, it travelled into private
+material, and a reader who had cloned the repository could have found the cause in
+`bagread.py` in an afternoon. The Cartographer backpack rows use the same renamed
+lasers, so they were re-run the same night on header stamps: every recording gave the
+same counts, 1, 2, 4 and 28 raw, and for the two annotated bags the same events at the
+same times, so those rows and the 16 of 16 stand ([results/header_rerun/](../results/header_rerun/)). The backpack recorder kept
+up with its lasers; the MiR100 recorder did not.
 
 ## What this supports, and what it does not
 
-Supported: fixed thresholds do not transfer between platforms, and the size of the
-non-transfer is large enough to make a detector useless without recalibration. On
-the one platform where independent labels exist, the detector found the labelled
-events and nothing else.
+Supported: fixed thresholds do not transfer between platforms. The evidence is now
+the Tiago rows, where the covariance threshold calibrated on a simulated TurtleBot3
+sits inside the real robot's healthy yaw noise and fires on a recording with nothing
+wrong, graded wrong in the case log, not the MiR100 row, which was withdrawn on
+2026-09-04. On the one platform where independent labels exist, the detector found
+the labelled events and nothing else.
 
 Not supported: any claim about detection rate on faults in general. All four
 detectors now have at least one graded catch on real data, from the Stata Center

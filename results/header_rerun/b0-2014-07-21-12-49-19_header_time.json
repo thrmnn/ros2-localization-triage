@@ -1,0 +1,11 @@
+[
+ {
+  "detector": "scan_gap",
+  "param": "gap_ratio",
+  "key": "vertical_laser_2d",
+  "start_s": 81.9997247,
+  "end_s": 81.9997247,
+  "peak": 338.50288249010555,
+  "n_samples": 1
+ }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1093.5927698,
+    "end_s": 1093.5927698,
+    "peak": 40.14048430336441,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1094.5863805,
+    "end_s": 1094.5863805,
+    "peak": 92.38044881566181,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1143.1677585,
+    "end_s": 1143.1677585,
+    "peak": 40.474939584901236,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1144.1619459,
+    "end_s": 1144.1619459,
+    "peak": 91.50498724255924,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1348.3689078,
+    "end_s": 1348.3689078,
+    "peak": 39.70666475045127,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1349.3640961,
+    "end_s": 1349.3640961,
+    "peak": 106.36773116354055,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1738.520296,
+    "end_s": 1738.520296,
+    "peak": 41.23268197298164,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1739.5184895,
+    "end_s": 1739.5184895,
+    "peak": 107.62506754902398,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1822.120422,
+    "end_s": 1822.120422,
+    "peak": 40.13183521724014,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1823.144029,
+    "end_s": 1823.144029,
+    "peak": 92.87258706245214,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 1970.1465453,
+    "end_s": 1970.1465453,
+    "peak": 40.430536908863075,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 1971.1457561,
+    "end_s": 1971.1457561,
+    "peak": 106.63049009479029,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2016.5728216,
+    "end_s": 2016.5728216,
+    "peak": 39.34170886570293,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2017.5718437,
+    "end_s": 2017.5718437,
+    "peak": 105.6552912055581,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2041.4235446,
+    "end_s": 2041.4235446,
+    "peak": 40.19849784993453,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2042.4217217,
+    "end_s": 2042.4217217,
+    "peak": 106.68274542352371,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2060.5737288,
+    "end_s": 2060.5737288,
+    "peak": 40.65043623606789,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2061.5718713,
+    "end_s": 2061.5718713,
+    "peak": 92.89313269438776,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2100.749227,
+    "end_s": 2100.749227,
+    "peak": 39.70626387456685,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2101.7475754,
+    "end_s": 2101.7475754,
+    "peak": 105.9467427216314,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2116.6491204,
+    "end_s": 2116.6491204,
+    "peak": 41.31744452965041,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2117.6474933,
+    "end_s": 2117.6474933,
+    "peak": 107.32714650429342,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2145.0740768,
+    "end_s": 2145.0740768,
+    "peak": 41.28055638537343,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2146.0728494,
+    "end_s": 2146.0728494,
+    "peak": 107.8115130608958,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2148.4743328,
+    "end_s": 2148.4743328,
+    "peak": 40.248353950617286,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2149.473131,
+    "end_s": 2149.473131,
+    "peak": 106.94157160185796,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "horizontal_laser_2d",
+    "start_s": 2187.6745197,
+    "end_s": 2187.6745197,
+    "peak": 40.624076756300994,
+    "n_samples": 1
+  },
+  {
+    "detector": "scan_gap",
+    "param": "gap_ratio",
+    "key": "vertical_laser_2d",
+    "start_s": 2188.6730362,
+    "end_s": 2188.6730362,
+    "peak": 107.38070024191066,
+    "n_samples": 1
+  }
+]

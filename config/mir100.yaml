@@ -1,7 +1,9 @@
 # The MiR100 warehouse AGV recording, which names its lasers differently again.
 #
-# This is the config behind the MiR100 row in docs/transferability.md: 188 flags in
-# 359.938 s, which is 1880 per robot-hour, none of which look like real dropouts.
+# This is the config behind the MiR100 row in docs/transferability.md. Until
+# 2026-09-04 that row read 188 flags in 359.938 s; those were measured on recorder
+# receive times because the reader only collected header stamps for topics.scan,
+# and on the lasers' own stamps the recording gives zero. See results/mir100/.
 # NOTHING here is retuned. Every threshold below is byte-for-byte the one in
 # detectors.yaml, calibrated on a simulated TurtleBot3 and frozen. The only change
 # is the topic names.

@@ -290,11 +290,34 @@ def _span(rel: str, col: str) -> float:
     return max(t) - min(t)
 
 
+
+def mir100_scan_gap_counts() -> list:
+    """188 gap flags on receive times, zero on the lasers' own header stamps."""
+    before = json.loads((ROOT / "results/mir100/detections_receive_time.json").read_text())
+    after = json.loads((ROOT / "results/mir100/detections_header_time.json").read_text())
+    before = before if isinstance(before, list) else before["detections"]
+    return [len([d for d in before if d["detector"] == "scan_gap"]), len(after)]
+
+
+
+def labelled_header_rerun() -> list:
+    """The two annotated backpack bags give the same events on header stamps as on
+    receive times, so the 16 of 16 stands after the reader fix."""
+    out = []
+    for bag in ("b2-2015-05-12-12-29-05", "b2-2015-05-12-12-46-34"):
+        a = json.loads((ROOT / f"results/labelled/{bag}.json").read_text())
+        b = json.loads((ROOT / f"results/header_rerun/{bag}_header_time.json").read_text())
+        a = a if isinstance(a, list) else a["detections"]
+        same = [(d["key"], round(d["start_s"], 3)) for d in a] == [(d["key"], round(d["start_s"], 3)) for d in b]
+        out.append(len(b) if same else -1)
+    return out
+
+
 MANIFEST = [
     {"name": "transferability rates match their own durations",
      "compute": lambda: transfer_rates(),
      "expect": [],
-     "covers": [10, 9, 36, 299, 422, 349, 1880],
+     "covers": [10, 9, 36, 299, 422, 349, 0],
      "note": "each flags-per-hour recomputed from the flags and seconds in the same row"},
     {"name": "scan-gap detections on the graded sweep",
      "compute": scan_gap_detections,
@@ -324,6 +347,16 @@ MANIFEST = [
              "positives, the matched-pose counts, the lost yaw error, the detection "
              "total, the ungradeable excursion count, and the same sigma in whole "
              "centimetres because that is how the headline states it"},
+    {"name": "the annotated backpack bags give identical events on header stamps",
+     "compute": labelled_header_rerun,
+     "expect": [4, 28],
+     "covers": [4, 28],
+     "note": "same event list, key by key and time by time, on both clocks; -1 would mean they differ"},
+    {"name": "mir100 receive-vs-header counts recompute from committed JSONs",
+     "compute": mir100_scan_gap_counts,
+     "expect": [188, 0],
+     "covers": [188, 0],
+     "note": "the published 1880 per robot-hour was 188 receive-time flags; on header stamps, zero"},
     {"name": "leon receive-vs-header counts recompute from committed JSONs",
      "compute": leon_scan_gap_counts,
      "expect": [37, 0, 339.7],

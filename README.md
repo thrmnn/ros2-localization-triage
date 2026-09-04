@@ -21,12 +21,15 @@ against ground truth the localiser never saw.
 
 **Three results:**
 
-- 9 to 36 flags per robot-hour on Cartographer backpack recordings, every one a real
-  dropout; 1880 on a MiR100 AGV, none look real. A threshold is a
-  property of the machine it was measured on, not of the failure.
+- **The same frozen thresholds did not transfer.** The covariance threshold, set on a
+  simulated TurtleBot3, sits inside a real Tiago's healthy yaw noise and fired five
+  times on a recording with nothing wrong, graded wrong in the case log. A threshold is
+  a property of the machine it was measured on.
   [docs/transferability.md](docs/transferability.md)
 - **Against labels somebody else wrote, years before this tool existed: 16 of 16 gaps
-  found, nothing else flagged.** [results/labelled/](results/labelled/)
+  found, nothing else flagged.** The labels give how many gaps each recording has, not
+  when, so the match is a match of counts, one for one.
+  [results/labelled/](results/labelled/)
 - **A localiser 19.4 metres wrong reported 8 centimetres of uncertainty.** The detectors
   caught the transition, then went silent once the wrong pose settled. No monitor built
   on the robot's own estimates can see steady-state confident wrongness.
@@ -56,6 +59,12 @@ these pages recomputes with one script, `scripts/check_numbers.py`, from a commi
 artifact. The transfer rates are the exception: they recompute from the flag count and
 duration stated in the same row, with the bag linked so the count can be re-derived.
 
+**Correction, 2026-09-04.** Until this date the first result above was a 200-to-1
+spread in flag rate between two platforms. The high side, 1880 flags per robot-hour on
+a MiR100, was the recorder's clock, not the sensor's: measured on the lasers' own
+stamps the same recording gives zero. The reader is fixed, both runs are committed, and
+the account is in [docs/transferability.md](docs/transferability.md).
+
 ---
 
 ## Run it in five minutes
@@ -84,8 +93,9 @@ detections within two seconds count as one event.
 4 detection(s) at current thresholds
 ```
 
-The full recording is a 576 MB download and gives the 16-of-16 result in the figure
-above: 28 detections clustering to the 14 gaps annotated in that bag.
+The full recording is a 576 MB download and gives 14 of the 16 in the figure above: 28
+detections clustering to the 14 gaps annotated in that bag. The other two are in a
+second annotated bag, linked from [results/labelled/](results/labelled/).
 
 ```bash
 curl -O https://storage.googleapis.com/cartographer-public-data/bags/backpack_2d/b2-2015-05-12-12-46-34.bag
@@ -109,7 +119,8 @@ the two gaps the dataset annotates.](docs/figures/running-it.gif)
 
 ## What this found, one line each
 
-- 9 to 36 flags/hour on real Cartographer backpacks; 1880 on a MiR100 AGV, none real.
+- Frozen thresholds fired on a healthy Tiago, graded wrong; the 1880-per-hour row
+  withdrawn as a recorder artifact.
   [docs/transferability.md](docs/transferability.md)
 - Against labels years older than this tool: 16 of 16 gaps found.
   [results/labelled/](results/labelled/)
@@ -143,6 +154,8 @@ the two gaps the dataset annotates.](docs/figures/running-it.gif)
 |[results/erl/README.md](results/erl/README.md)|predictions held|finding|
 |[results/labelled/README.md](results/labelled/README.md)|16/16|finding|
 |[results/slip/README.md](results/slip/README.md)|why it failed|negative result|
+|[results/mir100/README.md](results/mir100/README.md)|the withdrawn row, both clocks|correction|
+|[results/header_rerun/README.md](results/header_rerun/README.md)|backpack rows on header stamps|provenance|
 |[results/kidnap/README.md](results/kidnap/README.md)|file manifest|provenance|
 |[results/kidnap02/README.md](results/kidnap02/README.md)|file manifest|provenance|
 |[results/kidnap_outdoor/README.md](results/kidnap_outdoor/README.md)|file manifest|provenance|
@@ -173,8 +186,9 @@ every citation; no result in this repository comes from it.
 .venv/bin/loctriage inspect /path/to/your/bag
 ```
 
-Do this first. Three of the public datasets in this repository declare `/tf` with
-zero messages in it, and a config pointed at the wrong laser name measures nothing.
+Do this first. Three datasets in the survey behind this work declare `/tf` or
+`/tf_static` and publish zero messages, and a config pointed at the wrong laser name
+measures nothing.
 
 **2. Point the config at your topics.**
 
@@ -191,7 +205,7 @@ line changed: lasers `horizontal_laser_2d`, `vertical_laser_2d`, not `/scan`.
 .venv/bin/loctriage --config config/mine.yaml detect /path/to/your/bag --json found.json
 ```
 
-A detector whose input topics are absent says so; it is never reported as "no incidents
-found".
+A detector whose input topics are absent says so, and a sweep marks it
+`"status": "no_input"` in `summary.json`; it is never reported as "no incidents found".
 
 Maintainers and re-runners: docs/maintaining.md.

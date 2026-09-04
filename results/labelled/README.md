@@ -49,3 +49,9 @@ The two bags publish `horizontal_laser_2d` and `vertical_laser_2d` rather than `
 the topic list is pointed at them. No threshold was changed.
 
     loctriage --config <config with those two topic names> detect <bag> --json out.json
+
+The Known Issues column gives how many gaps each recording has, not when, so the
+match is a match of counts, one for one.
+
+Re-run on header stamps on 2026-09-04 after the reader fix: identical events, see
+[results/header_rerun/](../header_rerun/).

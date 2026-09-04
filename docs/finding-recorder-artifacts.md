@@ -57,6 +57,21 @@ The same fix is why the Stata Center replay in
 [finding-confidently-wrong.md](finding-confidently-wrong.md) reports no spurious
 scan gaps across 408 seconds.
 
+## The same defect, found a second time, 2026-09-04
+
+The fix above reached the topic named `topics.scan` and no other. Two published
+configs rename the lasers, `config/mir100.yaml` to `/f_scan` and `/b_scan` and
+`config/cartographer-backpack.yaml` to `horizontal_laser_2d` and `vertical_laser_2d`,
+and for those the reader collected no header stamps, so the detector fell back to
+receive times exactly as it had on the Leon pair, silently. On the MiR100 that
+fallback was the whole result: 188 flags on receive times, zero on the lasers' own
+stamps, with the thresholds untouched ([results/mir100/](../results/mir100/)). The
+row that carried the README's headline spread of 200 to 1 was withdrawn and the
+reader now collects header stamps for every laser the gap detector reads, with a
+test for a renamed laser. The lesson from the first finding, know which clock a
+signal lives on, was learnt once and applied to one topic name. It has now been
+applied to all of them.
+
 ## The second experiment: an attack these detectors rightly cannot see
 
 The same dataset's Experiment 2 replaces the robot's camera feed while it drives
