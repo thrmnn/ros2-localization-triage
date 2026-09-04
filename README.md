@@ -9,23 +9,24 @@ Théo Alessandro Hermann, independent practitioner. Contact: [github.com/thrmnn]
 **The problem.** A fleet's worst localisation incidents are the quiet ones: the robot
 that was somewhere else while reporting centimetre confidence, the alarm that fired on a
 healthy machine, the failure nobody can reproduce from the bag, which is the robot's own
-recording. Nav2, the ROS 2 navigation stack, ships its localiser AMCL with kidnap
+recording. Nav2, the ROS 2 navigation stack, ships its localiser AMCL (adaptive Monte Carlo localisation) with kidnap
 recovery switched off, so a displaced robot has no mechanism to conclude it is lost.
 Someone has to notice, and the bag is usually all they have.
 
 **What this is.** Four detectors read a recording (rosbag2 or ROS 1 `.bag`) for the
 signals a localiser leaks in trouble: covariance spikes, transform jumps, disagreement
-between the localiser and dead reckoning, and gaps in the sensor stream. Thresholds,
+between the localiser and dead reckoning (the pose counted up from the wheels), and
+gaps in the sensor stream. Thresholds,
 calibrated on a simulated TurtleBot3 and frozen, run on other robots' recordings, graded
 against ground truth the localiser never saw.
 
 **Three results:**
 
-- **The same frozen thresholds did not transfer.** The covariance threshold, set on a
-  simulated TurtleBot3, sits inside a real Tiago's healthy yaw noise and fired five
-  times on a recording with nothing wrong, graded wrong in the case log. A threshold is
-  a property of the machine it was measured on.
-  [docs/transferability.md](docs/transferability.md)
+- **Thresholds do not travel between robots.** Set on a simulated TurtleBot3, a small
+  research robot, the covariance threshold sits inside the healthy noise of a real
+  Tiago, a PAL Robotics service robot. It fired five times on a recording with nothing
+  wrong, and the case log grades that wrong. A threshold belongs to the machine it was
+  measured on. [docs/transferability.md](docs/transferability.md)
 - **Against labels somebody else wrote, years before this tool existed: 16 of 16 gaps
   found, nothing else flagged.** The labels give how many gaps each recording has, not
   when, so the match is a match of counts, one for one.
@@ -141,46 +142,48 @@ the two gaps the dataset annotates.](docs/figures/running-it.gif)
 
 ## Everything in this repository
 
-|File|Question|Kind|
-|---|---|---|
-|[docs/case-log-rubric.md](docs/case-log-rubric.md)|verdict rules|grading|
-|[docs/case-log.md](docs/case-log.md)|graded runs|grading|
-|[docs/how-this-was-graded.md](docs/how-this-was-graded.md)|who graded|grading|
-|[docs/verdicts.json](docs/verdicts.json)|verdicts, machine-readable|grading|
-|[docs/transferability.md](docs/transferability.md)|threshold transfer|finding|
-|[docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)|confident, wrong|finding|
-|[docs/finding-kidnap.md](docs/finding-kidnap.md)|kidnap caught|finding|
-|[docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md)|AMCL recovery|finding|
-|[docs/finding-recorder-artifacts.md](docs/finding-recorder-artifacts.md)|recorder vs sensor|finding|
-|[docs/findings.md](docs/findings.md)|all findings|finding|
-|[docs/data-sources.md](docs/data-sources.md)|data provenance|provenance|
-|[docs/maintaining.md](docs/maintaining.md)|maintainer tasks|maintainer|
-|[results/erl/README.md](results/erl/README.md)|predictions held|finding|
-|[results/labelled/README.md](results/labelled/README.md)|16/16|finding|
-|[results/slip/README.md](results/slip/README.md)|why it failed|negative result|
-|[results/mir100/README.md](results/mir100/README.md)|the withdrawn row, both clocks|correction|
-|[results/header_rerun/README.md](results/header_rerun/README.md)|backpack rows on header stamps|provenance|
-|[results/kidnap/README.md](results/kidnap/README.md)|file manifest|provenance|
-|[results/kidnap02/README.md](results/kidnap02/README.md)|file manifest|provenance|
-|[results/kidnap_outdoor/README.md](results/kidnap_outdoor/README.md)|file manifest|provenance|
-|[results/leon/README.md](results/leon/README.md)|file manifest|provenance|
-|[results/stata/README.md](results/stata/README.md)|file manifest|provenance|
-|[sim/README.md](sim/README.md)|calibration robot|provenance|
-|[scripts/check_numbers.py](scripts/check_numbers.py)|number gate|maintainer|
-|[scripts/check_links.py](scripts/check_links.py)|link gate|maintainer|
-|[scripts/prepublish_check.sh](scripts/prepublish_check.sh)|publish gate|maintainer|
+**Findings.**
+- [docs/transferability.md](docs/transferability.md): threshold transfer
+- [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md): confident, wrong
+- [docs/finding-kidnap.md](docs/finding-kidnap.md): kidnap caught
+- [docs/finding-amcl-recovery.md](docs/finding-amcl-recovery.md): AMCL recovery
+- [docs/finding-recorder-artifacts.md](docs/finding-recorder-artifacts.md): recorder vs sensor
+- [docs/findings.md](docs/findings.md): all findings
+- [results/erl/README.md](results/erl/README.md): predictions held
+- [results/labelled/README.md](results/labelled/README.md): 16/16
+
+**Correction.**
+- [results/mir100/README.md](results/mir100/README.md): the withdrawn row, both clocks
+
+**Grading.**
+- [docs/case-log-rubric.md](docs/case-log-rubric.md): verdict rules
+- [docs/case-log.md](docs/case-log.md): graded runs
+- [docs/how-this-was-graded.md](docs/how-this-was-graded.md): who graded
+- [docs/verdicts.json](docs/verdicts.json): verdicts, machine-readable
+
+**Provenance.**
+- [docs/data-sources.md](docs/data-sources.md): data provenance
+- [results/header_rerun/README.md](results/header_rerun/README.md): backpack rows on header stamps
+- File manifests: [kidnap](results/kidnap/README.md), [kidnap02](results/kidnap02/README.md), [kidnap_outdoor](results/kidnap_outdoor/README.md), [leon](results/leon/README.md), [stata](results/stata/README.md)
+- [sim/README.md](sim/README.md): calibration robot
+
+**Negative result.**
+- [results/slip/README.md](results/slip/README.md): why it failed
+
+**Maintainer.**
+- [docs/maintaining.md](docs/maintaining.md): maintainer tasks
+- [scripts/check_numbers.py](scripts/check_numbers.py): number gate
+- [scripts/check_links.py](scripts/check_links.py): link gate
+- [scripts/prepublish_check.sh](scripts/prepublish_check.sh): publish gate
 
 ## Detectors
 
-|Detector|Signal|Thresholds|Needs|
-|---|---|---|---|
-|`covariance_spike`|position ellipse, yaw σ|`position_sigma_m`, `yaw_sigma_rad`|`/amcl_pose`|
-|`tf_jump`|speed from transform frames|`linear_speed_mps`, `angular_speed_radps`|`/tf`|
-|`pose_divergence`|AMCL versus dead reckoning|`displacement_delta_m`, `yaw_delta_rad`|`/amcl_pose`+`/odom`|
-|`scan_gap`|gap versus its own median|`gap_ratio`|the lasers named in config|
+- `covariance_spike`: the localiser's own stated uncertainty, position ellipse and yaw. Needs `/amcl_pose`.
+- `tf_jump`: the speed a transform implies between frames. Needs `/tf`.
+- `pose_divergence`: the localiser against dead reckoning. Needs `/amcl_pose` and `/odom`.
+- `scan_gap`: a gap in a laser stream against that stream's own median. Needs the lasers named in the config.
 
-An optional `explain` command asks a local model for a cited hypothesis and verifies
-every citation; no result in this repository comes from it.
+Thresholds live in `config/detectors.yaml`, one YAML key per number.
 
 ## Run it on your own bag
 
