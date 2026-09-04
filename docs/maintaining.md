@@ -65,9 +65,11 @@ detect; this only narrates.
 
 ## What is calibrated and what is not
 
-**Nothing in `config/detectors.yaml` is calibrated.** The values there are
-physically plausible starting points, and are marked as such in the file. Treat a
-threshold you have not personally read off a plot as unset.
+**`config/detectors.yaml` holds the frozen calibration.** Calibrated once on the
+simulated TurtleBot3 on 2026-08-19 and not touched since; every published config differs
+from it in topic names only, and the number gate checks that. Calibrate a copy for your own
+robot with `loctriage sweep`; never edit the frozen file after a result has been published
+from it.
 
 Two reference sweeps are committed so you can see real harness output before
 running it yourself:
