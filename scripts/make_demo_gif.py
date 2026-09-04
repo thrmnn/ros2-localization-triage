@@ -35,7 +35,8 @@ import numpy as np  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from localization_triage.bagread import read_signals  # noqa: E402
+from localization_triage.bagread import read_signals
+from localization_triage.cli import signal_topics  # noqa: E402
 from localization_triage.config import Config  # noqa: E402
 from localization_triage.detectors import scan_gap  # noqa: E402
 from localization_triage.detectors.base import detections_from  # noqa: E402
@@ -54,12 +55,7 @@ LASERS = {"horizontal_laser_2d": "#1a1a1a", "vertical_laser_2d": "#3b7dd8"}
 
 def build(bag: str, config_path: str, out: Path, label_count: int) -> None:
     cfg = Config.load(config_path)
-    signals = read_signals(
-        bag,
-        {"tf": "/tf", "tf_static": "/tf_static", "odom": "/odom",
-         "amcl_pose": "/amcl_pose", "scan": "/scan"},
-        cfg.typestore,
-    )
+    signals = read_signals(bag, signal_topics(cfg), cfg.typestore)
     scan_cfg = cfg.detectors["scan_gap"]
     series = scan_gap.score(signals, scan_cfg)
     threshold = scan_cfg.threshold_for("gap_ratio", series[0].key)

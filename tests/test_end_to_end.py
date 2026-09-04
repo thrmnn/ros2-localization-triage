@@ -53,3 +53,16 @@ def test_sweep_writes_a_plot_and_a_csv_per_swept_parameter(tmp_path):
             assert info["status"] == "swept"
             assert (out / info["csv"]).exists()
     assert json.loads((out / "summary.json").read_text())["duration_s"] > 0
+
+
+def test_gap_detector_gets_header_stamps_for_a_renamed_laser(tmp_path):
+    """A recording that calls its laser something other than /scan must still be
+    measured on header stamps: the MiR100 and Cartographer configs rename the
+    laser and the stamps used to be collected for /scan only."""
+    bag = synthetic_bag.write(tmp_path / "bag", scan_topic="/front_laser")
+    config = Config.load("config/detectors.yaml")
+    topics = dict(TOPICS, scan={"/scan", "/front_laser"})
+    signals = read_signals(bag, topics, config.typestore)
+    assert "/front_laser" in signals.stamps
+    assert signals.stamps["/front_laser"].size > config.detectors["scan_gap"].baseline_min_samples
+    assert "/scan" not in signals.stamps

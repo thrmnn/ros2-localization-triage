@@ -60,16 +60,23 @@ def cmd_explain(args) -> int:
     return 0
 
 
-def _load(args) -> tuple[Config, object]:
-    config = Config.load(args.config)
-    topics = {
+def signal_topics(config: Config) -> dict[str, object]:
+    scan = {config.topics.scan}
+    gap = config.detectors.get("scan_gap")
+    if gap is not None:
+        scan |= set(gap.topics)
+    return {
         "tf": config.topics.tf,
         "tf_static": config.topics.tf_static,
         "odom": config.topics.odom,
         "amcl_pose": config.topics.amcl_pose,
-        "scan": config.topics.scan,
+        "scan": scan,
     }
-    return config, read_signals(args.bag, topics, config.typestore)
+
+
+def _load(args) -> tuple[Config, object]:
+    config = Config.load(args.config)
+    return config, read_signals(args.bag, signal_topics(config), config.typestore)
 
 
 def cmd_inspect(args) -> int:

@@ -64,14 +64,14 @@ def _map_odom_correction(t: float) -> float:
     return 0.01 * np.sin(t / 7.0) + (KIDNAP_SHIFT_M if t >= KIDNAP_S else 0.0)
 
 
-def write(path: Path) -> Path:
+def write(path: Path, scan_topic: str = "/scan") -> Path:
     rng = np.random.default_rng(0)
     with Writer(path, version=8) as writer:
         conns = {
             "/tf": writer.add_connection("/tf", "tf2_msgs/msg/TFMessage", typestore=TYPESTORE),
             "/odom": writer.add_connection("/odom", "nav_msgs/msg/Odometry", typestore=TYPESTORE),
             "/amcl_pose": writer.add_connection("/amcl_pose", "geometry_msgs/msg/PoseWithCovarianceStamped", typestore=TYPESTORE),
-            "/scan": writer.add_connection("/scan", "sensor_msgs/msg/LaserScan", typestore=TYPESTORE),
+            "/scan": writer.add_connection(scan_topic, "sensor_msgs/msg/LaserScan", typestore=TYPESTORE),
         }
         rows: list[tuple[float, str, object]] = []
 
