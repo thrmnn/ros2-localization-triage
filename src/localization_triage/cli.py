@@ -86,19 +86,23 @@ def _load(args) -> tuple[Config, object]:
     return config, read_signals(args.bag, signal_topics(config), config.typestore, progress=_progress)
 
 
-def missing_inputs(config: Config, signals) -> list[str]:
-    """One line per detector whose input topics are not in the recording. A detector
-    pointed at a topic that does not exist returns zero detections and looks exactly
-    like a clean bill of health; this is the difference between the two."""
-    present = set(signals.topic_counts)
+def _required_topics(config: Config) -> dict[str, list[str]]:
     needs = {
         "covariance_spike": [config.topics.amcl_pose],
         "tf_jump": [config.topics.tf],
         "pose_divergence": [config.topics.amcl_pose, config.topics.odom],
     }
+    return {name: list(cfg.topics) if name == "scan_gap" else needs.get(name, [])
+            for name, cfg in config.detectors.items()}
+
+
+def missing_inputs(config: Config, signals) -> list[str]:
+    """One line per detector whose input topics are not in the recording. A detector
+    pointed at a topic that does not exist returns zero detections and looks exactly
+    like a clean bill of health; this is the difference between the two."""
+    present = set(signals.topic_counts)
     lines = []
-    for name, cfg in config.detectors.items():
-        required = list(cfg.topics) if name == "scan_gap" else needs.get(name, [])
+    for name, required in _required_topics(config).items():
         absent = [t for t in required if t not in present]
         if absent:
             lines.append(f"{name} has no input: {', '.join(absent)} not in this recording")
@@ -113,8 +117,12 @@ def _warn_missing(config: Config, signals, found_any: bool) -> bool:
         return False
     for line in lines:
         print(f"warning: {line}", file=sys.stderr)
-    print(f"warning: this recording carries {', '.join(sorted(signals.topic_counts))}. "
-          f"Run `loctriage inspect` and point the config at those names.", file=sys.stderr)
+    read = {t for topics in _required_topics(config).values() for t in topics}
+    # Renaming only helps when the recording carries a topic no detector reads; the
+    # backpack bag has no AMCL at all, and both its lasers are already wired up.
+    if set(signals.topic_counts) - read:
+        print(f"warning: this recording carries {', '.join(sorted(signals.topic_counts))}. "
+              f"Run `loctriage inspect` and point the config at those names.", file=sys.stderr)
     nothing = not found_any and len(lines) == len(config.detectors)
     if nothing:
         print("warning: no detector had any input, so 0 detections here means nothing was measured.",

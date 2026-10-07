@@ -35,6 +35,15 @@ def test_matching_config_does_not_warn(tmp_path, capsys):
     assert "read " in out.err
 
 
+def test_no_rename_hint_when_every_recorded_topic_is_read(capsys):
+    # The committed backpack slice has two lasers, both in the config, and no AMCL.
+    assert main(["--config", "config/cartographer-backpack.yaml", "detect",
+                 "demo/backpack-gaps-20s.bag"]) == 0
+    err = capsys.readouterr().err
+    assert "covariance_spike has no input: /amcl_pose not in this recording" in err
+    assert "point the config" not in err
+
+
 def test_nothing_measured_exits_non_zero(tmp_path, capsys):
     bag = synthetic_bag.write(tmp_path / "bag", scan_topic="/front_laser")
     cfg = yaml.safe_load(open("config/detectors.yaml"))
