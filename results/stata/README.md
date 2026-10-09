@@ -12,5 +12,7 @@ MIT Stata Center dataset), `amcl_poses.csv` is the replayed AMCL output,
 `walls.csv` is the GT-projected endpoint cloud behind the figure,
 `detections.json` is the tool's output on the merged bag, and
 `gt_comparison.json` is written by `scripts/stata_grade.py` from the CSVs.
+`baseline.json`, the sigma-threshold comparison, is written by
+`scripts/stata_baseline.py` from the same CSVs and `detections.json`.
 Writeup: `docs/finding-confidently-wrong.md`. Replay recipe:
 `scripts/stata_replay.sh` plus `scripts/stata_build_map.py`.

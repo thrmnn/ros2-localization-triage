@@ -84,6 +84,38 @@ reproduced the first: identical healthy-window median (0.278 m both times), lost
 medians of 19.63 and 19.43 m. The committed artifacts are the second run, the one
 whose `/tf` was recorded so `tf_jump` could be graded at all.
 
+## Against the check anyone would write first
+
+The first monitor most teams write is a threshold on AMCL's own reported sigma. The
+same run answers whether the four detectors add anything to it, graded against the
+same AprilTag truth, per matched pose: 196 in the healthy window, 186 in the lost one,
+99 percent of them more than a metre wrong. A pose counts as flagged when sigma is
+above the line at that pose, or when the pose falls inside a detection. The right-hand
+columns widen both checks by the same 2 s, the clustering rule the README uses.
+
+| Check | Lost flagged | Healthy flagged | Lost, 2 s both | Healthy, 2 s both |
+|---|---|---|---|---|
+| sigma above 0.35 m, the frozen threshold | 35% | 1% | 47% | 3% |
+| sigma above 0.098 m, picked in hindsight | 46% | 3% | 59% | 4% |
+| sigma above 0.05 m | 83% | 32% | 95% | 41% |
+| any of the four frozen detectors | 69% | 3% | 85% | 9% |
+
+The hindsight row is the lowest sigma line that flags no more healthy poses than the
+detectors do, chosen knowing this run's ground truth, which the frozen detectors never
+had. At that equal false-flag share the detectors flag 69 percent of the lost poses and
+sigma 46 percent. Part of the 69 is one tf_jump detection that began during the floor
+change and runs into the lost window; counting only detections that start inside the
+lost window, the detectors flag 57 percent. A detection covers every pose from its first
+sample to its last, so the tf_jump share is an upper bound. The healthy-window flags
+are tf_jump's two firings, the false-alarm floor stated above.
+
+So the gain over the obvious check is real and modest: about a quarter of the lost poses
+(28 percent) are flagged by the detectors and not by the hindsight sigma line, and 26
+percent are flagged by neither, which is consistent with the steady state the next
+section describes. This is one run on one robot. `scripts/stata_baseline.py` recomputes
+every number here from the committed CSVs and writes
+[results/stata/baseline.json](../results/stata/baseline.json).
+
 ## The miss this experiment also proves
 
 Between its bursts of churn, AMCL sits still, confidently, twenty metres wrong,

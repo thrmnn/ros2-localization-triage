@@ -161,6 +161,20 @@ def stata_grading() -> list[float]:
             round(w3["amcl_reported_sigma_median_m"] * 100)]
 
 
+def stata_baseline() -> list[float]:
+    """Recompute the sigma-threshold comparison in docs/finding-confidently-wrong.md."""
+    import subprocess
+    subprocess.run([sys.executable, str(ROOT / "scripts/stata_baseline.py")],
+                   check=True, capture_output=True, cwd=ROOT)
+    d = json.loads((ROOT / "results/stata/baseline.json").read_text())
+    rows = [d["sigma_frozen"], d["sigma_hindsight"], d["sigma_loose"], d["detectors"]]
+    cells = [r[k] for r in rows for k in ("lost", "healthy", "lost_padded", "healthy_padded")]
+    return [d["n_healthy"], d["n_lost"], d["lost_more_than_1m_wrong"],
+            d["sigma_hindsight"]["sigma_m"], *cells,
+            d["detectors_events_starting_in_lost_window"],
+            d["lost_by_detectors_not_sigma_hindsight"], d["lost_by_neither_hindsight"]]
+
+
 def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
     """Re-run the kidnap grading from the committed files and return the numbers the
     finding doc leans on: healthy median, worst error, onset latency, detection
@@ -395,6 +409,10 @@ MANIFEST = [
      "covers": [16, 0, 2, 14],
      "note": "the figure's own headline, read from the authors' labels and the raw "
              "detections, so the picture and the gate cannot disagree"},
+    {"name": "stata sigma-threshold baseline recomputes from committed CSVs",
+     "compute": stata_baseline,
+     "expect": [196, 186, 99, 0.098, 35, 1, 47, 3, 46, 3, 59, 4, 83, 32, 95, 41, 69, 3, 85, 9, 57, 28, 26],
+     "note": "the comparison table in docs/finding-confidently-wrong.md"},
     {"name": "stata grading recomputes from committed CSVs",
      "compute": stata_grading,
      "expect": [0.278, 19.428, 39.802, 0.081, 30, 382, 647, 26.4, 80, 47, 8],
