@@ -4,7 +4,8 @@
 results, ran them unchanged on 108 minutes of recordings from five platforms, and
 published what they caught, what they missed, and the raw counts behind both.
 
-Théo Alessandro Hermann, independent practitioner. Contact: [github.com/thrmnn](https://github.com/thrmnn).
+Théo Alessandro Hermann, independent practitioner. Contact: [theohermann.ch](https://theohermann.ch),
+theo@theohermann.ch.
 
 **The problem.** A fleet's worst localisation incidents are the quiet ones: the robot
 that was somewhere else while reporting centimetre confidence, the alarm that fired on a
@@ -29,16 +30,18 @@ against ground truth the localiser never saw.
   measured on. [docs/transferability.md](docs/transferability.md)
 - **Against labels somebody else wrote, years before this tool existed: 16 of 16 gaps
   found, nothing else flagged.** The labels give how many gaps each recording has, not
-  when, so the match is a match of counts, one for one.
+  when, so the match is a match of counts, one for one. It is one detector, `scan_gap`,
+  on the plainest fault in the set; it does not establish recall for the other three.
   [results/labelled/](results/labelled/)
 - **A localiser 19.4 metres wrong reported 8 centimetres of uncertainty.** The detectors
   caught the transition, then went silent once the wrong pose settled. No monitor built
-  on the robot's own estimates can see steady-state confident wrongness.
+  on the robot's own estimates can see steady-state confident wrongness; it takes an
+  external reference, such as a scan-to-map match score.
   [docs/finding-confidently-wrong.md](docs/finding-confidently-wrong.md)
 
 **If a robot in your fleet was somewhere it should not have been, and the bag exists,**
 twenty minutes over that bag is the conversation I am proposing. Contact:
-[github.com/thrmnn](https://github.com/thrmnn).
+[theohermann.ch](https://theohermann.ch), theo@theohermann.ch.
 
 ![Two Cartographer backpack recordings on a shared timeline: the dataset's Known Issues
 column counts 2 and 14 laser gaps, and the frozen detector found 2 and 14 events, nothing
@@ -188,6 +191,10 @@ Thresholds live in `config/detectors.yaml`, one YAML key per number.
 
 ## Run it on your own bag
 
+Everything runs on your machine. The tool reads the bag from disk and calls nothing
+outside it (the optional `explain` command talks to a local model at 127.0.0.1), so the
+recording never leaves your network.
+
 **1. See what the recording contains.**
 
 ```bash
@@ -197,8 +204,8 @@ Thresholds live in `config/detectors.yaml`, one YAML key per number.
 Do this first. Three datasets in the survey behind this work declare `/tf` or
 `/tf_static` and publish zero messages, and a config pointed at the wrong laser name
 measures nothing. `detect` now says so: a detector whose topics are not in the
-recording is named on stderr, with the topics the recording does carry, and when no
-detector had any input the exit code is 2.
+recording is named on stderr, the recording's own topic names follow when it carries one
+no detector reads, and when no detector had any input the exit code is 2.
 
 **2. Point the config at your topics.**
 
