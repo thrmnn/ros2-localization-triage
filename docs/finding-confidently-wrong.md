@@ -51,7 +51,7 @@ base. Subtract that constant and AMCL tracked at centimetre level. The
 decomposition doubles as an empirical answer to which frame the dataset's ground
 truth lives in.
 
-**The second row is the finding.** After the robot spends four minutes on a floor
+**The second row is the finding.** After the robot spends about three minutes on a floor
 the map does not contain and comes back, AMCL relocalises to the wrong corridor and
 stays there: twenty to forty metres from the truth, heading tens of degrees off,
 **while reporting a position sigma of eight centimetres**. A fleet dashboard built on
