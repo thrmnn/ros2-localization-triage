@@ -57,6 +57,13 @@ stays there: twenty to forty metres from the truth, heading tens of degrees off,
 **while reporting a position sigma of eight centimetres**. A fleet dashboard built on
 the localiser's self-reported confidence shows a healthy robot.
 
+The floor plan on [theohermann.ch](https://theohermann.ch) draws one stretch of that row:
+the longest run of poses where AMCL reports a position sigma under 20 cm while the
+ceiling tags put the robot more than 20 m away. It runs from 353.0 to 367.5 s on the
+bag clock, 30 poses; the sigma stays between 3 and 16 cm, and at its end the reported
+position is 24 m from the truth. `scripts/stata_plan.py` recomputes it from the
+committed CSVs.
+
 ## What the detectors caught, graded against that ground truth
 
 80 detections total (`results/stata/detections.json`), and the grading writes

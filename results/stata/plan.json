@@ -1,0 +1,11 @@
+{
+ "rule": "sigma under 0.2 m and more than 20 m from the AprilTag truth",
+ "t_start_s": 353.0,
+ "t_end_s": 367.5,
+ "poses": 30,
+ "error_end_m": 24,
+ "sigma_cm": [
+  3,
+  16
+ ]
+}

@@ -175,6 +175,15 @@ def stata_baseline() -> list[float]:
             d["lost_by_detectors_not_sigma_hindsight"], d["lost_by_neither_hindsight"]]
 
 
+def stata_plan() -> list[float]:
+    """Recompute the floor-plan stretch in docs/finding-confidently-wrong.md."""
+    import subprocess
+    subprocess.run([sys.executable, str(ROOT / "scripts/stata_plan.py")],
+                   check=True, capture_output=True, cwd=ROOT)
+    d = json.loads((ROOT / "results/stata/plan.json").read_text())
+    return [d["t_start_s"], d["t_end_s"], d["poses"], d["error_end_m"], *d["sigma_cm"]]
+
+
 def kidnap_grading(resdir: str = "results/kidnap") -> list[float]:
     """Re-run the kidnap grading from the committed files and return the numbers the
     finding doc leans on: healthy median, worst error, onset latency, detection
@@ -413,6 +422,11 @@ MANIFEST = [
      "compute": stata_baseline,
      "expect": [196, 186, 99, 0.098, 35, 1, 47, 3, 46, 3, 59, 4, 83, 32, 95, 41, 69, 3, 85, 9, 57, 28, 26],
      "note": "the comparison table in docs/finding-confidently-wrong.md"},
+    {"name": "the floor-plan stretch recomputes from committed CSVs",
+     "compute": stata_plan,
+     "expect": [353.0, 367.5, 30, 24, 3, 16],
+     "covers": [353.0, 367.5, 30, 24, 3, 16, 20],
+     "note": "the stretch theohermann.ch draws: sure to 3 to 16 cm, 24 m from the truth at its end"},
     {"name": "stata grading recomputes from committed CSVs",
      "compute": stata_grading,
      "expect": [0.278, 19.428, 39.802, 0.081, 30, 382, 647, 26.4, 80, 47, 8],
